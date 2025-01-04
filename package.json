@@ -138,7 +138,7 @@
         {
           "quoteProps": "consistent",
           "singleQuote": true,
-          "tabWidth": 2,
+          "tabWidth": 4,
           "trailingComma": "es5",
           "useTabs": false
         }
@@ -152,7 +152,7 @@
   "prettier": {
     "quoteProps": "consistent",
     "singleQuote": true,
-    "tabWidth": 2,
+    "tabWidth": 4,
     "trailingComma": "es5",
     "useTabs": false
   },
