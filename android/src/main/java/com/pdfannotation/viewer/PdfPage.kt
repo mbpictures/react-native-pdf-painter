@@ -39,19 +39,19 @@ import net.engawapg.lib.zoomable.zoomable
 
 @Composable
 fun PdfPage(
-    page: PdfRender.Page,
+    page: PdfRender.Page?,
     brushSettings: BrushSettings?,
     viewModel: SharedPdfPageViewModel,
     onChangePage: (Int) -> Unit = {}
 ) {
-    DisposableEffect(key1 = page.hash) {
-        page.load()
+    DisposableEffect(key1 = page?.hash) {
+        page?.load()
         onDispose {
-            page.recycle()
+            page?.recycle()
         }
     }
 
-    page.pageContent.collectAsState().value?.let { bitmap ->
+    page?.pageContent?.collectAsState()?.value?.let { bitmap ->
         var size by remember { mutableStateOf(IntSize.Zero) }
         val baseScale = remember (size) {
             if (size.width == 0 || size.height == 0) return@remember 1f

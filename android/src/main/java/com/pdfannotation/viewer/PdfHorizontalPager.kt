@@ -65,7 +65,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
             userScrollEnabled = brushSettings == null
         ) { page ->
             PdfPage(
-                page = renderer?.pageLists[page],
+                page = renderer?.let { it.pageLists[page] },
                 brushSettings = brushSettings,
                 viewModel = sharedViewModel,
                 onChangePage = { pageDelta ->
