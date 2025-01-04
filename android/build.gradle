@@ -69,6 +69,11 @@ android {
 
   buildFeatures {
     buildConfig true
+    compose true
+  }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion = getExtOrDefault("kotlinCompilerExtensionVersion")
   }
 
   buildTypes {
@@ -111,6 +116,9 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+  implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+  implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 }
 
 if (isNewArchitectureEnabled()) {
