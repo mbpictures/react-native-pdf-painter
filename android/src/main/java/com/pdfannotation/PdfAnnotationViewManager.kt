@@ -1,11 +1,10 @@
 package com.pdfannotation
 
-import android.graphics.Color
+import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
 import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.ViewManagerDelegate
-import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.PdfAnnotationViewManagerInterface
 import com.facebook.react.viewmanagers.PdfAnnotationViewManagerDelegate
 
@@ -30,12 +29,31 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
     return PdfAnnotationView(context)
   }
 
-  @ReactProp(name = "color")
-  override fun setColor(view: PdfAnnotationView?, color: String?) {
-    view?.setBackgroundColor(Color.parseColor(color))
-  }
-
   companion object {
     const val NAME = "PdfAnnotationView"
+  }
+
+  override fun setBackgroundColor(view: PdfAnnotationView?, value: String?) {
+    view?.viewModel?.updateBackgroundColor(value ?: "#FFFFFF")
+  }
+
+  override fun setPdfUrl(view: PdfAnnotationView?, value: String?) {
+    view?.viewModel?.updatePdfFile(value)
+  }
+
+  override fun setThumbnailMode(view: PdfAnnotationView?, value: Boolean) {
+    view?.viewModel?.updateThumbnailMode(value)
+  }
+
+  override fun setAnnotationFile(view: PdfAnnotationView?, value: String?) {
+    view?.viewModel?.updateAnnotationFile(value)
+  }
+
+  override fun setAutoSave(view: PdfAnnotationView?, value: Boolean) {
+    view?.viewModel?.updateAutoSave(value)
+  }
+
+  override fun setBrushSettings(view: PdfAnnotationView?, value: ReadableMap?) {
+    view?.viewModel?.updateBrushSettings(value)
   }
 }
