@@ -39,14 +39,16 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
     val sharedViewModel = remember(file) { SharedPdfPageViewModel() }
 
-    DisposableEffect (sharedViewModel) {
+    DisposableEffect (sharedViewModel, annotationFile) {
         annotationFile?.let {
             sharedViewModel.setStrokes(Serializer().loadStrokes(it))
         }
 
         onDispose {
             annotationFile?.let {
-                Serializer().storeStrokes(sharedViewModel.strokes, it)
+                if (viewModel.autoSave.value) {
+                    Serializer().storeStrokes(sharedViewModel.strokes, it)
+                }
             }
         }
     }
