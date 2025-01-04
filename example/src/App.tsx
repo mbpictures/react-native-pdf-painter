@@ -1,10 +1,29 @@
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert, Button } from 'react-native';
 import { PdfAnnotationView } from 'react-native-pdf-annotation';
+import { useState } from 'react';
+import DocumentPicker, { types } from 'react-native-document-picker';
 
 export default function App() {
+    const [pdfFile, setPdfFile] = useState<string | null>(null);
+
+    const handleSelectFile = async () => {
+        try {
+            const response = await DocumentPicker.pickSingle({
+                type: types.pdf,
+                copyTo: 'cachesDirectory',
+            });
+            setPdfFile(response.fileCopyUri);
+        } catch (e) {
+            Alert.alert('File Selection Error');
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <PdfAnnotationView color="#32a852" style={styles.box} />
+            <Button title={'Select PDF'} onPress={handleSelectFile} />
+            {pdfFile && (
+                <PdfAnnotationView pdfUrl={pdfFile} style={styles.box} />
+            )}
         </View>
     );
 }
@@ -12,12 +31,8 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     box: {
-        width: 60,
-        height: 60,
-        marginVertical: 20,
+        flex: 1,
     },
 });
