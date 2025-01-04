@@ -123,7 +123,7 @@ dependencies {
   implementation("androidx.compose.foundation:foundation:1.7.6")
   implementation("androidx.compose.foundation:foundation-layout:1.7.6")
   implementation("androidx.compose.runtime:runtime:1.7.6")
-  implementation("net.engawapg.lib:zoomable:2.0.0")
+  implementation("net.engawapg.lib:zoomable:1.6.2")
   implementation("io.coil-kt.coil3:coil-compose:3.0.4")
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
