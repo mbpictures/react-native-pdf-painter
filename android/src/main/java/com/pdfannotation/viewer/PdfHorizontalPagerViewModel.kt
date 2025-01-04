@@ -37,7 +37,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     }
 
     fun updatePdfFile(newPdf: String?) {
-        _pdfFile.value = newPdf?.let { File(it) }
+        _pdfFile.value = newPdf?.let { File(it.replace("file://", "")) }
     }
 
     fun updateThumbnailMode(newMode: Boolean) {
@@ -45,7 +45,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     }
 
     fun updateAnnotationFile(newAnnotationFile: String?) {
-        _annotationFile.value = newAnnotationFile?.let { File(it) }
+        _annotationFile.value = newAnnotationFile?.let { File(it.replace("file://", "")) }
     }
 
     fun updateAutoSave(newAutoSave: Boolean) {
