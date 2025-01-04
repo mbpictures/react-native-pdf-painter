@@ -1,7 +1,5 @@
 package com.pdfannotation.viewer
 
-import PdfPage
-import SharedPdfPageViewModel
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
