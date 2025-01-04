@@ -23,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import com.pdfannotation.serialization.Serializer
 import kotlinx.coroutines.launch
@@ -59,7 +60,9 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     Box(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clipToBounds(),
             userScrollEnabled = brushSettings == null
         ) { page ->
             PdfPage(
