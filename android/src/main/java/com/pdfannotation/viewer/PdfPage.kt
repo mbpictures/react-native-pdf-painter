@@ -89,73 +89,59 @@ fun PdfPage(
             zoomState = ZoomState(contentSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat()), maxScale = baseScale * 5.0f)
         }
 
-        val originalViewConfiguration = LocalViewConfiguration.current
-        val viewConfiguration = object : ViewConfiguration {
-            override val doubleTapMinTimeMillis: Long
-                get() = originalViewConfiguration.doubleTapMinTimeMillis
-            override val doubleTapTimeoutMillis: Long
-                get() = 100L
-            override val longPressTimeoutMillis: Long
-                get() = originalViewConfiguration.longPressTimeoutMillis
-            override val touchSlop: Float
-                get() = originalViewConfiguration.touchSlop // set this to any value you want
 
-        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .onSizeChanged { size = it }
+                .zoomable(
+                    zoomState,
+                    onTap = { offset ->
+                        if (offset.x > size.width * 0.8) {
+                            onChangePage(1)
+                        } else if (offset.x < size.width * 0.2) {
+                            onChangePage(-1)
+                        }
+                    },
+                    onDoubleTap = { position ->
+                        val isBitmapPortrait = bitmap.height >= bitmap.width
+                        val isPortrait = size.height >= size.width
+                        val targetScale = when {
+                            isPortrait && isBitmapPortrait -> {
+                                if (zoomState.scale == 1f) 2.5f else 1f
+                            }
+                            else -> {
+                                when (zoomState.scale) {
+                                    1f -> baseScale
+                                    baseScale -> baseScale * 2.5f
+                                    else -> 1f
+                                }
+                            }
+                        }
 
-        CompositionLocalProvider(LocalViewConfiguration provides viewConfiguration) {
-            Box(
+                        zoomState.changeScale(targetScale, position)
+                    },
+                    zoomEnabled = brushSettings == null
+                )
+        ) {
+            AsyncImage(
+                model = imageModel,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+            InkCanvas(
+                family = brushSettings?.family,
+                size = brushSettings?.size ?: 4f,
+                color = brushSettings?.color ?: Color.Black,
+                strokeActionInferer = { _ -> StrokeAction.Update },
                 modifier = Modifier
                     .fillMaxSize()
-                    .onSizeChanged { size = it }
-                    .zoomable(
-                        zoomState,
-                        onTap = { offset ->
-                            if (offset.x > size.width * 0.8) {
-                                onChangePage(1)
-                            } else if (offset.x < size.width * 0.2) {
-                                onChangePage(-1)
-                            }
-                        },
-                        onDoubleTap = { position ->
-                            val isBitmapPortrait = bitmap.height >= bitmap.width
-                            val isPortrait = size.height >= size.width
-                            val targetScale = when {
-                                isPortrait && isBitmapPortrait -> {
-                                    if (zoomState.scale == 1f) 2.5f else 1f
-                                }
-                                else -> {
-                                    when (zoomState.scale) {
-                                        1f -> baseScale
-                                        baseScale -> baseScale * 2.5f
-                                        else -> 1f
-                                    }
-                                }
-                            }
-
-                            zoomState.changeScale(targetScale, position)
-                        },
-                        zoomEnabled = brushSettings == null
-                    )
-            ) {
-                AsyncImage(
-                    model = imageModel,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-                InkCanvas(
-                    family = brushSettings?.family,
-                    size = brushSettings?.size ?: 4f,
-                    color = brushSettings?.color ?: Color.Black,
-                    strokeActionInferer = { _ -> StrokeAction.Update },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clipToBounds()
-                        .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height),
-                    inProgressStrokesView = inProgressStrokesView,
-                    strokeAuthoringState = strokeAuthoringState
-                )
-            }
+                    .clipToBounds()
+                    .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height),
+                inProgressStrokesView = inProgressStrokesView,
+                strokeAuthoringState = strokeAuthoringState
+            )
         }
     }
 }
