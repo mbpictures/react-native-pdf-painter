@@ -7,9 +7,10 @@ import {
 } from 'react-native';
 import {
     type BrushSettings,
+    type Handle,
     PdfAnnotationView,
 } from 'react-native-pdf-annotation';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import { HighlighterIcon, PencilIcon, PenIcon } from 'lucide-react-native';
 
@@ -47,6 +48,7 @@ const compareSettings = (a?: BrushSettings, b?: BrushSettings) => {
 export default function App() {
     const [pdfFile, setPdfFile] = useState<string | null>(null);
     const [brush, setBrush] = useState<BrushSettings | undefined>(undefined);
+    const pdfViewer = useRef<Handle>(null);
 
     const handleSelectFile = async () => {
         try {
@@ -70,15 +72,29 @@ export default function App() {
         });
     };
 
+    const handleSaveAnnotations = () => {
+        if (!pdfFile) return;
+        pdfViewer.current?.saveAnnotations(pdfFile?.replace('.pdf', '.ant'));
+    };
+
     return (
         <View style={styles.container}>
-            <Button title={'Select PDF'} onPress={handleSelectFile} />
+            <View style={styles.topBar}>
+                <Button title={'Select PDF'} onPress={handleSelectFile} />
+                {pdfFile && (
+                    <Button
+                        title={'Save Annotations'}
+                        onPress={handleSaveAnnotations}
+                    />
+                )}
+            </View>
             {pdfFile && (
                 <>
                     <PdfAnnotationView
                         pdfUrl={pdfFile}
                         style={styles.box}
                         brushSettings={brush}
+                        ref={pdfViewer}
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
@@ -105,6 +121,9 @@ export default function App() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    topBar: {
+        flexDirection: 'row',
     },
     box: {
         flex: 1,
