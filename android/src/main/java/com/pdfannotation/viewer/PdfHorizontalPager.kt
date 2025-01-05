@@ -26,13 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
-import com.pdfannotation.serialization.Serializer
 import kotlinx.coroutines.launch
 
 @Composable
 fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val file by viewModel.pdfFile.collectAsState()
-    val annotationFile by viewModel.annotationFile.collectAsState()
     val brushSettings by viewModel.brushSettings.collectAsState()
     val hidePagination by viewModel.hidePagination.collectAsState()
 
@@ -41,16 +39,12 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
     val canScroll by remember { derivedStateOf { brushSettings == null } }
 
-    DisposableEffect (viewModel, annotationFile) {
-        annotationFile?.let {
-            viewModel.strokes.setStrokes(Serializer().loadStrokes(it))
-        }
+    DisposableEffect (viewModel) {
+        viewModel.loadAnnotations()
 
         onDispose {
-            annotationFile?.let {
-                if (viewModel.autoSave.value) {
-                    Serializer().storeStrokes(viewModel.strokes.strokes, it)
-                }
+            if (viewModel.autoSave.value) {
+                viewModel.saveAnnotations()
             }
         }
     }

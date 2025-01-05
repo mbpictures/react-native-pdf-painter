@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.ink.brush.StockBrushes
 import androidx.ink.strokes.MutableStrokeInputBatch
 import androidx.ink.strokes.Stroke
+import com.pdfannotation.serialization.Serializer
 import java.io.File
 
 data class BrushSettings(
@@ -29,6 +30,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     private val _brushSettings = MutableStateFlow<BrushSettings?>(null)
     private val _hidePagination = MutableStateFlow(false)
     private val _strokes = Strokes()
+    private val _serializer = Serializer()
 
 
     val backgroundColor: StateFlow<String> get() = _backgroundColor
@@ -77,6 +79,20 @@ class PdfHorizontalPagerViewModel : ViewModel() {
             else -> StockBrushes.markerLatest
         }
         return BrushSettings(settings.getDouble("size").toFloat(), Color(color), family)
+    }
+
+    fun saveAnnotations(path: String? = null) {
+        (path?.let {File(it)} ?: _annotationFile.value)?.let {
+            if (_autoSave.value) {
+                _serializer.storeStrokes(_strokes.strokes, it)
+            }
+        }
+    }
+
+    fun loadAnnotations(path: String? = null) {
+        (path?.let {File(it)} ?: _annotationFile.value)?.let {
+            _strokes.setStrokes(_serializer.loadStrokes(it))
+        }
     }
 }
 
