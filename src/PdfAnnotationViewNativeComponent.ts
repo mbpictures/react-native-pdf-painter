@@ -20,6 +20,7 @@ interface NativeProps extends ViewProps {
     annotationFile?: string;
     autoSave?: boolean;
     brushSettings?: BrushSettings;
+    hidePagination?: boolean;
 }
 
 export default codegenNativeComponent<NativeProps>('PdfAnnotationView');

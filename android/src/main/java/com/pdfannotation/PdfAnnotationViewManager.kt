@@ -56,4 +56,8 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
   override fun setBrushSettings(view: PdfAnnotationView?, value: ReadableMap?) {
     view?.viewModel?.updateBrushSettings(value)
   }
+
+  override fun setHidePagination(view: PdfAnnotationView?, value: Boolean) {
+    view?.viewModel?.updateHidePagination(value)
+  }
 }

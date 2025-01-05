@@ -33,6 +33,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val file by viewModel.pdfFile.collectAsState()
     val annotationFile by viewModel.annotationFile.collectAsState()
     val brushSettings by viewModel.brushSettings.collectAsState()
+    val hidePagination by viewModel.hidePagination.collectAsState()
 
     val scope = rememberCoroutineScope()
     val renderer = remember(file) { file?.let {PdfRender(it, 3f) }}
@@ -78,11 +79,13 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
                 }
             )
         }
-        PagerIndicator(
-            pageCount = pagerState.pageCount,
-            currentPageIndex = pagerState.currentPage,
-            onNavigate = { page -> scope.launch { pagerState.animateScrollToPage(page) } },
-        )
+        if (!hidePagination) {
+            PagerIndicator(
+                pageCount = pagerState.pageCount,
+                currentPageIndex = pagerState.currentPage,
+                onNavigate = { page -> scope.launch { pagerState.animateScrollToPage(page) } },
+            )
+        }
     }
 }
 

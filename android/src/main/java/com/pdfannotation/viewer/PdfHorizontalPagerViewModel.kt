@@ -23,6 +23,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     private val _annotationFile = MutableStateFlow<File?>(null)
     private val _autoSave = MutableStateFlow(true)
     private val _brushSettings = MutableStateFlow<BrushSettings?>(null)
+    private val _hidePagination = MutableStateFlow(false)
 
 
     val backgroundColor: StateFlow<String> get() = _backgroundColor
@@ -31,6 +32,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     val annotationFile: StateFlow<File?> get() = _annotationFile
     val autoSave: StateFlow<Boolean> get() = _autoSave
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
+    val hidePagination: StateFlow<Boolean> get() = _hidePagination
 
     fun updateBackgroundColor(newColor: String) {
         _backgroundColor.value = newColor
@@ -54,6 +56,10 @@ class PdfHorizontalPagerViewModel : ViewModel() {
 
     fun updateBrushSettings(newBrushSettings: ReadableMap?) {
         _brushSettings.value = newBrushSettings?.let { makeBrushSettings(it) }
+    }
+
+    fun updateHidePagination(newPagination: Boolean) {
+        _hidePagination.value = newPagination
     }
 
     private fun makeBrushSettings(settings: ReadableMap): BrushSettings {
