@@ -29,7 +29,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     private val _autoSave = MutableStateFlow(true)
     private val _brushSettings = MutableStateFlow<BrushSettings?>(null)
     private val _hidePagination = MutableStateFlow(false)
-    private val _strokes = Strokes()
+    private val _strokes = MutableStateFlow(Strokes())
     private val _serializer = Serializer()
 
 
@@ -40,7 +40,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     val autoSave: StateFlow<Boolean> get() = _autoSave
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
     val hidePagination: StateFlow<Boolean> get() = _hidePagination
-    val strokes: Strokes get() = _strokes
+    val strokes: StateFlow<Strokes> get() = _strokes
 
     fun updateBackgroundColor(newColor: String) {
         _backgroundColor.value = newColor
@@ -48,6 +48,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
 
     fun updatePdfFile(newPdf: String?) {
         _pdfFile.value = constructFile(newPdf)
+        _strokes.value = Strokes()
     }
 
     fun updateThumbnailMode(newMode: Boolean) {
@@ -56,6 +57,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
 
     fun updateAnnotationFile(newAnnotationFile: String?) {
         _annotationFile.value = constructFile(newAnnotationFile)
+        _strokes.value = Strokes()
     }
 
     fun updateAutoSave(newAutoSave: Boolean) {
@@ -84,14 +86,14 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     fun saveAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
             if (_autoSave.value) {
-                _serializer.storeStrokes(_strokes.strokes, it)
+                _serializer.storeStrokes(_strokes.value.strokes, it)
             }
         }
     }
 
     fun loadAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
-            _strokes.setStrokes(_serializer.loadStrokes(it))
+            _strokes.value.setStrokes(_serializer.loadStrokes(it))
         }
     }
 

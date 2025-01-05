@@ -33,6 +33,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val file by viewModel.pdfFile.collectAsState()
     val brushSettings by viewModel.brushSettings.collectAsState()
     val hidePagination by viewModel.hidePagination.collectAsState()
+    val strokes by viewModel.strokes.collectAsState()
 
     val scope = rememberCoroutineScope()
     val renderer = remember(file) { file?.let {PdfRender(it, 3f) }}
@@ -66,7 +67,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
             PdfPage(
                 page = renderer?.let { it.pageLists[page] },
                 brushSettings = brushSettings,
-                viewModel = viewModel.strokes,
+                viewModel = strokes,
                 onChangePage = { pageDelta ->
                     scope.launch {
                         pagerState.animateScrollToPage(pagerState.targetPage + pageDelta)

@@ -71,7 +71,7 @@ fun PdfPage(
         }
 
         // Restore strokes from ViewModel
-        LaunchedEffect(page, size) {
+        LaunchedEffect(viewModel, page, size) {
             strokeAuthoringState.finishedStrokes.value = viewModel.getStrokes(
                 page.index,
                 calculateChildSize(size.toSize(), Size(bitmap.width.toFloat(), bitmap.height.toFloat()))
