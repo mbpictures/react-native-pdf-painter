@@ -5,11 +5,11 @@ import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.ui.platform.ComposeView
-import com.pdfannotation.viewer.PdfHorizontalPager
-import com.pdfannotation.viewer.PdfHorizontalPagerViewModel
+import com.pdfannotation.viewer.PdfAnnotationViewModel
+import com.pdfannotation.viewer.PdfAnnotationViewer
 
 class PdfAnnotationView : LinearLayout {
-  internal lateinit var viewModel: PdfHorizontalPagerViewModel
+  internal lateinit var viewModel: PdfAnnotationViewModel
 
   constructor(context: Context) : super(context) {
     configureComponent(context)
@@ -31,7 +31,7 @@ class PdfAnnotationView : LinearLayout {
       LayoutParams.WRAP_CONTENT
     )
 
-    viewModel = PdfHorizontalPagerViewModel()
+    viewModel = PdfAnnotationViewModel()
     ComposeView(context).also {
       it.layoutParams = LayoutParams(
         LayoutParams.WRAP_CONTENT,
@@ -39,7 +39,7 @@ class PdfAnnotationView : LinearLayout {
       )
 
       it.setContent {
-        PdfHorizontalPager(viewModel)
+        PdfAnnotationViewer(viewModel)
       }
 
       addView(it)

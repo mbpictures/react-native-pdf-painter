@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
 @Composable
-fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
+fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     val file by viewModel.pdfFile.collectAsState()
     val brushSettings by viewModel.brushSettings.collectAsState()
     val hidePagination by viewModel.hidePagination.collectAsState()

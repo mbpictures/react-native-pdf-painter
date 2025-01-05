@@ -21,7 +21,7 @@ data class BrushSettings(
     val family: BrushFamily
 )
 
-class PdfHorizontalPagerViewModel : ViewModel() {
+class PdfAnnotationViewModel : ViewModel() {
     private val _backgroundColor = MutableStateFlow("#FFFFFF")
     private val _pdfFile = MutableStateFlow<File?>(null)
     private val _thumbnailMode = MutableStateFlow(false)
