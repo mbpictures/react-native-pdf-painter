@@ -157,6 +157,8 @@ const styles = StyleSheet.create({
     },
     topBar: {
         flexDirection: 'row',
+        padding: 6,
+        justifyContent: 'space-between',
     },
     box: {
         flex: 1,
