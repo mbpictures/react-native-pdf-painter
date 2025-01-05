@@ -39,18 +39,17 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val scope = rememberCoroutineScope()
     val renderer = remember(file) { file?.let {PdfRender(it, 3f) }}
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
-    val sharedViewModel = remember(file) { SharedPdfPageViewModel() }
     val canScroll by remember { derivedStateOf { brushSettings == null } }
 
-    DisposableEffect (sharedViewModel, annotationFile) {
+    DisposableEffect (viewModel, annotationFile) {
         annotationFile?.let {
-            sharedViewModel.setStrokes(Serializer().loadStrokes(it))
+            viewModel.strokes.setStrokes(Serializer().loadStrokes(it))
         }
 
         onDispose {
             annotationFile?.let {
                 if (viewModel.autoSave.value) {
-                    Serializer().storeStrokes(sharedViewModel.strokes, it)
+                    Serializer().storeStrokes(viewModel.strokes.strokes, it)
                 }
             }
         }
@@ -73,7 +72,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
             PdfPage(
                 page = renderer?.let { it.pageLists[page] },
                 brushSettings = brushSettings,
-                viewModel = sharedViewModel,
+                viewModel = viewModel.strokes,
                 onChangePage = { pageDelta ->
                     scope.launch {
                         pagerState.animateScrollToPage(pagerState.targetPage + pageDelta)
