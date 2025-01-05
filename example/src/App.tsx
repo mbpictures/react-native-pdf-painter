@@ -4,6 +4,7 @@ import {
     Alert,
     Button,
     TouchableHighlight,
+    Text,
 } from 'react-native';
 import {
     type BrushSettings,
@@ -12,7 +13,13 @@ import {
 } from 'react-native-pdf-annotation';
 import { type ReactNode, useRef, useState } from 'react';
 import DocumentPicker, { types } from 'react-native-document-picker';
-import { HighlighterIcon, PencilIcon, PenIcon } from 'lucide-react-native';
+import {
+    CheckIcon,
+    HighlighterIcon,
+    PencilIcon,
+    PenIcon,
+    XIcon,
+} from 'lucide-react-native';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
     {
@@ -60,6 +67,7 @@ const getAnnotationsPath = (file: string | null) => {
 export default function App() {
     const [pdfFile, setPdfFile] = useState<string | null>(null);
     const [brush, setBrush] = useState<BrushSettings | undefined>(undefined);
+    const [thumbnail, setThumbnail] = useState(false);
     const pdfViewer = useRef<Handle>(null);
     const annotationFile = getAnnotationsPath(pdfFile);
 
@@ -95,10 +103,20 @@ export default function App() {
             <View style={styles.topBar}>
                 <Button title={'Select PDF'} onPress={handleSelectFile} />
                 {pdfFile && (
-                    <Button
-                        title={'Save Annotations'}
-                        onPress={handleSaveAnnotations}
-                    />
+                    <>
+                        <Button
+                            title={'Save Annotations'}
+                            onPress={handleSaveAnnotations}
+                        />
+                        <TouchableHighlight
+                            onPress={() => setThumbnail((o) => !o)}
+                        >
+                            <View style={styles.thumbnailButton}>
+                                <Text>Thumbnail: </Text>
+                                {thumbnail ? <CheckIcon /> : <XIcon />}
+                            </View>
+                        </TouchableHighlight>
+                    </>
                 )}
             </View>
             {pdfFile && (
@@ -109,6 +127,7 @@ export default function App() {
                         style={styles.box}
                         brushSettings={brush}
                         ref={pdfViewer}
+                        thumbnailMode={thumbnail}
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
@@ -154,6 +173,12 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.39,
         shadowRadius: 4,
         elevation: 13,
+    },
+    thumbnailButton: {
+        padding: 6,
+        flexDirection: 'row',
+        gap: 2,
+        backgroundColor: 'lightgray',
     },
     toolbarItem: {
         margin: 6,
