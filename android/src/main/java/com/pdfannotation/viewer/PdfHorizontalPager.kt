@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +40,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val renderer = remember(file) { file?.let {PdfRender(it, 3f) }}
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
     val sharedViewModel = remember(file) { SharedPdfPageViewModel() }
+    val canScroll by remember { derivedStateOf { brushSettings == null } }
 
     DisposableEffect (sharedViewModel, annotationFile) {
         annotationFile?.let {
@@ -66,7 +68,7 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clipToBounds(),
-            userScrollEnabled = brushSettings == null
+            userScrollEnabled = canScroll
         ) { page ->
             PdfPage(
                 page = renderer?.let { it.pageLists[page] },
