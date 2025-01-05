@@ -7,15 +7,17 @@ import androidx.ink.strokes.MutableStrokeInputBatch
 import androidx.ink.strokes.Stroke
 import androidx.ink.strokes.StrokeInput
 import androidx.ink.strokes.StrokeInputBatch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.lang.reflect.Type
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
 class Serializer {
+    private val gson = Gson()
 
     companion object {
         private val stockBrushToEnumValues =
@@ -125,7 +127,7 @@ class Serializer {
             brushColor = serializedBrush.color,
             brushEpsilon = serializedBrush.epsilon,
             stockBrush = serializedBrush.stockBrush,
-            strokeInputs = Json.encodeToString(serializedInputs),
+            strokeInputs = gson.toJson(serializedInputs),
         )
     }
 
@@ -142,7 +144,7 @@ class Serializer {
             return Stroke(brush = brush, inputs = MutableStrokeInputBatch())
         }
 
-        val serializedInputs = Json.decodeFromString<SerializedStrokeInputBatch>(entity.strokeInputs)
+        val serializedInputs = gson.fromJson(entity.strokeInputs, SerializedStrokeInputBatch::class.java)
 
         val inputs = deserializeStrokeInputBatch(serializedInputs)
 
@@ -151,11 +153,11 @@ class Serializer {
 
     fun brushToString(brush: Brush): String {
         val serializedBrush = serializeBrush(brush)
-        return Json.encodeToString(serializedBrush)
+        return gson.toJson(serializedBrush)
     }
 
     fun stringToBrush(jsonString: String): Brush {
-        val serializedBrush = Json.decodeFromString<SerializedBrush>(jsonString)
+        val serializedBrush = gson.fromJson(jsonString, SerializedBrush::class.java)
         return deserializeBrush(serializedBrush)
     }
 
@@ -170,13 +172,14 @@ class Serializer {
     }
 
     fun serializeStrokes(strokes: Map<Int, Set<Stroke>>): ByteArray {
-        return compress(Json.encodeToString(
+        return compress(gson.toJson(
             strokes.mapValues { it.value.map {stroke -> serializeStrokeToEntity(stroke) } }
         ))
     }
 
     fun deserializeStrokes(jsonString: String): Map<Int, Set<Stroke>> {
-        val strokes = Json.decodeFromString<Map<Int, Set<StrokeEntity>>>(jsonString)
+        val type: Type = object : TypeToken<Map<Int, Set<StrokeEntity>>>() {}.type
+        val strokes = gson.fromJson<Map<Int, Set<StrokeEntity>>>(jsonString, type)
         return strokes.mapValues { it.value.map { stroke -> deserializeEntityToStroke(stroke) }.toSet() }
     }
 

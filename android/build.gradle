@@ -125,7 +125,6 @@ dependencies {
   implementation("androidx.compose.runtime:runtime:1.7.6")
   implementation("net.engawapg.lib:zoomable:1.6.2")
   implementation("io.coil-kt.coil3:coil-compose:3.0.4")
-  implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
   implementation("androidx.ink:ink-authoring:1.0.0-alpha02")
   implementation("androidx.ink:ink-brush:1.0.0-alpha02")
@@ -134,6 +133,7 @@ dependencies {
   implementation("androidx.ink:ink-rendering:1.0.0-alpha02")
   implementation("androidx.ink:ink-strokes:1.0.0-alpha02")
   implementation("androidx.input:input-motionprediction:1.0.0-beta05")
+  implementation("com.google.code.gson:gson:2.10.1")
 }
 
 if (isNewArchitectureEnabled()) {
