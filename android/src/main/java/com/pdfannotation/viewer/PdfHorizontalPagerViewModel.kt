@@ -49,6 +49,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     fun updatePdfFile(newPdf: String?) {
         _pdfFile.value = constructFile(newPdf)
         _strokes.value = Strokes()
+        loadAnnotations()
     }
 
     fun updateThumbnailMode(newMode: Boolean) {
