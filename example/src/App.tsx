@@ -45,16 +45,29 @@ const compareSettings = (a?: BrushSettings, b?: BrushSettings) => {
     return a?.type === b?.type && a?.size === b?.size && a?.color === b?.color;
 };
 
+const getAnnotationsPath = (file: string | null) => {
+    if (!file) return null;
+    const filename = file
+        .substring(file.lastIndexOf('/') + 1, file.length)
+        .replace('.pdf', '.ant');
+    const folder = file.substring(
+        0,
+        file.substring(0, file.lastIndexOf('/')).lastIndexOf('/')
+    );
+    return folder + '/' + filename;
+};
+
 export default function App() {
     const [pdfFile, setPdfFile] = useState<string | null>(null);
     const [brush, setBrush] = useState<BrushSettings | undefined>(undefined);
     const pdfViewer = useRef<Handle>(null);
+    const annotationFile = getAnnotationsPath(pdfFile);
 
     const handleSelectFile = async () => {
         try {
             const response = await DocumentPicker.pickSingle({
                 type: types.pdf,
-                copyTo: 'cachesDirectory',
+                copyTo: 'documentDirectory',
             });
             setPdfFile(response.fileCopyUri);
         } catch (e) {
@@ -73,8 +86,8 @@ export default function App() {
     };
 
     const handleSaveAnnotations = () => {
-        if (!pdfFile) return;
-        pdfViewer.current?.saveAnnotations(pdfFile?.replace('.pdf', '.ant'));
+        if (!annotationFile) return;
+        pdfViewer.current?.saveAnnotations(annotationFile);
     };
 
     return (
@@ -92,6 +105,7 @@ export default function App() {
                 <>
                     <PdfAnnotationView
                         pdfUrl={pdfFile}
+                        annotationFile={annotationFile ?? undefined}
                         style={styles.box}
                         brushSettings={brush}
                         ref={pdfViewer}
