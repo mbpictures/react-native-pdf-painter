@@ -185,6 +185,9 @@ class Serializer {
 
     fun storeStrokes(strokes: Map<Int, Set<Stroke>>, file: File) {
         val serializedStrokes = serializeStrokes(strokes)
+        if (file.parentFile?.exists() == false) {
+            file.parentFile?.mkdirs()
+        }
         file.writeBytes(serializedStrokes)
     }
 
