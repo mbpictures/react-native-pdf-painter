@@ -47,7 +47,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     }
 
     fun updatePdfFile(newPdf: String?) {
-        _pdfFile.value = newPdf?.let { File(it.replace("file://", "")) }
+        _pdfFile.value = constructFile(newPdf)
     }
 
     fun updateThumbnailMode(newMode: Boolean) {
@@ -55,7 +55,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     }
 
     fun updateAnnotationFile(newAnnotationFile: String?) {
-        _annotationFile.value = newAnnotationFile?.let { File(it.replace("file://", "")) }
+        _annotationFile.value = constructFile(newAnnotationFile)
     }
 
     fun updateAutoSave(newAutoSave: Boolean) {
@@ -82,7 +82,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     }
 
     fun saveAnnotations(path: String? = null) {
-        (path?.let {File(it)} ?: _annotationFile.value)?.let {
+        (constructFile(path) ?: annotationFile.value)?.let {
             if (_autoSave.value) {
                 _serializer.storeStrokes(_strokes.strokes, it)
             }
@@ -90,9 +90,13 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     }
 
     fun loadAnnotations(path: String? = null) {
-        (path?.let {File(it)} ?: _annotationFile.value)?.let {
+        (constructFile(path) ?: annotationFile.value)?.let {
             _strokes.setStrokes(_serializer.loadStrokes(it))
         }
+    }
+
+    private fun constructFile(path: String?): File? {
+        return path?.let {File(it.replace("file://", ""))}
     }
 }
 
