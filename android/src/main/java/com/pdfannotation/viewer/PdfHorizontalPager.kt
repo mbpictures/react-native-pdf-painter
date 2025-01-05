@@ -41,8 +41,6 @@ fun PdfHorizontalPager(viewModel: PdfHorizontalPagerViewModel) {
     val canScroll by remember { derivedStateOf { brushSettings == null } }
 
     DisposableEffect (viewModel) {
-        viewModel.loadAnnotations()
-
         onDispose {
             if (viewModel.autoSave.value) {
                 viewModel.saveAnnotations()

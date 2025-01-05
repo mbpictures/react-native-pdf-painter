@@ -58,6 +58,7 @@ class PdfHorizontalPagerViewModel : ViewModel() {
     fun updateAnnotationFile(newAnnotationFile: String?) {
         _annotationFile.value = constructFile(newAnnotationFile)
         _strokes.value = Strokes()
+        loadAnnotations(newAnnotationFile)
     }
 
     fun updateAutoSave(newAutoSave: Boolean) {
