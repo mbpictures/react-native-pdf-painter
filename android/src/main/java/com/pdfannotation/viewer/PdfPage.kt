@@ -131,9 +131,7 @@ fun PdfPage(
                 contentScale = ContentScale.Fit
             )
             InkCanvas(
-                family = brushSettings?.family,
-                size = brushSettings?.size ?: 4f,
-                color = brushSettings?.color ?: Color.Black,
+                brushSettings = brushSettings,
                 strokeActionInferer = { _ -> StrokeAction.Update },
                 modifier = Modifier
                     .fillMaxSize()

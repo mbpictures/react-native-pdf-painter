@@ -10,31 +10,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.ink.authoring.InProgressStrokesView
-import androidx.ink.brush.BrushFamily
 import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
+import com.pdfannotation.viewer.BrushSettings
 
 
 @Composable
 @SuppressLint("ClickableViewAccessibility")
 fun InkCanvas(
-    family: BrushFamily?,
-    size: Float,
-    color: Color,
+    brushSettings: BrushSettings?,
     strokeActionInferer: StrokeActionInferer,
     modifier: Modifier = Modifier,
     inProgressStrokesView: InProgressStrokesView = rememberInProgressStrokesView(),
     strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView),
-    strokeAuthoringTouchListener: StrokeAuthoringTouchListener? = family?.let {
+    strokeAuthoringTouchListener: StrokeAuthoringTouchListener? = brushSettings?.let {
         rememberStrokeAuthoringTouchListener(
             strokeAuthoringState = strokeAuthoringState,
-            family = family,
-            color = color,
-            size = size,
+            family = it.family,
+            color = it.color,
+            size = it.size,
             strokeActionInferer = strokeActionInferer,
         )
     }
