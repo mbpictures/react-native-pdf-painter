@@ -1,9 +1,11 @@
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type { ViewProps } from 'react-native';
+import type { HostComponent, ViewProps } from 'react-native';
 import type {
     Float,
     WithDefault,
 } from 'react-native/Libraries/Types/CodegenTypes';
+import React from 'react';
+import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 
 export type BrushType = 'marker' | 'pressure-pen' | 'highlighter';
 
@@ -13,7 +15,7 @@ export interface BrushSettings {
     size: Float;
 }
 
-interface NativeProps extends ViewProps {
+export interface NativeProps extends ViewProps {
     backgroundColor?: string;
     pdfUrl?: string;
     thumbnailMode?: boolean;
@@ -23,4 +25,23 @@ interface NativeProps extends ViewProps {
     hidePagination?: boolean;
 }
 
-export default codegenNativeComponent<NativeProps>('PdfAnnotationView');
+type ComponentType = HostComponent<NativeProps>;
+
+export default codegenNativeComponent<NativeProps>(
+    'PdfAnnotationView'
+) as ComponentType;
+
+interface NativeCommands {
+    saveAnnotations: (
+        viewRef: React.ElementRef<ComponentType>,
+        path: string
+    ) => void;
+    loadAnnotations: (
+        viewRef: React.ElementRef<ComponentType>,
+        path: string
+    ) => void;
+}
+
+export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
+    supportedCommands: ['saveAnnotations', 'loadAnnotations'],
+});
