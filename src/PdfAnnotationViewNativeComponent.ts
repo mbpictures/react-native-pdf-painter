@@ -23,6 +23,7 @@ export interface NativeProps extends ViewProps {
     autoSave?: boolean;
     brushSettings?: BrushSettings;
     hidePagination?: boolean;
+    iosToolPickerVisible?: boolean;
 }
 
 type ComponentType = HostComponent<NativeProps>;
