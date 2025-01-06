@@ -1,5 +1,8 @@
 #import <React/RCTViewComponentView.h>
 #import <UIKit/UIKit.h>
+#import <PDFKit/PDFKit.h>
+#import "PencilKitCoordinator.h"
+#import "MyPDFDocument.h"
 
 #ifndef PdfAnnotationViewNativeComponent_h
 #define PdfAnnotationViewNativeComponent_h

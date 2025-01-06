@@ -14,7 +14,8 @@ using namespace facebook::react;
 @end
 
 @implementation PdfAnnotationView {
-    UIView * _view;
+    PDFView * _view;
+    PencilKitCoordinator * _pencilKitCoordinator;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -28,7 +29,13 @@ using namespace facebook::react;
     static const auto defaultProps = std::make_shared<const PdfAnnotationViewProps>();
     _props = defaultProps;
 
-    _view = [[UIView alloc] init];
+      _view = [[PDFView alloc] initWithFrame:frame];
+      _view.displayMode = kPDFDisplaySinglePage;
+      _view.displayDirection = kPDFDisplayDirectionHorizontal;
+      _view.autoScales = true;
+      _pencilKitCoordinator = [[PencilKitCoordinator alloc] init];
+      _view.pageOverlayViewProvider = _pencilKitCoordinator;
+      [_view usePageViewController:true withViewOptions:NULL];
 
     self.contentView = _view;
   }
@@ -41,9 +48,14 @@ using namespace facebook::react;
     const auto &oldViewProps = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
     const auto &newViewProps = *std::static_pointer_cast<PdfAnnotationViewProps const>(props);
 
-    if (oldViewProps.color != newViewProps.color) {
-        NSString * colorToConvert = [[NSString alloc] initWithUTF8String: newViewProps.color.c_str()];
-        [_view setBackgroundColor:[self hexStringToColor:colorToConvert]];
+    if (oldViewProps.pdfUrl != newViewProps.pdfUrl) {
+        NSString * pdfUrl = [[NSString alloc] initWithUTF8String: newViewProps.pdfUrl.c_str()];
+        NSURL* url = [NSURL URLWithString:pdfUrl];
+        _view.document = [[MyPDFDocument alloc] initWithURL:url];
+    }
+    if (oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) {
+        [_view setInMarkupMode:newViewProps.brushSettings.type != PdfAnnotationViewType::None];
+        [_pencilKitCoordinator setDrawingTool:_view.currentPage brushSettings:newViewProps.brushSettings];
     }
 
     [super updateProps:props oldProps:oldProps];
