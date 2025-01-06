@@ -57,6 +57,10 @@ using namespace facebook::react;
         [_view setInMarkupMode:newViewProps.brushSettings.type != PdfAnnotationViewType::None];
         [_pencilKitCoordinator setDrawingTool:_view.currentPage brushSettings:newViewProps.brushSettings];
     }
+    if (oldViewProps.iosToolPickerVisible != newViewProps.iosToolPickerVisible) {
+        [_view setInMarkupMode:newViewProps.iosToolPickerVisible];
+        [_pencilKitCoordinator setToolPickerVisible:_view.currentPage isVisible:newViewProps.iosToolPickerVisible];
+    }
 
     [super updateProps:props oldProps:oldProps];
 }

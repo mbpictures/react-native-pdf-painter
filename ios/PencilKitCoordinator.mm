@@ -29,15 +29,12 @@
         PKCanvasView *canvasView = [[PKCanvasView alloc] initWithFrame:CGRectZero];
         canvasView.drawingPolicy = PKCanvasViewDrawingPolicyAnyInput;
         
-        //MyPDFKitToolPickerModel *model = [MyPDFKitToolPickerModel sharedInstance];
         canvasView.backgroundColor = [UIColor clearColor];
         self.pageToViewMapping[page.label] = canvasView;
         resultView = canvasView;
-        //[model.toolPicker setVisible:true forFirstResponder:canvasView];
         [canvasView becomeFirstResponder];
-        //[model.toolPicker addObserver:canvasView];
     }
-
+    
     // If there is an existing drawing, apply it to the canvas
     MyPDFPage *myPDFPage = (MyPDFPage *)page;
     if (myPDFPage.drawing) {
@@ -78,6 +75,17 @@
     // Set the tool to the canvas
     PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
     canvasView.tool = inkingTool;
+}
+
+- (void)setToolPickerVisible:(PDFPage *)pdfPage isVisible:(bool)visible {
+    MyPDFKitToolPickerModel *model = [MyPDFKitToolPickerModel sharedInstance];
+    PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
+    [model.toolPicker setVisible:visible forFirstResponder:canvasView];
+    if (visible) {
+        [model.toolPicker addObserver:canvasView];
+    } else {
+        [model.toolPicker removeObserver:canvasView];
+    }
 }
 
 // Helper method to convert a color string (hex with optional alpha) to UIColor
