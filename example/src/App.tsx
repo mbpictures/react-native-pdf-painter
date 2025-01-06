@@ -5,6 +5,7 @@ import {
     Button,
     TouchableHighlight,
     Text,
+    SafeAreaView,
 } from 'react-native';
 import {
     type BrushSettings,
@@ -99,7 +100,7 @@ export default function App() {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.topBar}>
                 <Button title={'Select PDF'} onPress={handleSelectFile} />
                 {pdfFile && (
@@ -147,7 +148,7 @@ export default function App() {
                     </View>
                 </>
             )}
-        </View>
+        </SafeAreaView>
     );
 }
 
