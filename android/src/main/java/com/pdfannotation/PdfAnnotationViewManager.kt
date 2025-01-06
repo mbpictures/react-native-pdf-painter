@@ -68,4 +68,8 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
   override fun loadAnnotations(view: PdfAnnotationView?, path: String?) {
     view?.viewModel?.loadAnnotations(path)
   }
+
+  override fun setIosToolPickerVisible(view: PdfAnnotationView?, value: Boolean) {
+    // NOOP, iOS only
+  }
 }
