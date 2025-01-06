@@ -6,6 +6,7 @@ import {
     TouchableHighlight,
     Text,
     SafeAreaView,
+    Platform,
 } from 'react-native';
 import {
     type BrushSettings,
@@ -20,6 +21,7 @@ import {
     PencilIcon,
     PenIcon,
     XIcon,
+    PaletteIcon,
 } from 'lucide-react-native';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
@@ -69,6 +71,7 @@ export default function App() {
     const [pdfFile, setPdfFile] = useState<string | null>(null);
     const [brush, setBrush] = useState<BrushSettings | undefined>(undefined);
     const [thumbnail, setThumbnail] = useState(false);
+    const [iosToolbar, setIosToolbar] = useState(false);
     const pdfViewer = useRef<Handle>(null);
     const annotationFile = getAnnotationsPath(pdfFile);
 
@@ -129,6 +132,7 @@ export default function App() {
                         brushSettings={brush}
                         ref={pdfViewer}
                         thumbnailMode={thumbnail}
+                        iosToolPickerVisible={iosToolbar}
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
@@ -145,6 +149,18 @@ export default function App() {
                                 {config.icon}
                             </TouchableHighlight>
                         ))}
+                        {Platform.OS === 'ios' && (
+                            <TouchableHighlight
+                                underlayColor={'#ffe9d2'}
+                                style={[
+                                    styles.toolbarItem,
+                                    iosToolbar && styles.toolbarItemActive,
+                                ]}
+                                onPress={() => setIosToolbar((o) => !o)}
+                            >
+                                <PaletteIcon />
+                            </TouchableHighlight>
+                        )}
                     </View>
                 </>
             )}
