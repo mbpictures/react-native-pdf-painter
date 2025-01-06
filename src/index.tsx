@@ -3,6 +3,7 @@ import NativePdfAnnotationView, {
     type NativeProps,
 } from './PdfAnnotationViewNativeComponent';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { Platform } from 'react-native';
 export * from './PdfAnnotationViewNativeComponent';
 
 type ComponentRef = InstanceType<typeof NativePdfAnnotationView>;
@@ -13,7 +14,7 @@ export interface Handle {
 }
 
 export const PdfAnnotationView = forwardRef<Handle, NativeProps>(
-    (props, ref) => {
+    ({ brushSettings, ...props }, ref) => {
         const nativeRef = useRef<ComponentRef>(null);
 
         useImperativeHandle(ref, () => ({
@@ -31,6 +32,19 @@ export const PdfAnnotationView = forwardRef<Handle, NativeProps>(
             },
         }));
 
-        return <NativePdfAnnotationView {...props} ref={nativeRef} />;
+        return (
+            <NativePdfAnnotationView
+                {...props}
+                ref={nativeRef}
+                brushSettings={Platform.select({
+                    ios: brushSettings ?? {
+                        type: 'none',
+                        color: '#000000',
+                        size: 0,
+                    },
+                    default: brushSettings,
+                })}
+            />
+        );
     }
 );
