@@ -34,7 +34,9 @@ using namespace facebook::react;
       _view.displayDirection = kPDFDisplayDirectionHorizontal;
       _view.autoScales = true;
       _pencilKitCoordinator = [[PencilKitCoordinator alloc] init];
-      _view.pageOverlayViewProvider = _pencilKitCoordinator;
+      if (@available(iOS 16.0, *)) {
+          _view.pageOverlayViewProvider = _pencilKitCoordinator;
+      }
       [_view usePageViewController:true withViewOptions:NULL];
 
     self.contentView = _view;
@@ -54,11 +56,15 @@ using namespace facebook::react;
         _view.document = [[MyPDFDocument alloc] initWithURL:url];
     }
     if (oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) {
-        [_view setInMarkupMode:newViewProps.brushSettings.type != PdfAnnotationViewType::None];
+        if (@available(iOS 16.0, *)) {
+            [_view setInMarkupMode:newViewProps.brushSettings.type != PdfAnnotationViewType::None];
+        }
         [_pencilKitCoordinator setDrawingTool:_view.currentPage brushSettings:newViewProps.brushSettings];
     }
     if (oldViewProps.iosToolPickerVisible != newViewProps.iosToolPickerVisible) {
-        [_view setInMarkupMode:newViewProps.iosToolPickerVisible];
+        if (@available(iOS 16.0, *)) {
+            [_view setInMarkupMode:newViewProps.iosToolPickerVisible];
+        }
         [_pencilKitCoordinator setToolPickerVisible:_view.currentPage isVisible:newViewProps.iosToolPickerVisible];
     }
     if (oldViewProps.annotationFile != newViewProps.annotationFile) {
