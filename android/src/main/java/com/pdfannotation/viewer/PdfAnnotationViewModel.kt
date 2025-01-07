@@ -22,7 +22,7 @@ data class BrushSettings(
 )
 
 class PdfAnnotationViewModel : ViewModel() {
-    private val _backgroundColor = MutableStateFlow("#FFFFFF")
+    private val _backgroundColor = MutableStateFlow<Int?>(null)
     private val _pdfFile = MutableStateFlow<File?>(null)
     private val _thumbnailMode = MutableStateFlow(false)
     private val _annotationFile = MutableStateFlow<File?>(null)
@@ -33,7 +33,7 @@ class PdfAnnotationViewModel : ViewModel() {
     private val _serializer = Serializer()
 
 
-    val backgroundColor: StateFlow<String> get() = _backgroundColor
+    val backgroundColor: StateFlow<Int?> get() = _backgroundColor
     val pdfFile: StateFlow<File?> get() = _pdfFile
     val thumbnailMode: StateFlow<Boolean> get() = _thumbnailMode
     val annotationFile: StateFlow<File?> get() = _annotationFile
@@ -42,8 +42,8 @@ class PdfAnnotationViewModel : ViewModel() {
     val hidePagination: StateFlow<Boolean> get() = _hidePagination
     val strokes: StateFlow<Strokes> get() = _strokes
 
-    fun updateBackgroundColor(newColor: String) {
-        _backgroundColor.value = newColor
+    fun updateBackgroundColor(newColor: String?) {
+        _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
     }
 
     fun updatePdfFile(newPdf: String?) {

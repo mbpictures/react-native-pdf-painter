@@ -15,7 +15,8 @@ import coil3.request.ImageRequest
 @Composable
 fun PdfThumbnail(viewModel: PdfAnnotationViewModel) {
     val file by viewModel.pdfFile.collectAsState()
-    val renderer = remember(file) { file?.let {PdfRender(it) }}
+    val backgroundColor by viewModel.backgroundColor.collectAsState()
+    val renderer = remember(file, backgroundColor) { file?.let {PdfRender(it, backgroundColor = backgroundColor) }}
 
     renderer?.pageLists?.getOrNull(0)?.let { page ->
         DisposableEffect(key1 = page.hash) {

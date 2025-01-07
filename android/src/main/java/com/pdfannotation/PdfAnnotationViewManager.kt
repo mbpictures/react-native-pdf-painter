@@ -34,7 +34,7 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
   }
 
   override fun setBackgroundColor(view: PdfAnnotationView?, value: String?) {
-    view?.viewModel?.updateBackgroundColor(value ?: "#FFFFFF")
+    view?.viewModel?.updateBackgroundColor(value)
   }
 
   override fun setPdfUrl(view: PdfAnnotationView?, value: String?) {

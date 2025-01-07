@@ -2,6 +2,7 @@ package com.pdfannotation.viewer
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +17,8 @@ import java.io.File
 
 class PdfRender(
     file: File,
-    private val scale: Float = 1f
+    private val scale: Float = 1f,
+    private val backgroundColor: Int?,
 ) {
     private val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
     private val pdfRenderer = PdfRenderer(fileDescriptor)
@@ -31,7 +33,8 @@ class PdfRender(
             coroutineScope = coroutineScope,
             mutex = mutex,
             scale = scale,
-            fileDescriptor = fileDescriptor
+            fileDescriptor = fileDescriptor,
+            backgroundColor = backgroundColor
         )
     }
 
@@ -49,7 +52,8 @@ class PdfRender(
         val pdfRenderer: PdfRenderer,
         val coroutineScope: CoroutineScope,
         val scale: Float,
-        val fileDescriptor: ParcelFileDescriptor
+        val fileDescriptor: ParcelFileDescriptor,
+        val backgroundColor: Int?
     ) {
         val hash get() = fileDescriptor.hashCode() + index
         private var isLoaded = false
@@ -118,7 +122,9 @@ class PdfRender(
                 height.toInt()
             ).apply {
                 val canvas = Canvas(this)
-                canvas.drawColor(android.graphics.Color.WHITE)
+                if (backgroundColor != null) {
+                    canvas.drawColor(backgroundColor)
+                }
                 canvas.drawBitmap(this, 0f, 0f, null)
             }
         }

@@ -34,9 +34,10 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     val brushSettings by viewModel.brushSettings.collectAsState()
     val hidePagination by viewModel.hidePagination.collectAsState()
     val strokes by viewModel.strokes.collectAsState()
+    val backgroundColor by viewModel.backgroundColor.collectAsState()
 
     val scope = rememberCoroutineScope()
-    val renderer = remember(file) { file?.let {PdfRender(it, 3f) }}
+    val renderer = remember(file, backgroundColor) { file?.let {PdfRender(it, 3f, backgroundColor) }}
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
     val canScroll by remember { derivedStateOf { brushSettings == null } }
 
