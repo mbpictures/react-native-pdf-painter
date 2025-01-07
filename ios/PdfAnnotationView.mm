@@ -61,8 +61,28 @@ using namespace facebook::react;
         [_view setInMarkupMode:newViewProps.iosToolPickerVisible];
         [_pencilKitCoordinator setToolPickerVisible:_view.currentPage isVisible:newViewProps.iosToolPickerVisible];
     }
+    if (oldViewProps.annotationFile != newViewProps.annotationFile) {
+        NSString * filePath = [[NSString alloc] initWithUTF8String: newViewProps.annotationFile.c_str()];
+        [(MyPDFDocument* )_view.document loadDrawingsFromDisk:filePath];
+    }
 
     [super updateProps:props oldProps:oldProps];
+}
+
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
+    if ([commandName isEqual:@"saveAnnotations"]) {
+        if (args.count == 0) {
+            return NSLog(@"Missing parameter for loading annotations!");
+        }
+        [_pencilKitCoordinator prepareForPersistance:(MyPDFDocument *)_view.document];
+        [(MyPDFDocument* )_view.document saveDrawingsToDisk:(NSString*) args[0]];
+    }
+    if ([commandName isEqual:@"loadAnnotations"]) {
+        if (args.count == 0) {
+            return NSLog(@"Missing parameter for loading annotations!");
+        }
+        [(MyPDFDocument* )_view.document loadDrawingsFromDisk:(NSString*) args[0]];
+    }
 }
 
 Class<RCTComponentViewProtocol> PdfAnnotationViewCls(void)

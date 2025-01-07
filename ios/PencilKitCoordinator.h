@@ -4,6 +4,7 @@
 #import "MyPDFPage.h"
 #import "generated/RNPdfAnnotationViewSpec/Props.h"
 #import "MyPDFKitToolPickerModel.h"
+#import "MyPDFDocument.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,6 +15,7 @@ using namespace facebook::react;
 
 - (UIView *)pdfView:(PDFView *)view overlayViewForPage:(PDFPage *)page;
 - (void)pdfView:(PDFView *)pdfView willEndDisplayingOverlayView:(UIView *)overlayView forPage:(PDFPage *)page;
+-(void)prepareForPersistance:(MyPDFDocument *)document;
 - (void)setDrawingTool:(PDFPage *)pdfPage brushSettings:(PdfAnnotationViewBrushSettingsStruct)config;
 - (void)setToolPickerVisible:(PDFPage *)pdfPage isVisible:(bool)visible;
 - (UIColor *)colorFromString:(NSString *)colorInHex;

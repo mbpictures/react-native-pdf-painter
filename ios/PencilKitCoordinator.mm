@@ -55,6 +55,15 @@
     [self.pageToViewMapping removeObjectForKey:page.label];
 }
 
+-(void)prepareForPersistance:(MyPDFDocument *)document {
+    for (NSUInteger pageIndex = 0; pageIndex < document.pageCount; pageIndex++) {
+        MyPDFPage *page = (MyPDFPage *)[document pageAtIndex:pageIndex];
+        if (self.pageToViewMapping[page.label]) {
+            page.drawing = self.pageToViewMapping[page.label].drawing;
+        }
+    }
+}
+
 - (void)setDrawingTool:(PDFPage *)pdfPage brushSettings:(PdfAnnotationViewBrushSettingsStruct)config {
     PKInkingTool *inkingTool;
     NSString * colorString = [[NSString alloc] initWithUTF8String: config.color.c_str()];
