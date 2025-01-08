@@ -62,7 +62,7 @@ const Component = () => {
 |----------------------|--------------|------------------------------------------------------------------------------------------------------------------------|
 | pdfUrl               | ios, android | Local URL of the PDF file                                                                                              |
 | annotationsFile      | ios, android | Local URL of the files used for annotations (file extension doesn't matter)                                            |
-| thumbnailMode        | android      | Displays only the first page without interaction                                                                       |
+| thumbnailMode        | ios, android | Displays only the first page without interaction                                                                       |
 | autoSave             | android      | Automatically save file after changing pdf url or unmounting the component                                             |
 | brushSettings        | ios, android | Pass undefined to disable drawing and pass an `BrushSettings` object to enable drawing with the provided configuration |
 | hidePagination       | android      | Disable the pagination buttons at the bottom                                                                           |
