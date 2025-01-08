@@ -39,7 +39,7 @@ using namespace facebook::react;
       }
       [_view usePageViewController:true withViewOptions:NULL];
 
-    self.contentView = _view;
+      [self updateThumbnailMode:false];
   }
 
   return self;
@@ -71,8 +71,25 @@ using namespace facebook::react;
         NSString * filePath = [[NSString alloc] initWithUTF8String: newViewProps.annotationFile.c_str()];
         [(MyPDFDocument* )_view.document loadDrawingsFromDisk:filePath];
     }
+    if (oldViewProps.thumbnailMode != newViewProps.thumbnailMode) {
+        [self updateThumbnailMode:newViewProps.thumbnailMode];
+    }
 
     [super updateProps:props oldProps:oldProps];
+}
+
+- (void)updateThumbnailMode:(bool) isThumbnail {
+    if (isThumbnail) {
+        PDFDocument *document = _view.document;
+        if (document) {
+            PDFPage *firstPage = [document pageAtIndex:0];
+            UIImage *thumbnailImage = [firstPage thumbnailOfSize:_view.frame.size forBox:kPDFDisplayBoxMediaBox];
+            UIImageView *imageView = [[UIImageView alloc] initWithImage:thumbnailImage];
+            self.contentView = imageView;
+        }
+    } else {
+        self.contentView = _view;
+    }
 }
 
 - (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
