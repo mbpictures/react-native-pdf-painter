@@ -26,15 +26,12 @@ fun InkCanvas(
     modifier: Modifier = Modifier,
     inProgressStrokesView: InProgressStrokesView = rememberInProgressStrokesView(),
     strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView),
-    strokeAuthoringTouchListener: StrokeAuthoringTouchListener? = brushSettings?.let {
+    strokeAuthoringTouchListener: StrokeAuthoringTouchListener? =
         rememberStrokeAuthoringTouchListener(
             strokeAuthoringState = strokeAuthoringState,
-            family = it.family,
-            color = it.color,
-            size = it.size,
-            strokeActionInferer = strokeActionInferer,
+            brushSettings = brushSettings,
+            strokeActionInferer = strokeActionInferer
         )
-    }
 ) {
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()
     Box(

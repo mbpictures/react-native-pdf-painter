@@ -152,20 +152,21 @@ class StrokeAuthoringTouchListener(
 @Composable
 fun rememberStrokeAuthoringTouchListener(
     strokeAuthoringState: StrokeAuthoringState,
-    family: BrushFamily,
-    color: Color,
-    size: Float,
+    brushSettings: BrushSettings?,
     strokeActionInferer: StrokeActionInferer,
-): StrokeAuthoringTouchListener =
-    remember(family, color, size, strokeActionInferer) {
-        StrokeAuthoringTouchListener(
-            strokeAuthoringState = strokeAuthoringState,
-            brush = Brush.createWithColorIntArgb(
-                family = family,
-                colorIntArgb = color.toArgb(),
-                size = size,
-                epsilon = 0.1F
-            ),
-            strokeActionInferer = strokeActionInferer,
-        )
+): StrokeAuthoringTouchListener? =
+    remember(brushSettings, strokeActionInferer) {
+        brushSettings?.let {
+            StrokeAuthoringTouchListener(
+                strokeAuthoringState = strokeAuthoringState,
+                brush = Brush.createWithColorIntArgb(
+                    family = it.family,
+                    colorIntArgb = it.color.toArgb(),
+                    size = it.size,
+                    epsilon = 0.1F
+                ),
+                strokeActionInferer = strokeActionInferer,
+            )
+        }
+
     }
