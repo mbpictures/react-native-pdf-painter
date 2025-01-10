@@ -5,15 +5,13 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.ink.brush.Brush
-import androidx.ink.brush.BrushFamily
+import com.pdfannotation.viewer.BrushSettings
 
 class StrokeAuthoringTouchListener(
     private val strokeAuthoringState: StrokeAuthoringState,
     private val brush: Brush,
-    private val strokeActionInferer: StrokeActionInferer,
 ) : View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
@@ -24,8 +22,8 @@ class StrokeAuthoringTouchListener(
         }
 
         doPreHandlerAction(event)
-        return when (mapEventToAction(event)) {
-            StrokeAction.Start -> {
+        return when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
                 handleStartStroke(
                     event = event,
                     view = view,
@@ -33,7 +31,7 @@ class StrokeAuthoringTouchListener(
                 true
             }
 
-            StrokeAction.Update -> {
+            MotionEvent.ACTION_MOVE -> {
                 handleUpdateStroke(
                     event = event,
                     predictedEvent = predictedEvent,
@@ -41,37 +39,26 @@ class StrokeAuthoringTouchListener(
                 true
             }
 
-            StrokeAction.Finish -> {
+            MotionEvent.ACTION_UP -> {
                 handleFinishStroke(
                     event = event,
                 )
                 true
             }
 
-            StrokeAction.Cancel -> {
+            MotionEvent.ACTION_CANCEL -> {
                 handleCancelStroke(
                     event = event,
                 )
                 true
             }
 
-            StrokeAction.Skip -> false
+            else -> false
         }.also {
             doPostHandlerAction(event, view)
             predictedEvent?.recycle()
         }
     }
-
-    private fun mapEventToAction(
-        event: MotionEvent,
-    ): StrokeAction =
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> StrokeAction.Start
-            MotionEvent.ACTION_MOVE -> strokeActionInferer.mapStateToAction(strokeAuthoringState)
-            MotionEvent.ACTION_UP -> StrokeAction.Finish
-            MotionEvent.ACTION_CANCEL -> StrokeAction.Cancel
-            else -> StrokeAction.Skip
-        }
 
     private fun handleStartStroke(
         event: MotionEvent,
@@ -84,7 +71,7 @@ class StrokeAuthoringTouchListener(
         strokeAuthoringState.currentStrokeId = strokeAuthoringState.inProgressStrokesView.startStroke(
             event = event,
             pointerId = pointerId,
-            brush = brush
+            brush = brush,
         )
     }
 
@@ -153,9 +140,8 @@ class StrokeAuthoringTouchListener(
 fun rememberStrokeAuthoringTouchListener(
     strokeAuthoringState: StrokeAuthoringState,
     brushSettings: BrushSettings?,
-    strokeActionInferer: StrokeActionInferer,
 ): StrokeAuthoringTouchListener? =
-    remember(brushSettings, strokeActionInferer) {
+    remember(brushSettings) {
         brushSettings?.let {
             StrokeAuthoringTouchListener(
                 strokeAuthoringState = strokeAuthoringState,
@@ -165,7 +151,6 @@ fun rememberStrokeAuthoringTouchListener(
                     size = it.size,
                     epsilon = 0.1F
                 ),
-                strokeActionInferer = strokeActionInferer,
             )
         }
 

@@ -22,7 +22,6 @@ import com.pdfannotation.viewer.BrushSettings
 @SuppressLint("ClickableViewAccessibility")
 fun InkCanvas(
     brushSettings: BrushSettings?,
-    strokeActionInferer: StrokeActionInferer,
     modifier: Modifier = Modifier,
     inProgressStrokesView: InProgressStrokesView = rememberInProgressStrokesView(),
     strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView),
@@ -30,7 +29,6 @@ fun InkCanvas(
         rememberStrokeAuthoringTouchListener(
             strokeAuthoringState = strokeAuthoringState,
             brushSettings = brushSettings,
-            strokeActionInferer = strokeActionInferer
         )
 ) {
     val canvasStrokeRenderer = CanvasStrokeRenderer.create()

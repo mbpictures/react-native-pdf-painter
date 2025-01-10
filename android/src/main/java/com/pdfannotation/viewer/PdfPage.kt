@@ -23,7 +23,6 @@ import androidx.ink.authoring.InProgressStrokesView
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import com.pdfannotation.canvas.InkCanvas
-import com.pdfannotation.canvas.StrokeAction
 import com.pdfannotation.canvas.StrokeAuthoringState
 import com.pdfannotation.canvas.rememberInProgressStrokesView
 import com.pdfannotation.canvas.rememberStrokeAuthoringState
@@ -125,7 +124,6 @@ fun PdfPage(
             )
             InkCanvas(
                 brushSettings = brushSettings,
-                strokeActionInferer = { _ -> StrokeAction.Update },
                 modifier = Modifier
                     .fillMaxSize()
                     .clipToBounds()
