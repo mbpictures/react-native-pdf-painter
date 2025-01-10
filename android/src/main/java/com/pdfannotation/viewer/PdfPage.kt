@@ -1,5 +1,6 @@
 package com.pdfannotation.viewer
 
+import android.graphics.Matrix
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,8 +58,14 @@ fun PdfPage(
                 .data(bitmap)
                 .build()
         }
+        val transformMatrix = remember(zoomState.scale, zoomState.offsetY, zoomState.offsetX) {
+            Matrix().apply {
+                preTranslate(-zoomState.offsetX, -zoomState.offsetY)
+                preScale(1 / zoomState.scale, 1 / zoomState.scale)
+            }
+        }
         val inProgressStrokesView: InProgressStrokesView = rememberInProgressStrokesView()
-        val strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView)
+        val strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView, transformMatrix)
 
         // Save finished strokes to ViewModel
         LaunchedEffect(strokeAuthoringState.finishedStrokes.value) {
@@ -129,7 +136,8 @@ fun PdfPage(
                     .clipToBounds()
                     .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height),
                 inProgressStrokesView = inProgressStrokesView,
-                strokeAuthoringState = strokeAuthoringState
+                strokeAuthoringState = strokeAuthoringState,
+                transformMatrix = transformMatrix,
             )
         }
     }

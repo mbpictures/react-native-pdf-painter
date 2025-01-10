@@ -24,7 +24,8 @@ fun InkCanvas(
     brushSettings: BrushSettings?,
     modifier: Modifier = Modifier,
     inProgressStrokesView: InProgressStrokesView = rememberInProgressStrokesView(),
-    strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView),
+    transformMatrix: Matrix,
+    strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView, transformMatrix),
     strokeAuthoringTouchListener: StrokeAuthoringTouchListener? =
         rememberStrokeAuthoringTouchListener(
             strokeAuthoringState = strokeAuthoringState,
@@ -50,6 +51,7 @@ fun InkCanvas(
                 }
             },
             update = { inProgressStrokesView ->
+                inProgressStrokesView.motionEventToViewTransform = transformMatrix
                 inProgressStrokesView.setOnTouchListener(strokeAuthoringTouchListener)
             }
         )
