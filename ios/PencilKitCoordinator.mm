@@ -66,7 +66,7 @@
 }
 
 - (void)setDrawingTool:(PDFPage *)pdfPage brushSettings:(PdfAnnotationViewBrushSettingsStruct)config {
-    PKInkingTool *inkingTool;
+    PKTool *inkingTool;
     NSString * colorString = [[NSString alloc] initWithUTF8String: config.color.c_str()];
     UIColor *toolColor = [self colorFromString:colorString];
     
@@ -79,6 +79,13 @@
             break;
         case PdfAnnotationViewType::Highlighter:
             inkingTool = [[PKInkingTool alloc] initWithInkType:PKInkTypeMarker color:toolColor width:config.size];
+            break;
+        case PdfAnnotationViewType::Eraser:
+            if (@available(iOS 16.4, *)) {
+                inkingTool = [[PKEraserTool alloc] initWithEraserType:PKEraserTypeVector width:config.size];
+            } else {
+                inkingTool = [[PKEraserTool alloc] initWithEraserType:PKEraserTypeVector];
+            }
             break;
     }
     
