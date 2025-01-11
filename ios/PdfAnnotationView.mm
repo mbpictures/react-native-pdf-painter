@@ -106,6 +106,15 @@ using namespace facebook::react;
         }
         [(MyPDFDocument* )_view.document loadDrawingsFromDisk:(NSString*) args[0]];
     }
+    if ([commandName isEqual:@"undo"]) {
+        [_pencilKitCoordinator undo:_view.currentPage];
+    }
+    if ([commandName isEqual:@"redo"]) {
+        [_pencilKitCoordinator redo:_view.currentPage];
+    }
+    if ([commandName isEqual:@"clear"]) {
+        [_pencilKitCoordinator clear:_view.currentPage];
+    }
 }
 
 Class<RCTComponentViewProtocol> PdfAnnotationViewCls(void)

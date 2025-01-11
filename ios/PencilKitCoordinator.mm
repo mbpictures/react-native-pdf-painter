@@ -65,6 +65,21 @@
     }
 }
 
+-(void)undo:(PDFPage *)pdfPage {
+    PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
+    [[canvasView undoManager] undo];
+}
+
+-(void)redo:(PDFPage *)pdfPage {
+    PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
+    [[canvasView undoManager] redo];
+}
+
+-(void)clear:(PDFPage *)pdfPage {
+    PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
+    [canvasView setDrawing:[[PKDrawing alloc] init]];
+}
+
 - (void)setDrawingTool:(PDFPage *)pdfPage brushSettings:(PdfAnnotationViewBrushSettingsStruct)config {
     PKTool *inkingTool;
     NSString * colorString = [[NSString alloc] initWithUTF8String: config.color.c_str()];

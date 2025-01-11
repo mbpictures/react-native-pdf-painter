@@ -19,7 +19,9 @@ using namespace facebook::react;
 - (void)setDrawingTool:(PDFPage *)pdfPage brushSettings:(PdfAnnotationViewBrushSettingsStruct)config;
 - (void)setToolPickerVisible:(PDFPage *)pdfPage isVisible:(bool)visible;
 - (UIColor *)colorFromString:(NSString *)colorInHex;
-
+-(void)undo:(PDFPage *)pdfPage;
+-(void)redo:(PDFPage *)pdfPage;
+-(void)clear:(PDFPage *)pdfPage;
 
 @end
 
