@@ -7,7 +7,12 @@ import type {
 import React from 'react';
 import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
 
-export type BrushType = 'marker' | 'pressure-pen' | 'highlighter' | 'none';
+export type BrushType =
+    | 'marker'
+    | 'pressure-pen'
+    | 'highlighter'
+    | 'eraser'
+    | 'none';
 
 export interface BrushSettings {
     type?: WithDefault<BrushType, 'marker'>;
