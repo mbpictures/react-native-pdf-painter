@@ -11,6 +11,9 @@ type ComponentRef = InstanceType<typeof NativePdfAnnotationView>;
 export interface Handle {
     saveAnnotations: (file: string) => void;
     loadAnnotations: (file: string) => void;
+    undo: () => void;
+    redo: () => void;
+    clear: () => void;
 }
 
 export const PdfAnnotationView = forwardRef<Handle, NativeProps>(
@@ -29,6 +32,24 @@ export const PdfAnnotationView = forwardRef<Handle, NativeProps>(
                     return;
                 }
                 Commands.loadAnnotations(nativeRef.current, file);
+            },
+            undo() {
+                if (!nativeRef.current) {
+                    return;
+                }
+                Commands.undo(nativeRef.current);
+            },
+            redo() {
+                if (!nativeRef.current) {
+                    return;
+                }
+                Commands.redo(nativeRef.current);
+            },
+            clear() {
+                if (!nativeRef.current) {
+                    return;
+                }
+                Commands.clear(nativeRef.current);
             },
         }));
 

@@ -46,8 +46,17 @@ interface NativeCommands {
         viewRef: React.ElementRef<ComponentType>,
         path: string
     ) => void;
+    undo: (viewRef: React.ElementRef<ComponentType>) => void;
+    redo: (viewRef: React.ElementRef<ComponentType>) => void;
+    clear: (viewRef: React.ElementRef<ComponentType>) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
-    supportedCommands: ['saveAnnotations', 'loadAnnotations'],
+    supportedCommands: [
+        'saveAnnotations',
+        'loadAnnotations',
+        'undo',
+        'redo',
+        'clear',
+    ],
 });
