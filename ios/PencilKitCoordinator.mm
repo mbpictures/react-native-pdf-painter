@@ -95,6 +95,7 @@
     } else {
         [model.toolPicker removeObserver:canvasView];
     }
+    [canvasView becomeFirstResponder];
 }
 
 // Helper method to convert a color string (hex with optional alpha) to UIColor
