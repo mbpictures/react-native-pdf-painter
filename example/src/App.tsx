@@ -23,6 +23,8 @@ import {
     PenIcon,
     XIcon,
     PaletteIcon,
+    UndoIcon,
+    RedoIcon,
 } from 'lucide-react-native';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
@@ -111,6 +113,12 @@ export default function App() {
         pdfViewer.current?.saveAnnotations(annotationFile);
     };
 
+    const handleUndo = () => pdfViewer.current?.undo();
+
+    const handleRedo = () => pdfViewer.current?.redo();
+
+    const handleClear = () => pdfViewer.current?.clear();
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.topBar}>
@@ -170,6 +178,27 @@ export default function App() {
                                 <PaletteIcon />
                             </TouchableHighlight>
                         )}
+                        <TouchableHighlight
+                            underlayColor={'#ffe9d2'}
+                            style={styles.toolbarItem}
+                            onPress={handleUndo}
+                        >
+                            <UndoIcon />
+                        </TouchableHighlight>
+                        <TouchableHighlight
+                            underlayColor={'#ffe9d2'}
+                            style={styles.toolbarItem}
+                            onPress={handleRedo}
+                        >
+                            <RedoIcon />
+                        </TouchableHighlight>
+                        <TouchableHighlight
+                            underlayColor={'#ffe9d2'}
+                            style={styles.toolbarItem}
+                            onPress={handleClear}
+                        >
+                            <XIcon />
+                        </TouchableHighlight>
                     </View>
                 </>
             )}
