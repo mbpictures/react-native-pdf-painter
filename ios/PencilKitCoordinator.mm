@@ -28,6 +28,7 @@
         // Create a new PKCanvasView if there is no overlay for this page
         PKCanvasView *canvasView = [[PKCanvasView alloc] initWithFrame:CGRectZero];
         canvasView.drawingPolicy = PKCanvasViewDrawingPolicyAnyInput;
+        canvasView.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
         
         canvasView.backgroundColor = [UIColor clearColor];
         self.pageToViewMapping[page.label] = canvasView;
