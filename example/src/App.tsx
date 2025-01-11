@@ -18,6 +18,7 @@ import DocumentPicker, { types } from 'react-native-document-picker';
 import {
     CheckIcon,
     HighlighterIcon,
+    EraserIcon,
     PencilIcon,
     PenIcon,
     XIcon,
@@ -48,6 +49,14 @@ const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
             color: '#88FFFF00',
         },
         icon: <HighlighterIcon />,
+    },
+    {
+        settings: {
+            type: 'eraser',
+            size: 5,
+            color: '#000000',
+        },
+        icon: <EraserIcon />,
     },
 ];
 
