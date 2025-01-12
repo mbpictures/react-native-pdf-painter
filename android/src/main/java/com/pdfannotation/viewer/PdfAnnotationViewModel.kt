@@ -12,6 +12,7 @@ import androidx.ink.brush.StockBrushes
 import androidx.ink.strokes.MutableStrokeInputBatch
 import androidx.ink.strokes.Stroke
 import com.pdfannotation.serialization.Serializer
+import kotlinx.coroutines.flow.update
 import java.io.File
 
 data class BrushSettings(
@@ -40,6 +41,7 @@ class PdfAnnotationViewModel : ViewModel() {
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
     val hidePagination: StateFlow<Boolean> get() = _hidePagination
     val strokes: StateFlow<Strokes> get() = _strokes
+    var currentPage: Int = -1
 
     fun updateBackgroundColor(newColor: String?) {
         _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
@@ -95,6 +97,27 @@ class PdfAnnotationViewModel : ViewModel() {
     fun loadAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
             _strokes.value.setStrokes(_serializer.loadStrokes(it))
+        }
+    }
+
+    fun undo() {
+        _strokes.update { it.undo(currentPage) }
+    }
+
+    fun redo() {
+        _strokes.update { it.redo(currentPage) }
+    }
+
+    fun clear() {
+        _strokes.update {
+            it.copy(
+                strokes = it.strokes.toMutableMap().apply {
+                    this[currentPage] = emptySet()
+                },
+                redoMap = it.redoMap.toMutableMap().apply {
+                    this[currentPage] = emptySet()
+                }
+            )
         }
     }
 
@@ -161,5 +184,35 @@ data class Strokes(var strokes: MutableMap<Int, Set<Stroke>> = mutableMapOf(), v
         strokes.forEach { (page, newStrokes) ->
             setStrokesPerPage(page, newStrokes, size)
         }
+    }
+
+    fun undo(page: Int): Strokes {
+        val lastElement = strokes[page]?.lastOrNull() ?: return this
+        val newRedoMap = redoMap.toMutableMap().apply {
+            this[page] = (this[page] ?: emptySet()).toMutableSet().apply {
+                this.add(lastElement)
+            }
+        }
+        val newStrokes = strokes.toMutableMap().apply {
+            this[page] = this[page]?.toMutableList().apply {
+                this?.remove(lastElement)
+            }?.toSet() ?: emptySet()
+        }
+        return this.copy(strokes = newStrokes, redoMap = newRedoMap)
+    }
+
+    fun redo(page: Int): Strokes {
+        val lastElement = redoMap[page]?.lastOrNull() ?: return this
+        val newRedoMap = redoMap.toMutableMap().apply {
+            this[page] = (this[page] ?: emptySet()).toMutableSet().apply {
+                this.remove(lastElement)
+            }
+        }
+        val newStrokes = strokes.toMutableMap().apply {
+            this[page] = this[page]?.toMutableList().apply {
+                this?.add(lastElement)
+            }?.toSet() ?: emptySet()
+        }
+        return this.copy(strokes = newStrokes, redoMap = newRedoMap)
     }
 }

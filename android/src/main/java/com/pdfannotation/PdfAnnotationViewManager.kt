@@ -72,4 +72,16 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
   override fun setIosToolPickerVisible(view: PdfAnnotationView?, value: Boolean) {
     // NOOP, iOS only
   }
+
+  override fun undo(view: PdfAnnotationView?) {
+    view?.viewModel?.undo();
+  }
+
+  override fun redo(view: PdfAnnotationView?) {
+    view?.viewModel?.redo();
+  }
+
+  override fun clear(view: PdfAnnotationView?) {
+    view?.viewModel?.clear();
+  }
 }

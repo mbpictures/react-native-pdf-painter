@@ -16,6 +16,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -53,6 +54,10 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
         onDispose {
             renderer?.close()
         }
+    }
+
+    LaunchedEffect(pagerState.currentPage) {
+        viewModel.currentPage = pagerState.currentPage
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
