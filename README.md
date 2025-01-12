@@ -1,8 +1,19 @@
-# Native PDF Viewer with drawing support
+<h1 align="center">
+    Welcome to react-native-pdf-annotation👋<br />
+</h1>
+<h3 align="center">
+    Your React Native PDF Viewer with native annotation support
+</h3>
+<p align="center">
+    <a href="LICENSE" target="_blank">
+      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" />
+    </a>
+    <img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/mbpictures/react-native-pdf-annotation/ci.yml?style=for-the-badge" />
+</p>
 
-Display PDFs with hand-drawn annotation support on android and ios.
+> Easy-to-use react native component for efficient displaying of PDFs, with finger and pen support for hand drawing. Supports PencilKits ToolPicker out-of-the-box on iOS.
 
-## Installation
+## 📥 Installation
 
 ```sh
 npm install react-native-pdf-annotation
@@ -14,13 +25,19 @@ or
 yarn add react-native-pdf-annotation
 ```
 
+### iOS
+```sh
+cd ios && pod install
+```
+
 ### WARNING
 This library is completely written as Fabric components and is therefore **only** compatible with the new architecture!
 
-For Android users: This library uses androidx.ink in version 1.0.0alpha2, which means that this library is not recommended for production use yet! Some issues have already been discovered (e.g. flickering when drawing, weird drawing behaviour when zooming)
+For Android users: This library uses androidx.ink in version 1.0.0alpha2, which means that this library is not recommended for production use yet! Some issues have already been discovered (e.g. flickering when drawing)
 
 For iOS users: Annotations only work for iOS versions >= 16, everything below can view PDFs but not draw.
-## Usage
+
+## ▶️ Usage
 
 Import the `PdfAnnotationView` component and assign a path to a pdf file to it. If you want to display the drawn annotations, add the `annotationFile` property.
 ```jsx
@@ -56,6 +73,8 @@ const Component = () => {
 
 ```
 
+Refer to [example](example/src/App.tsx) for detailed usage example.
+
 ## Props & Methods
 
 | Name                 | Platform     | Description                                                                                                            |
@@ -76,10 +95,19 @@ Save the current drawings on all pages to the provided file path.
 ### `loadAnnotations(filePath: string): void`
 Load the drawings of all pages from the provided file path.
 
+### `undo(): void`
+Undo the last change on the current page
+
+### `redo(): void`
+Redo the last undone change on the current page
+
+### `clear(): void`
+Delete all drawings on the current page
+
 ## How it works
 
 ### Android
-This library uses the PdfRenderer class to render the pages of the pdf as a bitmap, scaled to the resolution (to make zoomed pages look sharp enough). For drawing, the new androidx ink library is used.
+This library uses the PdfRenderer class to render the pages of the pdf as a bitmap, scaled to a higher resolution (to make zoomed pages look sharp enough). For drawing, the new androidx ink library is used.
 
 ### iOS
 Uses PdfKit in conjunction with PencilKit to support drawing on pages.
