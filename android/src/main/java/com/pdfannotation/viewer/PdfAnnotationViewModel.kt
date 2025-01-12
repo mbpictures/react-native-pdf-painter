@@ -1,6 +1,5 @@
 package com.pdfannotation.viewer
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Size
 import androidx.ink.brush.BrushFamily
 import androidx.lifecycle.ViewModel
@@ -104,14 +103,10 @@ class PdfAnnotationViewModel : ViewModel() {
     }
 }
 
-class Strokes : ViewModel() {
-    private val _strokesMap = mutableStateOf<Map<Int, Set<Stroke>>>(emptyMap())
-
-    val strokes get() = _strokesMap.value
-
+data class Strokes(var strokes: MutableMap<Int, Set<Stroke>> = mutableMapOf(), var redoMap: MutableMap<Int, Set<Stroke>> = mutableMapOf()) {
     fun setStrokesPerPage(page: Int, newStrokes: Set<Stroke>, size: Size) {
         if (size.width == 0f || size.height == 0f || newStrokes.isEmpty()) return
-        _strokesMap.value = _strokesMap.value.toMutableMap().apply {
+        strokes = strokes.toMutableMap().apply {
             this[page] = newStrokes.map { drawStroke ->
                 val batch = MutableStrokeInputBatch()
 
@@ -138,7 +133,7 @@ class Strokes : ViewModel() {
     }
 
     fun getStrokes(page: Int, size: Size): Set<Stroke> {
-        return (_strokesMap.value[page] ?: emptySet()).map { stroke ->
+        return (strokes[page] ?: emptySet()).map { stroke ->
             val batch = MutableStrokeInputBatch()
 
             for (i in 0..<stroke.inputs.size) {
