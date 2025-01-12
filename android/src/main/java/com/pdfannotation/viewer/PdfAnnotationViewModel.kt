@@ -18,7 +18,8 @@ import java.io.File
 data class BrushSettings(
     val size: Float,
     val color: Color,
-    val family: BrushFamily
+    val family: BrushFamily,
+    val isEraser: Boolean = false
 )
 
 class PdfAnnotationViewModel : ViewModel() {
@@ -83,7 +84,7 @@ class PdfAnnotationViewModel : ViewModel() {
             "highlighter" -> StockBrushes.highlighterLatest
             else -> StockBrushes.markerLatest
         }
-        return BrushSettings(settings.getDouble("size").toFloat(), Color(color), family)
+        return BrushSettings(settings.getDouble("size").toFloat(), Color(color), family, isEraser = settings.getString("type") == "eraser")
     }
 
     fun saveAnnotations(path: String? = null) {

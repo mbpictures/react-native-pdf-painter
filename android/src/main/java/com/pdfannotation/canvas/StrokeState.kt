@@ -6,9 +6,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.ink.authoring.InProgressStrokeId
 import androidx.ink.authoring.InProgressStrokesFinishedListener
 import androidx.ink.authoring.InProgressStrokesView
+import androidx.ink.geometry.ImmutableBox
+import androidx.ink.geometry.PartitionedMesh
 import androidx.ink.strokes.MutableStrokeInputBatch
 import androidx.ink.strokes.Stroke
 import androidx.input.motionprediction.MotionEventPredictor
@@ -51,6 +54,27 @@ class StrokeAuthoringState(
         }
         finishedStrokes.value += transformedStrokes
         inProgressStrokesView.removeFinishedStrokes(strokes.keys)
+    }
+
+    private fun calcThreshold(eraserBox: ImmutableBox, partialMesh: PartitionedMesh, threshold: Float): Float {
+        val boxSize = eraserBox.width * eraserBox.height
+        val bbox = partialMesh.computeBoundingBox()
+        val bboxSize = (bbox?.width?: 1f) * (bbox?.height?: 1f)
+        return boxSize / bboxSize * threshold
+    }
+
+    fun eraseWholeStrokes(eraserBox: ImmutableBox, threshold: Float = 0.1f) {
+        val strokesToErase = finishedStrokes.value.filter { stroke ->
+            stroke.shape.computeCoverageIsGreaterThan(
+                box = eraserBox,
+                coverageThreshold = calcThreshold(eraserBox, stroke.shape, threshold)
+            )
+        }
+        if (strokesToErase.isNotEmpty()) {
+            Snapshot.withMutableSnapshot {
+                finishedStrokes.value -= strokesToErase
+            }
+        }
     }
 }
 

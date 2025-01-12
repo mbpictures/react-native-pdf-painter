@@ -7,15 +7,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.ink.brush.Brush
+import androidx.ink.geometry.ImmutableBox
+import androidx.ink.geometry.ImmutableVec
 import com.pdfannotation.viewer.BrushSettings
 
 class StrokeAuthoringTouchListener(
     private val strokeAuthoringState: StrokeAuthoringState,
     private val brush: Brush,
+    private val isEraser: Boolean,
 ) : View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View, event: MotionEvent): Boolean {
+        if (isEraser) {
+            strokeAuthoringState.eraseWholeStrokes(
+                eraserBox = ImmutableBox.fromCenterAndDimensions(
+                    ImmutableVec(event.x, event.y),
+                    brush.size,
+                    brush.size
+                ),
+                threshold = 0.1f
+            )
+            return true
+        }
+
         val predictedEvent = strokeAuthoringState.motionEventPredictor.run {
             record(event)
             predict()
@@ -145,6 +160,7 @@ fun rememberStrokeAuthoringTouchListener(
         brushSettings?.let {
             StrokeAuthoringTouchListener(
                 strokeAuthoringState = strokeAuthoringState,
+                isEraser = brushSettings.isEraser,
                 brush = Brush.createWithColorIntArgb(
                     family = it.family,
                     colorIntArgb = it.color.toArgb(),
