@@ -13,6 +13,17 @@
 
 > Easy-to-use react native component for efficient displaying of PDFs, with finger and pen support for hand drawing. Supports PencilKits ToolPicker out-of-the-box on iOS.
 
+<div style="display: flex; flex-direction: row; justify-content: center">
+    <div style="margin-right: 5px;">
+        <img src="docs/demo-android.gif" alt="Demo Android" />
+        <p align="center">Android</p>
+    </div>
+    <div style="margin-left: 5px;">
+        <img src="docs/demo-ios.gif" alt="Demo iOS" />
+        <p align="center">iOS</p>
+    </div>
+</div>
+
 ## 📥 Installation
 
 ```sh
