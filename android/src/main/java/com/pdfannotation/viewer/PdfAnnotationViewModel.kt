@@ -77,7 +77,7 @@ class PdfAnnotationViewModel : ViewModel() {
 
     private fun makeBrushSettings(settings: ReadableMap): BrushSettings {
         val color = GraphicsColor.parseColor(settings.getString("color"))
-        val family = when (settings.getString("family")) {
+        val family = when (settings.getString("type")) {
             "marker" -> StockBrushes.markerLatest
             "pressure-pen" -> StockBrushes.pressurePenLatest
             "highlighter" -> StockBrushes.highlighterLatest
