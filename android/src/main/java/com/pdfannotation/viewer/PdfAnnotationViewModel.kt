@@ -14,6 +14,7 @@ import androidx.ink.strokes.Stroke
 import com.pdfannotation.serialization.Serializer
 import kotlinx.coroutines.flow.update
 import java.io.File
+import java.net.URLDecoder
 
 data class BrushSettings(
     val size: Float,
@@ -123,7 +124,7 @@ class PdfAnnotationViewModel : ViewModel() {
     }
 
     private fun constructFile(path: String?): File? {
-        return path?.let {File(it.replace("file://", ""))}
+        return path?.let {File(URLDecoder.decode(it, "UTF-8").replace("file://", ""))}
     }
 }
 
