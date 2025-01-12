@@ -33,6 +33,7 @@ class PdfAnnotationViewModel : ViewModel() {
     private val _hidePagination = MutableStateFlow(false)
     private val _strokes = MutableStateFlow(Strokes())
     private val _serializer = Serializer()
+    private var _loadedAnnotationPath = ""
 
 
     val backgroundColor: StateFlow<Int?> get() = _backgroundColor
@@ -51,7 +52,6 @@ class PdfAnnotationViewModel : ViewModel() {
 
     fun updatePdfFile(newPdf: String?) {
         _pdfFile.value = constructFile(newPdf)
-        _strokes.value = Strokes()
         loadAnnotations()
     }
 
@@ -61,7 +61,6 @@ class PdfAnnotationViewModel : ViewModel() {
 
     fun updateAnnotationFile(newAnnotationFile: String?) {
         _annotationFile.value = constructFile(newAnnotationFile)
-        _strokes.value = Strokes()
         loadAnnotations(newAnnotationFile)
     }
 
@@ -98,7 +97,10 @@ class PdfAnnotationViewModel : ViewModel() {
 
     fun loadAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
+            if (it.absolutePath == _loadedAnnotationPath) return
+            _strokes.value = Strokes()
             _strokes.value.setStrokes(_serializer.loadStrokes(it))
+            _loadedAnnotationPath = it.absolutePath
         }
     }
 
