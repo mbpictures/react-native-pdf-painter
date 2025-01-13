@@ -83,17 +83,17 @@ const Component = () => {
 
 Refer to [example](example/src/App.tsx) for detailed usage example.
 
-## Props & Methods
+## Props, Methods & types
 
-| Name                 | Platform     | Description                                                                                                            |
-|----------------------|--------------|------------------------------------------------------------------------------------------------------------------------|
-| pdfUrl               | ios, android | Local URL of the PDF file                                                                                              |
-| annotationsFile      | ios, android | Local URL of the files used for annotations (file extension doesn't matter)                                            |
-| thumbnailMode        | ios, android | Displays only the first page without interaction                                                                       |
-| autoSave             | android      | Automatically save file after changing pdf url or unmounting the component                                             |
-| brushSettings        | ios, android | Pass undefined to disable drawing and pass an `BrushSettings` object to enable drawing with the provided configuration |
-| hidePagination       | android      | Disable the pagination buttons at the bottom                                                                           |
-| iosToolPickerVisible | ios          | Show/Hide the PencilKit ToolPicker                                                                                     |
+| Name                 | Platform     | Description                                                                                                                              |
+|----------------------|--------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| pdfUrl               | ios, android | Local URL of the PDF file                                                                                                                |
+| annotationsFile      | ios, android | Local URL of the files used for annotations (file extension doesn't matter)                                                              |
+| thumbnailMode        | ios, android | Displays only the first page without interaction                                                                                         |
+| autoSave             | android      | Automatically save file after changing pdf url or unmounting the component                                                               |
+| brushSettings        | ios, android | Pass undefined to disable drawing and pass an [`BrushSettings`](#brushsettings) object to enable drawing with the provided configuration |
+| hidePagination       | android      | Disable the pagination buttons at the bottom                                                                                             |
+| iosToolPickerVisible | ios          | Show/Hide the PencilKit ToolPicker                                                                                                       |
 
 **Info**: The ToolPicker is fixed and always at the bottom of the iPhone screen! Keep this in mind when designing your PDF Viewer screen!
 
@@ -111,6 +111,25 @@ Redo the last undone change on the current page
 
 ### `clear(): void`
 Delete all drawings on the current page
+
+### `BrushSettings`
+```typescript
+interface BrushSettings {
+    type?: WithDefault<BrushType, 'marker'>;
+    color: string;
+    size: Float;
+}
+```
+
+### `BrushType`
+```typescript
+type BrushType =
+    | 'marker'
+    | 'pressure-pen'
+    | 'highlighter'
+    | 'eraser'
+    | 'none';
+```
 
 ## How it works
 
