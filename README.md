@@ -15,11 +15,11 @@
 
 <div style="display: flex; flex-direction: row; justify-content: center">
     <div style="margin-right: 5px;">
-        <img src="docs/demo-android.gif" alt="Demo Android" />
+        <img src="https://raw.githubusercontent.com/mbpictures/react-native-pdf-painter/main/docs/demo-android.gif" alt="Demo Android" />
         <p align="center">Android</p>
     </div>
     <div style="margin-left: 5px;">
-        <img src="docs/demo-ios.gif" alt="Demo iOS" />
+        <img src="https://raw.githubusercontent.com/mbpictures/react-native-pdf-painter/main/docs/demo-ios.gif" alt="Demo iOS" />
         <p align="center">iOS</p>
     </div>
 </div>
