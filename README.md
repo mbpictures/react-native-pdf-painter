@@ -9,6 +9,9 @@
       <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" />
     </a>
     <img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/mbpictures/react-native-pdf-painter/ci.yml?style=for-the-badge" />
+    <a href="https://badge.fury.io/js/react-native-pdf-painter">
+        <img src="https://img.shields.io/npm/v/react-native-pdf-painter?style=for-the-badge" alt="npm version">
+    </a>
 </p>
 
 > Easy-to-use react native component for efficient displaying of PDFs, with finger and pen support for hand drawing. Supports PencilKits ToolPicker out-of-the-box on iOS.
