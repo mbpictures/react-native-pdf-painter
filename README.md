@@ -1,5 +1,5 @@
 <h1 align="center">
-    Welcome to react-native-pdf-annotation👋<br />
+    Welcome to react-native-pdf-painter👋<br />
 </h1>
 <h3 align="center">
     Your React Native PDF Viewer with native annotation support
@@ -8,7 +8,7 @@
     <a href="LICENSE" target="_blank">
       <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" />
     </a>
-    <img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/mbpictures/react-native-pdf-annotation/ci.yml?style=for-the-badge" />
+    <img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/mbpictures/react-native-pdf-painter/ci.yml?style=for-the-badge" />
 </p>
 
 > Easy-to-use react native component for efficient displaying of PDFs, with finger and pen support for hand drawing. Supports PencilKits ToolPicker out-of-the-box on iOS.
@@ -27,13 +27,13 @@
 ## 📥 Installation
 
 ```sh
-npm install react-native-pdf-annotation
+npm install react-native-pdf-painter
 ```
 
 or
 
 ```sh
-yarn add react-native-pdf-annotation
+yarn add react-native-pdf-painter
 ```
 
 ### iOS
@@ -52,7 +52,7 @@ For iOS users: Annotations only work for iOS versions >= 16, everything below ca
 
 Import the `PdfAnnotationView` component and assign a path to a pdf file to it. If you want to display the drawn annotations, add the `annotationFile` property.
 ```jsx
-import { PdfAnnotationView } from "react-native-pdf-annotation";
+import { PdfAnnotationView } from "react-native-pdf-painter";
 
 <PdfAnnotationView
     pdfUrl={pathToPdfFile}
@@ -64,7 +64,7 @@ import { PdfAnnotationView } from "react-native-pdf-annotation";
 You can handle saving and loading of the annotations manually by using the `saveAnnotations` and `loadAnnotations` methods:
 
 ```tsx
-import { PdfAnnotationView, type Handle } from "react-native-pdf-annotation";
+import { PdfAnnotationView, type Handle } from "react-native-pdf-painter";
 
 const Component = () => {
     const ref = useRef<Handle>(null);
