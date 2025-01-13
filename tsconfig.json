@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-pdf-annotation": ["./src/index"]
+      "react-native-pdf-painter": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
