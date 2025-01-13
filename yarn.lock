@@ -10752,9 +10752,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-pdf-annotation-example@workspace:example":
+"react-native-pdf-painter-example@workspace:example":
   version: 0.0.0-use.local
-  resolution: "react-native-pdf-annotation-example@workspace:example"
+  resolution: "react-native-pdf-painter-example@workspace:example"
   dependencies:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3
@@ -10774,9 +10774,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"react-native-pdf-annotation@workspace:.":
+"react-native-pdf-painter@workspace:.":
   version: 0.0.0-use.local
-  resolution: "react-native-pdf-annotation@workspace:."
+  resolution: "react-native-pdf-painter@workspace:."
   dependencies:
     "@commitlint/config-conventional": ^17.0.2
     "@evilmartians/lefthook": ^1.5.0
