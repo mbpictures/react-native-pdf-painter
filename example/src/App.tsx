@@ -12,7 +12,7 @@ import {
     type BrushSettings,
     type Handle,
     PdfAnnotationView,
-} from 'react-native-pdf-annotation';
+} from 'react-native-pdf-painter';
 import { type ReactNode, useRef, useState } from 'react';
 import DocumentPicker, { types } from 'react-native-document-picker';
 import {
