@@ -17,8 +17,8 @@
 > Easy-to-use react native component for efficient displaying of PDFs, with finger and pen support for hand drawing. Supports PencilKits ToolPicker out-of-the-box on iOS.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/mbpictures/react-native-pdf-painter/main/docs/demo-android.gif" alt="Demo Android" />
-    <img src="https://raw.githubusercontent.com/mbpictures/react-native-pdf-painter/main/docs/demo-ios.gif" alt="Demo iOS" />
+    <img src="https://raw.githubusercontent.com/mbpictures/react-native-pdf-painter/main/docs/demo-android.gif" alt="Demo Android" height="380" />
+    <img src="https://raw.githubusercontent.com/mbpictures/react-native-pdf-painter/main/docs/demo-ios.gif" alt="Demo iOS" height="380" />
 </p>
 
 ## 📥 Installation
@@ -44,6 +44,8 @@ This library is completely written as Fabric components and is therefore **only*
 For Android users: This library uses androidx.ink in version 1.0.0alpha2, which means that this library is not recommended for production use yet! Some issues have already been discovered (e.g. flickering when drawing)
 
 For iOS users: Annotations only work for iOS versions >= 16, everything below can view PDFs but not draw.
+
+The annotations created with this library are **not embedded** in the PDF file itself! Instead it creates a new file containing the annotations in a proprietary json-like (compressed) format which is not platform interoperable.
 
 ## ▶️ Usage
 
