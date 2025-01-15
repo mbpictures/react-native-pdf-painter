@@ -52,7 +52,7 @@ using namespace facebook::react;
 
     if (oldViewProps.pdfUrl != newViewProps.pdfUrl) {
         NSString * pdfUrl = [[NSString alloc] initWithUTF8String: newViewProps.pdfUrl.c_str()];
-        NSURL* url = [NSURL URLWithString:pdfUrl];
+        NSURL* url = [NSURL fileURLWithPath:pdfUrl isDirectory:NO];
         _view.document = [[MyPDFDocument alloc] initWithURL:url];
     }
     if (oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) {
