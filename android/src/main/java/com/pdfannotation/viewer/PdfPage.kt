@@ -60,7 +60,6 @@ fun PdfPage(
         }
         val transformMatrix = remember(zoomState.scale, zoomState.offsetY, zoomState.offsetX) {
             Matrix().apply {
-                preTranslate(-zoomState.offsetX, -zoomState.offsetY)
                 preScale(1 / zoomState.scale, 1 / zoomState.scale)
             }
         }
