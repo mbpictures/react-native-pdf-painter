@@ -45,6 +45,8 @@ For Android users: This library uses androidx.ink in version 1.0.0alpha2, which 
 
 For iOS users: Annotations only work for iOS versions >= 16, everything below can view PDFs but not draw.
 
+The annotations created with this library are **not embedded** in the PDF file itself! Instead it creates a new file containing the annotations in a proprietary json-like (compressed) format which is not platform interoperable.
+
 ## ▶️ Usage
 
 Import the `PdfAnnotationView` component and assign a path to a pdf file to it. If you want to display the drawn annotations, add the `annotationFile` property.
