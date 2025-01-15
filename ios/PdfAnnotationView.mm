@@ -80,13 +80,16 @@ using namespace facebook::react;
 
 - (void)updateThumbnailMode:(bool) isThumbnail {
     if (isThumbnail) {
-        PDFDocument *document = _view.document;
-        if (document) {
-            PDFPage *firstPage = [document pageAtIndex:0];
-            UIImage *thumbnailImage = [firstPage thumbnailOfSize:_view.frame.size forBox:kPDFDisplayBoxMediaBox];
-            UIImageView *imageView = [[UIImageView alloc] initWithImage:thumbnailImage];
-            self.contentView = imageView;
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            PDFDocument *document = self->_view.document;
+            if (document) {
+                PDFPage *firstPage = [document pageAtIndex:0];
+                UIImage *thumbnailImage = [firstPage thumbnailOfSize:self->_view.frame.size forBox:kPDFDisplayBoxMediaBox];
+                UIImageView *imageView = [[UIImageView alloc] initWithImage:thumbnailImage];
+                imageView.frame = self->_view.frame;
+                self.contentView = imageView;
+            }
+        });
     } else {
         self.contentView = _view;
     }
