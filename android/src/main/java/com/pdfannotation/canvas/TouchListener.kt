@@ -18,7 +18,8 @@ class StrokeAuthoringTouchListener(
 ) : View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(view: View, event: MotionEvent): Boolean {
+    override fun onTouch(view: View?, event: MotionEvent): Boolean {
+        if (view == null) return false
         if (isEraser) {
             strokeAuthoringState.eraseWholeStrokes(
                 eraserBox = ImmutableBox.fromCenterAndDimensions(
