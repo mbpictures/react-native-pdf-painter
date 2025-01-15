@@ -11,6 +11,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.IOException
 import java.lang.reflect.Type
 import java.nio.charset.StandardCharsets.UTF_8
 import java.util.zip.GZIPInputStream
@@ -168,7 +169,11 @@ class Serializer {
     }
 
     private fun decompress(content: ByteArray): String {
-        return GZIPInputStream(content.inputStream()).bufferedReader(UTF_8).use { it.readText() }
+        return try {
+            GZIPInputStream(content.inputStream()).bufferedReader(UTF_8).use { it.readText() }
+        } catch (e: IOException) {
+            "{}" // not a valid compressed input
+        }
     }
 
     fun serializeStrokes(strokes: Map<Int, Set<Stroke>>): ByteArray {
