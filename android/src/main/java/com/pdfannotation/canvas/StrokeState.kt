@@ -28,6 +28,9 @@ class StrokeAuthoringState(
     var transformMatrix = Matrix()
 
     override fun onStrokesFinished(strokes: Map<InProgressStrokeId, Stroke>) {
+        val matrixValues = FloatArray(9)
+        transformMatrix.getValues(matrixValues)
+        val scaleX = matrixValues[Matrix.MSCALE_X]
         val transformedStrokes = strokes.values.map { stroke ->
             val batch = MutableStrokeInputBatch()
 
@@ -48,7 +51,7 @@ class StrokeAuthoringState(
             }
 
             Stroke(
-                brush = stroke.brush.copy(size = stroke.brush.size, epsilon = stroke.brush.epsilon),
+                brush = stroke.brush.copy(size = stroke.brush.size * scaleX, epsilon = stroke.brush.epsilon),
                 inputs = batch
             )
         }
