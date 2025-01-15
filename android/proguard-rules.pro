@@ -21,3 +21,17 @@
 -keepclassmembers class * {
     @androidx.ink.nativeloader.UsedByNative *;
 }
+
+-keep class com.pdfannotation.** { *; }
+
+# Gson uses generic type information stored in a class file when working with
+# fields. Proguard removes such information by default, keep it.
+-keepattributes Signature
+
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
+
+# Optional. For using GSON @Expose annotation
+-keepattributes AnnotationDefault,RuntimeVisibleAnnotations
+-keep class com.google.gson.reflect.TypeToken { <fields>; }
+-keepclassmembers class **$TypeAdapterFactory { <fields>; }
