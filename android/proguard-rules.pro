@@ -32,6 +32,10 @@
 -keep class * extends com.google.gson.reflect.TypeToken
 
 # Optional. For using GSON @Expose annotation
--keepattributes AnnotationDefault,RuntimeVisibleAnnotations
--keep class com.google.gson.reflect.TypeToken { <fields>; }
+-keepattributes AnnotationDefault,RuntimeVisibleAnnotations,Signature
+-keep class com.google.gson.reflect.TypeToken { *; }
+-keep class * extends com.google.gson.reflect.TypeToken
 -keepclassmembers class **$TypeAdapterFactory { <fields>; }
+-keepclassmembers,allowobfuscation class * {
+ @com.google.gson.annotations.SerializedName <fields>;
+}
