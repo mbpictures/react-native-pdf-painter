@@ -22,6 +22,7 @@ using namespace facebook::react;
 - (UIView *)pdfView:(PDFView *)view overlayViewForPage:(PDFPage *)page;
 - (void)pdfView:(PDFView *)pdfView willEndDisplayingOverlayView:(UIView *)overlayView forPage:(PDFPage *)page;
 -(void)prepareForPersistance:(MyPDFDocument *)document;
+-(void)updateDrawings:(MyPDFDocument *)document;
 - (void)setDrawingTool:(PDFPage *)pdfPage brushSettings:(PdfAnnotationViewBrushSettingsStruct)config;
 - (void)setToolPickerVisible:(PDFPage *)pdfPage isVisible:(bool)visible;
 - (UIColor *)colorFromString:(NSString *)colorInHex;

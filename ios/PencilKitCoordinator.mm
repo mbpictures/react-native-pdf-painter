@@ -66,6 +66,15 @@
     }
 }
 
+-(void)updateDrawings:(MyPDFDocument *)document {
+    for (NSUInteger pageIndex = 0; pageIndex < document.pageCount; pageIndex++) {
+        MyPDFPage *page = (MyPDFPage *)[document pageAtIndex:pageIndex];
+        if (page.drawing) {
+            self.pageToViewMapping[page.label].drawing = page.drawing;
+        }
+    }
+}
+
 -(void)undo:(PDFPage *)pdfPage {
     PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
     [[canvasView undoManager] undo];

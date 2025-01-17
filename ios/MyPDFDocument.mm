@@ -19,7 +19,7 @@
         MyPDFPage *page = (MyPDFPage *)[self pageAtIndex:pageIndex];
         if (page.drawing) {
             // Archive the drawing using secure coding
-            NSData *drawingData = [NSKeyedArchiver archivedDataWithRootObject:page.drawing requiringSecureCoding:NO error:NULL];
+            NSData *drawingData = [page.drawing dataRepresentation];
             [drawingsData setObject:drawingData forKey:@(pageIndex)];
         }
     }
@@ -53,16 +53,13 @@
     if (drawingsData) {
         for (NSNumber *pageIndexKey in drawingsData) {
             NSData *drawingData = drawingsData[pageIndexKey];
-            
-            PKDrawing *drawing = [NSKeyedUnarchiver unarchivedObjectOfClass:[PKDrawing class] fromData:drawingData error:&error];
+            PKDrawing *drawing = [[PKDrawing alloc] initWithData:drawingData error:&error];
             if (error) {
                 NSLog(@"Error unarchiving drawing: %@", error);
                 continue;
             }
-            if (drawing) {
-                MyPDFPage *page = (MyPDFPage *)[self pageAtIndex:pageIndexKey.integerValue];
-                page.drawing = drawing;
-            }
+            MyPDFPage *page = (MyPDFPage *)[self pageAtIndex:pageIndexKey.integerValue];
+            page.drawing = drawing;
         }
     }
 

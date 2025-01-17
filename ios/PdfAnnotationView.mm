@@ -124,6 +124,7 @@ using namespace facebook::react;
     if (oldViewProps.annotationFile != newViewProps.annotationFile) {
         NSString * filePath = [[NSString alloc] initWithUTF8String: newViewProps.annotationFile.c_str()];
         [(MyPDFDocument* )_view.document loadDrawingsFromDisk:filePath];
+        [_pencilKitCoordinator updateDrawings:(MyPDFDocument *)_view.document];
     }
     if (oldViewProps.thumbnailMode != newViewProps.thumbnailMode) {
         [self updateThumbnailMode:newViewProps.thumbnailMode];
@@ -172,6 +173,7 @@ using namespace facebook::react;
             return NSLog(@"Missing parameter for loading annotations!");
         }
         [(MyPDFDocument* )_view.document loadDrawingsFromDisk:(NSString*) args[0]];
+        [_pencilKitCoordinator updateDrawings:(MyPDFDocument *)_view.document];
     }
     if ([commandName isEqual:@"undo"]) {
         [_pencilKitCoordinator undo:_view.currentPage];
