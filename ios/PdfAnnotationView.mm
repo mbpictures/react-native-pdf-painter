@@ -58,6 +58,11 @@ using namespace facebook::react;
         pdfUrl = [pdfUrl stringByRemovingPercentEncoding];
         NSURL* url = [NSURL fileURLWithPath:pdfUrl isDirectory:NO];
         _view.document = [[MyPDFDocument alloc] initWithURL:url];
+        PdfAnnotationViewEventEmitter::OnPageCount result = PdfAnnotationViewEventEmitter::OnPageCount{(int)_view.document.pageCount};
+        if (_eventEmitter != nullptr) {
+           std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
+            ->onPageCount(result);
+         }
     }
     if (oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) {
         if (@available(iOS 16.0, *)) {
@@ -121,6 +126,12 @@ using namespace facebook::react;
     }
     if ([commandName isEqual:@"clear"]) {
         [_pencilKitCoordinator clear:_view.currentPage];
+    }
+    if ([commandName isEqual:@"setPage"]) {
+        if (args.count == 0) {
+            return NSLog(@"Missing parameter page!");
+        }
+        [_view goToPage:[_view.document pageAtIndex:(NSUInteger) args[0]]];
     }
 }
 
