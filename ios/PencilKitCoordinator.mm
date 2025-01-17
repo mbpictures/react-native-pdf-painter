@@ -29,6 +29,7 @@
         PKCanvasView *canvasView = [[PKCanvasView alloc] initWithFrame:CGRectZero];
         canvasView.drawingPolicy = PKCanvasViewDrawingPolicyAnyInput;
         canvasView.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+        canvasView.delegate = self;
         
         canvasView.backgroundColor = [UIColor clearColor];
         self.pageToViewMapping[page.label] = canvasView;
@@ -147,6 +148,12 @@
     
     // If the string is not a valid hex color with alpha or RGB, return default color (black)
     return [UIColor blackColor];
+}
+
+- (void)canvasViewDrawingDidChange:(PKCanvasView *)canvasView {
+    if ([self.delegate respondsToSelector:@selector(pencilKitCoordinatorDrawingDidChange:)]) {
+        [self.delegate pencilKitCoordinatorDrawingDidChange:self];
+    }
 }
 
 @end

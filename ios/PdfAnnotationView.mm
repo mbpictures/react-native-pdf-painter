@@ -34,6 +34,7 @@ using namespace facebook::react;
       _view.displayDirection = kPDFDisplayDirectionHorizontal;
       _view.autoScales = true;
       _pencilKitCoordinator = [[PencilKitCoordinator alloc] init];
+      _pencilKitCoordinator.delegate = self;
       if (@available(iOS 16.0, *)) {
           _view.pageOverlayViewProvider = _pencilKitCoordinator;
       }
@@ -100,6 +101,16 @@ using namespace facebook::react;
     }
 
     [super updateProps:props oldProps:oldProps];
+}
+
+- (void)pencilKitCoordinatorDrawingDidChange:(PencilKitCoordinator *)coordinator {
+    const auto &props = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
+    if (!props.autoSave) {
+        return;
+    }
+    NSString * filePath = [[NSString alloc] initWithUTF8String: props.annotationFile.c_str()];
+    [_pencilKitCoordinator prepareForPersistance:(MyPDFDocument *)_view.document];
+    [(MyPDFDocument* )_view.document saveDrawingsToDisk:filePath];
 }
 
 - (void)updateThumbnailMode:(bool) isThumbnail {

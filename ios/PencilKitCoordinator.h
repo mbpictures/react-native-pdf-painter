@@ -9,9 +9,15 @@
 NS_ASSUME_NONNULL_BEGIN
 
 using namespace facebook::react;
-@interface PencilKitCoordinator : NSObject <PDFPageOverlayViewProvider>
 
+@class PencilKitCoordinator;
+@protocol PencilKitCoordinatorDelegate <NSObject>
+- (void)pencilKitCoordinatorDrawingDidChange:(PencilKitCoordinator *)coordinator;
+@end
+
+@interface PencilKitCoordinator : NSObject <PDFPageOverlayViewProvider, PKCanvasViewDelegate>
 @property (nonatomic, strong) NSMutableDictionary<NSString *, PKCanvasView *> *pageToViewMapping;
+@property (nonatomic, weak) id<PencilKitCoordinatorDelegate> delegate;
 
 - (UIView *)pdfView:(PDFView *)view overlayViewForPage:(PDFPage *)page;
 - (void)pdfView:(PDFView *)pdfView willEndDisplayingOverlayView:(UIView *)overlayView forPage:(PDFPage *)page;
