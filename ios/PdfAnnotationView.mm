@@ -79,6 +79,10 @@ using namespace facebook::react;
            std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
             ->onPageCount(result);
          }
+        
+        _view.minScaleFactor = _view.scaleFactorForSizeToFit;
+        _view.maxScaleFactor = 4.0;
+        _view.scaleFactor = _view.scaleFactorForSizeToFit;
     }
     if (oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) {
         if (@available(iOS 16.0, *)) {
