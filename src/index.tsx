@@ -12,7 +12,14 @@ import {
     useRef,
     useState,
 } from 'react';
-import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+    Platform,
+    type StyleProp,
+    StyleSheet,
+    TouchableOpacity,
+    View,
+    type ViewStyle,
+} from 'react-native';
 import type { BubblingEventHandler } from 'react-native/Libraries/Types/CodegenTypes';
 export * from './PdfAnnotationViewNativeComponent';
 
@@ -32,6 +39,7 @@ export interface Props
     onPageCount?: (pageCount: number) => unknown;
     renderPageIndicatorItem?: (props: PageIndicatorProps) => ReactElement;
     currentPage?: number;
+    containerStyles?: StyleProp<ViewStyle>;
 }
 
 export interface PageIndicatorProps {
@@ -61,6 +69,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
             renderPageIndicatorItem,
             onPageCount,
             onPageChange,
+            containerStyles,
             ...props
         },
         ref
@@ -135,10 +144,10 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
         const RenderItem = renderPageIndicatorItem ?? PageIndicator;
 
         return (
-            <View style={[styles.container, style]}>
+            <View style={[styles.container, containerStyles]}>
                 <NativePdfAnnotationView
                     {...props}
-                    style={styles.viewer}
+                    style={[styles.viewer, style]}
                     ref={nativeRef}
                     brushSettings={Platform.select({
                         ios: brushSettings ?? {
