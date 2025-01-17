@@ -160,21 +160,23 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                     onPageCount={handlePageCount}
                     onPageChange={handlePageChange}
                 />
-                <View style={styles.pageIndicatorContainer}>
-                    {Array.from(Array(pageCount).keys()).map((i) => (
-                        <RenderItem
-                            key={i}
-                            active={(currentPage ?? stateCurrentPage) === i}
-                            onClick={() => {
-                                if (currentPage && onPageChange) {
-                                    onPageChange(i);
-                                    return;
-                                }
-                                setStateCurrentPage(i);
-                            }}
-                        />
-                    ))}
-                </View>
+                {!props.thumbnailMode && (
+                    <View style={styles.pageIndicatorContainer}>
+                        {Array.from(Array(pageCount).keys()).map((i) => (
+                            <RenderItem
+                                key={i}
+                                active={(currentPage ?? stateCurrentPage) === i}
+                                onClick={() => {
+                                    if (currentPage && onPageChange) {
+                                        onPageChange(i);
+                                        return;
+                                    }
+                                    setStateCurrentPage(i);
+                                }}
+                            />
+                        ))}
+                    </View>
+                )}
             </View>
         );
     }
