@@ -1,7 +1,9 @@
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 import type { HostComponent, ViewProps } from 'react-native';
 import type {
+    BubblingEventHandler,
     Float,
+    Int32,
     WithDefault,
 } from 'react-native/Libraries/Types/CodegenTypes';
 import React from 'react';
@@ -20,6 +22,14 @@ export interface BrushSettings {
     size: Float;
 }
 
+export type PageCountEvent = {
+    pageCount: Int32;
+};
+
+export type PageChangeEvent = {
+    currentPage: Int32;
+};
+
 export interface NativeProps extends ViewProps {
     backgroundColor?: string;
     pdfUrl?: string;
@@ -27,8 +37,9 @@ export interface NativeProps extends ViewProps {
     annotationFile?: string;
     autoSave?: boolean;
     brushSettings?: BrushSettings;
-    hidePagination?: boolean;
     iosToolPickerVisible?: boolean;
+    onPageCount?: BubblingEventHandler<PageCountEvent> | null;
+    onPageChange?: BubblingEventHandler<PageChangeEvent> | null;
 }
 
 type ComponentType = HostComponent<NativeProps>;
@@ -49,6 +60,7 @@ interface NativeCommands {
     undo: (viewRef: React.ElementRef<ComponentType>) => void;
     redo: (viewRef: React.ElementRef<ComponentType>) => void;
     clear: (viewRef: React.ElementRef<ComponentType>) => void;
+    setPage: (viewRef: React.ElementRef<ComponentType>, page: Int32) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
@@ -58,5 +70,6 @@ export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
         'undo',
         'redo',
         'clear',
+        'setPage',
     ],
 });
