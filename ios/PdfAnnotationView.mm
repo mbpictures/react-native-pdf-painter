@@ -52,6 +52,10 @@ using namespace facebook::react;
 
     if (oldViewProps.pdfUrl != newViewProps.pdfUrl) {
         NSString * pdfUrl = [[NSString alloc] initWithUTF8String: newViewProps.pdfUrl.c_str()];
+        if ([pdfUrl hasPrefix:@"file://"]) {
+            pdfUrl = [pdfUrl stringByReplacingOccurrencesOfString:@"file://" withString:@""];
+        }
+        pdfUrl = [pdfUrl stringByRemovingPercentEncoding];
         NSURL* url = [NSURL fileURLWithPath:pdfUrl isDirectory:NO];
         _view.document = [[MyPDFDocument alloc] initWithURL:url];
     }
