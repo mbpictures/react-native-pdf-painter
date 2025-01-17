@@ -40,6 +40,7 @@ export interface Props
     renderPageIndicatorItem?: (props: PageIndicatorProps) => ReactElement;
     currentPage?: number;
     containerStyles?: StyleProp<ViewStyle>;
+    hidePagination?: boolean;
 }
 
 export interface PageIndicatorProps {
@@ -160,7 +161,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                     onPageCount={handlePageCount}
                     onPageChange={handlePageChange}
                 />
-                {!props.thumbnailMode && (
+                {!props.thumbnailMode && !props.hidePagination && (
                     <View style={styles.pageIndicatorContainer}>
                         {Array.from(Array(pageCount).keys()).map((i) => (
                             <RenderItem
