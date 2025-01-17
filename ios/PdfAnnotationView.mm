@@ -44,12 +44,37 @@ using namespace facebook::react;
                                                name:PDFViewPageChangedNotification
                                                object:_view];
 
+      UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+      tapRecognizer.numberOfTapsRequired = 1;
+      tapRecognizer.cancelsTouchesInView = NO;
+      [_view addGestureRecognizer:tapRecognizer];
       [_view usePageViewController:true withViewOptions:NULL];
 
       [self updateThumbnailMode:false];
   }
 
   return self;
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)sender {
+    CGPoint touchLocation = [sender locationInView:_view];
+    CGFloat screenWidth = _view.bounds.size.width;
+
+    NSInteger delta = 0;
+    if (touchLocation.x < screenWidth * 0.25) {
+        delta = -1;
+    } else if (touchLocation.x > screenWidth * 0.75) {
+        delta = 1;
+    }
+    
+    PDFPage *currentPage = _view.currentPage;
+    if (currentPage) {
+        NSUInteger currentIndex = [currentPage.document indexForPage:currentPage];
+        NSUInteger nextIndex = currentIndex + delta;
+        if (nextIndex >= 0 && nextIndex < _view.document.pageCount) {
+            [_view goToPage:[currentPage.document pageAtIndex:nextIndex]];
+        }
+    }
 }
 
 - (void)handlePageChange:(NSNotification *)notification {
