@@ -28,10 +28,10 @@ class PdfAnnotationViewModel : ViewModel() {
     private val _pdfFile = MutableStateFlow<File?>(null)
     private val _thumbnailMode = MutableStateFlow(false)
     private val _annotationFile = MutableStateFlow<File?>(null)
-    private val _autoSave = MutableStateFlow(true)
+    private var _autoSave = false
     private val _brushSettings = MutableStateFlow<BrushSettings?>(null)
     private val _hidePagination = MutableStateFlow(false)
-    private val _strokes = MutableStateFlow(Strokes())
+    private val _strokes = MutableStateFlow(makeStrokes())
     private val _serializer = Serializer()
     private var _loadedAnnotationPath = ""
 
@@ -40,7 +40,6 @@ class PdfAnnotationViewModel : ViewModel() {
     val pdfFile: StateFlow<File?> get() = _pdfFile
     val thumbnailMode: StateFlow<Boolean> get() = _thumbnailMode
     val annotationFile: StateFlow<File?> get() = _annotationFile
-    val autoSave: StateFlow<Boolean> get() = _autoSave
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
     val hidePagination: StateFlow<Boolean> get() = _hidePagination
     val strokes: StateFlow<Strokes> get() = _strokes
@@ -65,7 +64,7 @@ class PdfAnnotationViewModel : ViewModel() {
     }
 
     fun updateAutoSave(newAutoSave: Boolean) {
-        _autoSave.value = newAutoSave
+        _autoSave = newAutoSave
     }
 
     fun updateBrushSettings(newBrushSettings: ReadableMap?) {
@@ -89,16 +88,14 @@ class PdfAnnotationViewModel : ViewModel() {
 
     fun saveAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
-            if (_autoSave.value) {
-                _serializer.storeStrokes(_strokes.value.strokes, it)
-            }
+            _serializer.storeStrokes(_strokes.value.strokes, it)
         }
     }
 
     fun loadAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
             if (it.absolutePath == _loadedAnnotationPath) return
-            _strokes.value = Strokes()
+            _strokes.value = makeStrokes()
             _strokes.value.setStrokes(_serializer.loadStrokes(it))
             _loadedAnnotationPath = it.absolutePath
         }
@@ -128,9 +125,22 @@ class PdfAnnotationViewModel : ViewModel() {
     private fun constructFile(path: String?): File? {
         return path?.let {File(URLDecoder.decode(it, "UTF-8").replace("file://", ""))}
     }
+
+    private fun makeStrokes(): Strokes {
+        return Strokes(
+            onStrokesChange = {
+                if (!_autoSave) return@Strokes
+                saveAnnotations()
+            }
+        )
+    }
 }
 
-data class Strokes(var strokes: MutableMap<Int, Set<Stroke>> = mutableMapOf(), var redoMap: MutableMap<Int, Set<Stroke>> = mutableMapOf()) {
+data class Strokes(
+    var strokes: MutableMap<Int, Set<Stroke>> = mutableMapOf(),
+    var redoMap: MutableMap<Int, Set<Stroke>> = mutableMapOf(),
+    var onStrokesChange: (() -> Unit)? = null
+) {
     fun setStrokesPerPage(page: Int, newStrokes: Set<Stroke>, size: Size) {
         if (size.width == 0f || size.height == 0f || newStrokes.isEmpty()) return
         strokes = strokes.toMutableMap().apply {
@@ -157,6 +167,7 @@ data class Strokes(var strokes: MutableMap<Int, Set<Stroke>> = mutableMapOf(), v
                 )
             }.toSet()
         }
+        onStrokesChange?.invoke()
     }
 
     fun getStrokes(page: Int, size: Size): Set<Stroke> {
