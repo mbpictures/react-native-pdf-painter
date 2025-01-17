@@ -2,9 +2,15 @@ package com.pdfannotation
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.ui.platform.ComposeView
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.uimanager.UIManagerHelper
+import com.facebook.react.uimanager.events.Event
 import com.pdfannotation.viewer.PdfAnnotationViewModel
 import com.pdfannotation.viewer.PdfAnnotationViewer
 
@@ -31,7 +37,10 @@ class PdfAnnotationView : LinearLayout {
       LayoutParams.WRAP_CONTENT
     )
 
-    viewModel = PdfAnnotationViewModel()
+    viewModel = PdfAnnotationViewModel(
+      onPageCount = { pageCount -> emitPageCount(pageCount) },
+      onPageChange = { currentPage -> emitPageChange(currentPage) }
+    )
     ComposeView(context).also {
       it.layoutParams = LayoutParams(
         LayoutParams.WRAP_CONTENT,
@@ -44,5 +53,49 @@ class PdfAnnotationView : LinearLayout {
 
       addView(it)
     }
+  }
+
+  private fun emitPageCount(pageCount: Int) {
+    val reactContext = context as ReactContext
+    val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+    val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+    val payload = Arguments.createMap().apply {
+      putInt("pageCount", pageCount)
+    }
+    val event = OnPageCountEvent(surfaceId, id, payload)
+
+    eventDispatcher?.dispatchEvent(event)
+  }
+
+  private fun emitPageChange(currentPage: Int) {
+    val reactContext = context as ReactContext
+    val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+    val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+    val payload = Arguments.createMap().apply {
+      putInt("currentPage", currentPage)
+    }
+    val event = OnPageChangeEvent(surfaceId, id, payload)
+
+    eventDispatcher?.dispatchEvent(event)
+  }
+
+  inner class OnPageCountEvent(
+    surfaceId: Int,
+    viewId: Int,
+    private val payload: WritableMap
+  ) : Event<OnPageCountEvent>(surfaceId, viewId) {
+    override fun getEventName() = "onPageCount"
+
+    override fun getEventData() = payload
+  }
+
+  inner class OnPageChangeEvent(
+    surfaceId: Int,
+    viewId: Int,
+    private val payload: WritableMap
+  ) : Event<OnPageChangeEvent>(surfaceId, viewId) {
+    override fun getEventName() = "onPageChange"
+
+    override fun getEventData() = payload
   }
 }

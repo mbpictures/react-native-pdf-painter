@@ -23,15 +23,19 @@ data class BrushSettings(
     val isEraser: Boolean = false
 )
 
-class PdfAnnotationViewModel : ViewModel() {
+class PdfAnnotationViewModel(
+    private val onPageCount: ((pageCount: Int) -> Unit)? = null,
+    private val onPageChange: ((currentPage: Int) -> Unit)? = null
+) : ViewModel() {
     private val _backgroundColor = MutableStateFlow<Int?>(null)
     private val _pdfFile = MutableStateFlow<File?>(null)
     private val _thumbnailMode = MutableStateFlow(false)
     private val _annotationFile = MutableStateFlow<File?>(null)
     private var _autoSave = false
     private val _brushSettings = MutableStateFlow<BrushSettings?>(null)
-    private val _hidePagination = MutableStateFlow(false)
     private val _strokes = MutableStateFlow(makeStrokes())
+    private val _currentPage = MutableStateFlow(0)
+    private var _pageCount = 0
     private val _serializer = Serializer()
     private var _loadedAnnotationPath = ""
 
@@ -41,9 +45,8 @@ class PdfAnnotationViewModel : ViewModel() {
     val thumbnailMode: StateFlow<Boolean> get() = _thumbnailMode
     val annotationFile: StateFlow<File?> get() = _annotationFile
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
-    val hidePagination: StateFlow<Boolean> get() = _hidePagination
     val strokes: StateFlow<Strokes> get() = _strokes
-    var currentPage: Int = -1
+    val currentPage: StateFlow<Int> get() = _currentPage
 
     fun updateBackgroundColor(newColor: String?) {
         _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
@@ -69,10 +72,6 @@ class PdfAnnotationViewModel : ViewModel() {
 
     fun updateBrushSettings(newBrushSettings: ReadableMap?) {
         _brushSettings.value = newBrushSettings?.let { makeBrushSettings(it) }
-    }
-
-    fun updateHidePagination(newPagination: Boolean) {
-        _hidePagination.value = newPagination
     }
 
     private fun makeBrushSettings(settings: ReadableMap): BrushSettings {
@@ -102,24 +101,34 @@ class PdfAnnotationViewModel : ViewModel() {
     }
 
     fun undo() {
-        _strokes.update { it.undo(currentPage) }
+        _strokes.update { it.undo(currentPage.value) }
     }
 
     fun redo() {
-        _strokes.update { it.redo(currentPage) }
+        _strokes.update { it.redo(currentPage.value) }
     }
 
     fun clear() {
         _strokes.update {
             it.copy(
                 strokes = it.strokes.toMutableMap().apply {
-                    this[currentPage] = emptySet()
+                    this[currentPage.value] = emptySet()
                 },
                 redoMap = it.redoMap.toMutableMap().apply {
-                    this[currentPage] = emptySet()
+                    this[currentPage.value] = emptySet()
                 }
             )
         }
+    }
+
+    fun setPage(page: Int) {
+        _currentPage.value = page
+        onPageChange?.invoke(page)
+    }
+
+    fun setPageCount(pageCount: Int) {
+        _pageCount = pageCount
+        onPageCount?.invoke(pageCount)
     }
 
     private fun constructFile(path: String?): File? {

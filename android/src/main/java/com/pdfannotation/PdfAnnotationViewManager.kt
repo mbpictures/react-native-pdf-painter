@@ -84,4 +84,8 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
   override fun clear(view: PdfAnnotationView?) {
     view?.viewModel?.clear();
   }
+
+  override fun setPage(view: PdfAnnotationView?, page: Int) {
+    view?.viewModel?.setPage(page)
+  }
 }

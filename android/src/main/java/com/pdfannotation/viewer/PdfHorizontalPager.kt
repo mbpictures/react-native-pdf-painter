@@ -36,19 +36,12 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     val hidePagination by viewModel.hidePagination.collectAsState()
     val strokes by viewModel.strokes.collectAsState()
     val backgroundColor by viewModel.backgroundColor.collectAsState()
+    val currentPage by viewModel.currentPage.collectAsState()
 
     val scope = rememberCoroutineScope()
     val renderer = remember(file, backgroundColor) { file?.let {PdfRender(it, 3f, backgroundColor) }}
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
     val canScroll by remember { derivedStateOf { brushSettings == null } }
-
-    DisposableEffect (viewModel) {
-        onDispose {
-            if (viewModel.autoSave.value) {
-                viewModel.saveAnnotations()
-            }
-        }
-    }
 
     DisposableEffect(key1 = Unit) {
         onDispose {
@@ -56,8 +49,20 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
         }
     }
 
-    LaunchedEffect(pagerState.currentPage) {
-        viewModel.currentPage = pagerState.currentPage
+    LaunchedEffect(pagerState.targetPage) {
+        viewModel.setPage(pagerState.targetPage)
+    }
+
+    LaunchedEffect(renderer) {
+        viewModel.setPageCount(renderer?.pageCount ?: 0)
+    }
+
+    LaunchedEffect(currentPage) {
+        if (currentPage != pagerState.targetPage) {
+            scope.launch {
+                pagerState.animateScrollToPage(currentPage)
+            }
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
