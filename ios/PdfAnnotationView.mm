@@ -37,12 +37,27 @@ using namespace facebook::react;
       if (@available(iOS 16.0, *)) {
           _view.pageOverlayViewProvider = _pencilKitCoordinator;
       }
+      
+      [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(handlePageChange:)
+                                               name:PDFViewPageChangedNotification
+                                               object:_view];
+
       [_view usePageViewController:true withViewOptions:NULL];
 
       [self updateThumbnailMode:false];
   }
 
   return self;
+}
+
+- (void)handlePageChange:(NSNotification *)notification {
+    NSUInteger index = [_view.document indexForPage:_view.currentPage];
+    PdfAnnotationViewEventEmitter::OnPageChange event = PdfAnnotationViewEventEmitter::OnPageChange{(int)index};
+    if (_eventEmitter != nullptr) {
+       std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
+        ->onPageChange(event);
+     }
 }
 
 - (void)updateProps:(Props::Shared const &)props oldProps:(Props::Shared const &)oldProps
