@@ -150,6 +150,7 @@ export default function App() {
                         ref={pdfViewer}
                         thumbnailMode={thumbnail}
                         iosToolPickerVisible={iosToolbar}
+                        autoSave
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
