@@ -31,6 +31,7 @@ export interface Handle {
     undo: () => void;
     redo: () => void;
     clear: () => void;
+    setPage: (page: number) => void;
 }
 
 export interface Props
