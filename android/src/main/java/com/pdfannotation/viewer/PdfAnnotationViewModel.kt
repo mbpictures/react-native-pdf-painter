@@ -102,10 +102,14 @@ class PdfAnnotationViewModel(
 
     fun undo() {
         _strokes.update { it.undo(currentPage.value) }
+        if (!_autoSave) return
+        saveAnnotations()
     }
 
     fun redo() {
         _strokes.update { it.redo(currentPage.value) }
+        if (!_autoSave) return
+        saveAnnotations()
     }
 
     fun clear() {
@@ -119,6 +123,8 @@ class PdfAnnotationViewModel(
                 }
             )
         }
+        if (!_autoSave) return
+        saveAnnotations()
     }
 
     fun setPage(page: Int) {
