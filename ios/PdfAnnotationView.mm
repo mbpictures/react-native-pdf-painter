@@ -99,11 +99,13 @@ using namespace facebook::react;
         pdfUrl = [pdfUrl stringByRemovingPercentEncoding];
         NSURL* url = [NSURL fileURLWithPath:pdfUrl isDirectory:NO];
         _view.document = [[MyPDFDocument alloc] initWithURL:url];
-        PdfAnnotationViewEventEmitter::OnPageCount result = PdfAnnotationViewEventEmitter::OnPageCount{(int)_view.document.pageCount};
-        if (_eventEmitter != nullptr) {
-           std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
-            ->onPageCount(result);
-         }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            PdfAnnotationViewEventEmitter::OnPageCount result = PdfAnnotationViewEventEmitter::OnPageCount{(int)self->_view.document.pageCount};
+            if (self->_eventEmitter != nullptr) {
+                std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(self->_eventEmitter)
+                ->onPageCount(result);
+             }
+        });
         
         _view.minScaleFactor = _view.scaleFactorForSizeToFit;
         _view.maxScaleFactor = 4.0;
