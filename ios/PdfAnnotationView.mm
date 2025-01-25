@@ -188,7 +188,11 @@ using namespace facebook::react;
         if (args.count == 0) {
             return NSLog(@"Missing parameter page!");
         }
-        [_view goToPage:[_view.document pageAtIndex:(NSUInteger) args[0]]];
+        id firstElement = [args objectAtIndex:0];
+        if ([firstElement respondsToSelector:@selector(integerValue)]) {
+            NSInteger firstInt = [firstElement integerValue];
+            [_view goToPage:[_view.document pageAtIndex:firstInt]];
+        }
     }
 }
 
