@@ -154,6 +154,7 @@ export default function App() {
                         onDocumentFinished={(direction) =>
                             console.log(`OnDocumentFinished: ${direction}`)
                         }
+                        onTap={(e) => console.log(e.nativeEvent)}
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
