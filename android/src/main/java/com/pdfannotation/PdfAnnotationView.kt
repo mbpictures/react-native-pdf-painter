@@ -40,7 +40,8 @@ class PdfAnnotationView : LinearLayout {
     viewModel = PdfAnnotationViewModel(
       onPageCount = { pageCount -> emitPageCount(pageCount) },
       onPageChange = { currentPage -> emitPageChange(currentPage) },
-      onDocumentFinished = { next -> emitDocumentFinished(next) }
+      onDocumentFinished = { next -> emitDocumentFinished(next) },
+      onTap = { x, y -> emitTap(x, y) }
     )
     ComposeView(context).also {
       it.layoutParams = LayoutParams(
@@ -92,6 +93,19 @@ class PdfAnnotationView : LinearLayout {
     eventDispatcher?.dispatchEvent(event)
   }
 
+  private fun emitTap(x: Float, y: Float) {
+    val reactContext = context as ReactContext
+    val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+    val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+    val payload = Arguments.createMap().apply {
+      putDouble("x", x.toDouble())
+      putDouble("y", y.toDouble())
+    }
+    val event = OnTapEvent(surfaceId, id, payload)
+
+    eventDispatcher?.dispatchEvent(event)
+  }
+
   inner class OnPageCountEvent(
     surfaceId: Int,
     viewId: Int,
@@ -118,6 +132,16 @@ class PdfAnnotationView : LinearLayout {
     private val payload: WritableMap
   ) : Event<OnDocumentFinishedEvent>(surfaceId, viewId) {
     override fun getEventName() = "onDocumentFinished"
+
+    override fun getEventData() = payload
+  }
+
+  inner class OnTapEvent(
+    surfaceId: Int,
+    viewId: Int,
+    private val payload: WritableMap
+  ) : Event<OnDocumentFinishedEvent>(surfaceId, viewId) {
+    override fun getEventName() = "onTap"
 
     override fun getEventData() = payload
   }

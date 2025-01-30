@@ -35,7 +35,8 @@ fun PdfPage(
     page: PdfRender.Page?,
     brushSettings: BrushSettings?,
     viewModel: Strokes,
-    onChangePage: (Int) -> Unit = {}
+    onChangePage: (Int) -> Unit = {},
+    onTap: (Float, Float) -> Unit = { _, _ -> }
 ) {
     DisposableEffect(key1 = page?.hash) {
         page?.load()
@@ -100,6 +101,8 @@ fun PdfPage(
                             onChangePage(1)
                         } else if (offset.x < size.width * 0.2) {
                             onChangePage(-1)
+                        } else {
+                            onTap(offset.x, offset.y)
                         }
                     },
                     onDoubleTap = { position ->

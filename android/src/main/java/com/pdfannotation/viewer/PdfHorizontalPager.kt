@@ -73,6 +73,9 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                         }
                         pagerState.animateScrollToPage(nextPage)
                     }
+                },
+                onTap = { x, y ->
+                    viewModel.handleTap(x, y)
                 }
             )
         }

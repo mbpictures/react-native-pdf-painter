@@ -26,7 +26,8 @@ data class BrushSettings(
 class PdfAnnotationViewModel(
     private val onPageCount: ((pageCount: Int) -> Unit)? = null,
     private val onPageChange: ((currentPage: Int) -> Unit)? = null,
-    private val onDocumentFinished: ((next: Boolean) -> Unit)? = null
+    private val onDocumentFinished: ((next: Boolean) -> Unit)? = null,
+    private val onTap: ((x: Float, y: Float) -> Unit)? = null
 ) : ViewModel() {
     private val _backgroundColor = MutableStateFlow<Int?>(null)
     private val _pdfFile = MutableStateFlow<File?>(null)
@@ -140,6 +141,10 @@ class PdfAnnotationViewModel(
 
     fun handleDocumentFinished(next: Boolean) {
         onDocumentFinished?.invoke(next)
+    }
+
+    fun handleTap(x: Float, y: Float) {
+        onTap?.invoke(x, y)
     }
 
     private fun constructFile(path: String?): File? {
