@@ -101,12 +101,14 @@ class StrokeAuthoringTouchListener(
         // TODO: Check if there is a chance to have more than one pointer ID within event pointers
         for (pointerIndex in 0 until event.pointerCount) {
             if (event.getPointerId(pointerIndex) != pointerId) continue
-            strokeAuthoringState.inProgressStrokesView.addToStroke(
-                event,
-                pointerId,
-                strokeId,
-                predictedEvent,
-            )
+            try {
+                strokeAuthoringState.inProgressStrokesView.addToStroke(
+                    event,
+                    pointerId,
+                    strokeId,
+                    predictedEvent,
+                )
+            } catch (_: Exception) {} // possible "Stroke with ID was not found" exception
         }
     }
 
