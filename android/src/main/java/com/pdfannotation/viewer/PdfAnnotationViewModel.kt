@@ -138,7 +138,11 @@ class PdfAnnotationViewModel(
     }
 
     private fun constructFile(path: String?): File? {
-        return path?.let {File(URLDecoder.decode(it, "UTF-8").replace("file://", ""))}
+        val result = path?.let {File(URLDecoder.decode(it, "UTF-8").replace("file://", ""))}
+        if (result?.exists() == true) {
+            return result
+        }
+        return null
     }
 
     private fun makeStrokes(): Strokes {
