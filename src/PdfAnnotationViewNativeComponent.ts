@@ -2,6 +2,7 @@ import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNati
 import type { HostComponent, ViewProps } from 'react-native';
 import type {
     BubblingEventHandler,
+    Double,
     Float,
     Int32,
     WithDefault,
@@ -33,6 +34,10 @@ export type PageChangeEvent = {
 export type DocumentFinishedEvent = {
     next: boolean;
 };
+export type TapEvent = {
+    x: Double;
+    y: Double;
+};
 
 export interface NativeProps extends ViewProps {
     backgroundColor?: string;
@@ -45,6 +50,7 @@ export interface NativeProps extends ViewProps {
     onPageCount?: BubblingEventHandler<PageCountEvent> | null;
     onPageChange?: BubblingEventHandler<PageChangeEvent> | null;
     onDocumentFinished?: BubblingEventHandler<DocumentFinishedEvent> | null;
+    onTap?: BubblingEventHandler<TapEvent> | null;
 }
 
 type ComponentType = HostComponent<NativeProps>;
