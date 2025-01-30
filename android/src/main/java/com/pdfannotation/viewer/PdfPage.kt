@@ -54,6 +54,7 @@ fun PdfPage(
         var zoomState by remember { mutableStateOf(ZoomState(contentSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat()), maxScale = baseScale * 5.0f)) }
         val context = LocalContext.current
         val imageModel = remember(context, bitmap) {
+            if (bitmap.isRecycled) return@remember null
             ImageRequest.Builder(context)
                 .data(bitmap)
                 .build()
