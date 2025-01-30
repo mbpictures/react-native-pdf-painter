@@ -65,6 +65,12 @@ using namespace facebook::react;
         delta = -1;
     } else if (touchLocation.x > screenWidth * 0.75) {
         delta = 1;
+    } else {
+        PdfAnnotationViewEventEmitter::OnTap event = PdfAnnotationViewEventEmitter::OnTap{touchLocation.x, touchLocation.y};
+        if (_eventEmitter != nullptr) {
+           std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
+            ->onTap(event);
+        }
     }
     
     PDFPage *currentPage = _view.currentPage;
