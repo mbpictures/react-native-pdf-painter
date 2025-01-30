@@ -1,5 +1,6 @@
 import NativePdfAnnotationView, {
     Commands,
+    type DocumentFinishedEvent,
     type NativeProps,
     type PageChangeEvent,
     type PageCountEvent,
@@ -35,7 +36,10 @@ export interface Handle {
 }
 
 export interface Props
-    extends Omit<NativeProps, 'onPageCount' | 'onPageChange'> {
+    extends Omit<
+        NativeProps,
+        'onPageCount' | 'onPageChange' | 'onDocumentFinished'
+    > {
     onPageChange?: (currentPage: number) => unknown;
     onPageCount?: (pageCount: number) => unknown;
     renderPageIndicatorItem?: (props: PageIndicatorProps) => ReactElement;
@@ -43,6 +47,7 @@ export interface Props
     containerStyles?: StyleProp<ViewStyle>;
     hidePagination?: boolean;
     pageIndicatorContainerStyles?: StyleProp<ViewStyle>;
+    onDocumentFinished?: (direction: 'next' | 'previous') => unknown;
 }
 
 export interface PageIndicatorProps {
@@ -74,6 +79,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
             onPageChange,
             containerStyles,
             pageIndicatorContainerStyles,
+            onDocumentFinished,
             ...props
         },
         ref
@@ -104,6 +110,12 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
         ) => {
             setStateCurrentPage(event.nativeEvent.currentPage);
             onPageChange?.(event.nativeEvent.currentPage);
+        };
+
+        const handleDocumentFinished: BubblingEventHandler<
+            DocumentFinishedEvent
+        > = (event) => {
+            onDocumentFinished?.(event.nativeEvent.next ? 'next' : 'previous');
         };
 
         useImperativeHandle(ref, () => ({
@@ -163,6 +175,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                     })}
                     onPageCount={handlePageCount}
                     onPageChange={handlePageChange}
+                    onDocumentFinished={handleDocumentFinished}
                 />
                 {!props.thumbnailMode && !props.hidePagination && (
                     <View

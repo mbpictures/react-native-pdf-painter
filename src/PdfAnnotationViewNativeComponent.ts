@@ -30,6 +30,10 @@ export type PageChangeEvent = {
     currentPage: Int32;
 };
 
+export type DocumentFinishedEvent = {
+    next: boolean;
+};
+
 export interface NativeProps extends ViewProps {
     backgroundColor?: string;
     pdfUrl?: string;
@@ -40,6 +44,7 @@ export interface NativeProps extends ViewProps {
     iosToolPickerVisible?: boolean;
     onPageCount?: BubblingEventHandler<PageCountEvent> | null;
     onPageChange?: BubblingEventHandler<PageChangeEvent> | null;
+    onDocumentFinished?: BubblingEventHandler<DocumentFinishedEvent> | null;
 }
 
 type ComponentType = HostComponent<NativeProps>;
