@@ -73,6 +73,12 @@ using namespace facebook::react;
         NSUInteger nextIndex = currentIndex + delta;
         if (nextIndex >= 0 && nextIndex < _view.document.pageCount) {
             [_view goToPage:[currentPage.document pageAtIndex:nextIndex]];
+        } else {
+            PdfAnnotationViewEventEmitter::OnDocumentFinished event = PdfAnnotationViewEventEmitter::OnDocumentFinished{delta > 0};
+            if (_eventEmitter != nullptr) {
+               std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
+                ->onDocumentFinished(event);
+            }
         }
     }
 }
