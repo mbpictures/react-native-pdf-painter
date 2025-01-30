@@ -39,7 +39,8 @@ class PdfAnnotationView : LinearLayout {
 
     viewModel = PdfAnnotationViewModel(
       onPageCount = { pageCount -> emitPageCount(pageCount) },
-      onPageChange = { currentPage -> emitPageChange(currentPage) }
+      onPageChange = { currentPage -> emitPageChange(currentPage) },
+      onDocumentFinished = { next -> emitDocumentFinished(next) }
     )
     ComposeView(context).also {
       it.layoutParams = LayoutParams(
@@ -79,6 +80,18 @@ class PdfAnnotationView : LinearLayout {
     eventDispatcher?.dispatchEvent(event)
   }
 
+  private fun emitDocumentFinished(next: Boolean) {
+    val reactContext = context as ReactContext
+    val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+    val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+    val payload = Arguments.createMap().apply {
+      putBoolean("next", next)
+    }
+    val event = OnDocumentFinishedEvent(surfaceId, id, payload)
+
+    eventDispatcher?.dispatchEvent(event)
+  }
+
   inner class OnPageCountEvent(
     surfaceId: Int,
     viewId: Int,
@@ -95,6 +108,16 @@ class PdfAnnotationView : LinearLayout {
     private val payload: WritableMap
   ) : Event<OnPageChangeEvent>(surfaceId, viewId) {
     override fun getEventName() = "onPageChange"
+
+    override fun getEventData() = payload
+  }
+
+  inner class OnDocumentFinishedEvent(
+    surfaceId: Int,
+    viewId: Int,
+    private val payload: WritableMap
+  ) : Event<OnDocumentFinishedEvent>(surfaceId, viewId) {
+    override fun getEventName() = "onDocumentFinished"
 
     override fun getEventData() = payload
   }

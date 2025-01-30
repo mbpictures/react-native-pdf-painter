@@ -66,7 +66,12 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                 viewModel = strokes,
                 onChangePage = { pageDelta ->
                     scope.launch {
-                        pagerState.animateScrollToPage(pagerState.targetPage + pageDelta)
+                        val nextPage = pagerState.targetPage + pageDelta
+                        if (nextPage < 0 || nextPage >= pagerState.pageCount) {
+                            viewModel.handleDocumentFinished(pageDelta > 0)
+                            return@launch
+                        }
+                        pagerState.animateScrollToPage(nextPage)
                     }
                 }
             )
