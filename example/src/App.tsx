@@ -151,6 +151,9 @@ export default function App() {
                         thumbnailMode={thumbnail}
                         iosToolPickerVisible={iosToolbar}
                         autoSave
+                        onDocumentFinished={(direction) =>
+                            console.log(`OnDocumentFinished: ${direction}`)
+                        }
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
