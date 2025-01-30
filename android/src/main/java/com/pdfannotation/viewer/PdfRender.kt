@@ -2,7 +2,6 @@ package com.pdfannotation.viewer
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.ParcelFileDescriptor
 import kotlinx.coroutines.CoroutineScope
@@ -57,21 +56,7 @@ class PdfRender(
     ) {
         val hash get() = fileDescriptor.hashCode() + index
         private var isLoaded = false
-
         private var job: Job? = null
-
-        private val dimension = pdfRenderer.openPage(index).use { currentPage ->
-            Dimension(
-                width = currentPage.width,
-                height = currentPage.height
-            )
-        }
-
-        fun heightByWidth(width: Int): Int {
-            val ratio = dimension.width.toFloat() / dimension.height
-            return (ratio * width).toInt()
-        }
-
         val pageContent = MutableStateFlow<Bitmap?>(null)
 
         private fun createBitmap(width: Int, height: Int): Bitmap {
@@ -107,6 +92,7 @@ class PdfRender(
         }
 
         fun recycle() {
+            job?.cancel()
             isLoaded = false
             val oldBitmap = pageContent.value
             pageContent.tryEmit(null)
