@@ -1,5 +1,6 @@
 package com.pdfannotation.viewer
 
+import android.util.Log
 import androidx.compose.ui.geometry.Size
 import androidx.ink.brush.BrushFamily
 import androidx.lifecycle.ViewModel
@@ -64,7 +65,7 @@ class PdfAnnotationViewModel(
     }
 
     fun updateAnnotationFile(newAnnotationFile: String?) {
-        _annotationFile.value = constructFile(newAnnotationFile)
+        _annotationFile.value = constructFile(newAnnotationFile, true)
         loadAnnotations(newAnnotationFile)
     }
 
@@ -88,7 +89,7 @@ class PdfAnnotationViewModel(
     }
 
     fun saveAnnotations(path: String? = null) {
-        (constructFile(path) ?: annotationFile.value)?.let {
+        (constructFile(path, true) ?: annotationFile.value)?.let {
             _serializer.storeStrokes(_strokes.value.strokes, it)
         }
     }
@@ -147,9 +148,9 @@ class PdfAnnotationViewModel(
         onTap?.invoke(x, y)
     }
 
-    private fun constructFile(path: String?): File? {
+    private fun constructFile(path: String?, ignoreFileDoesNotExist: Boolean = false): File? {
         val result = path?.let {File(URLDecoder.decode(it, "UTF-8").replace("file://", ""))}
-        if (result?.exists() == true) {
+        if (result?.exists() == true || ignoreFileDoesNotExist) {
             return result
         }
         return null
