@@ -53,6 +53,7 @@ export interface Props
 export interface PageIndicatorProps {
     onClick: () => unknown;
     active: boolean;
+    index: number;
 }
 
 export const PageIndicator = ({ onClick, active }: PageIndicatorProps) => {
@@ -195,6 +196,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                                     }
                                     setStateCurrentPage(i);
                                 }}
+                                index={i}
                             />
                         ))}
                     </View>
