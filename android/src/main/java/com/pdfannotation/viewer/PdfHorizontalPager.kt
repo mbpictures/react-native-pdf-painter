@@ -45,7 +45,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     }
 
     LaunchedEffect(currentPage) {
-        if (currentPage != pagerState.targetPage) {
+        if (currentPage != pagerState.targetPage && currentPage != pagerState.currentPage) {
             scope.launch {
                 pagerState.animateScrollToPage(currentPage)
             }
