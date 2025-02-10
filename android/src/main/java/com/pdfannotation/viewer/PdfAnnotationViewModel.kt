@@ -98,7 +98,7 @@ class PdfAnnotationViewModel(
         (constructFile(path) ?: annotationFile.value)?.let {
             if (it.absolutePath == _loadedAnnotationPath) return
             _strokes.value = makeStrokes()
-            _strokes.value.setStrokes(_serializer.loadStrokes(it))
+            _strokes.value.setStrokes(_serializer.loadStrokes(it), initial = true)
             _loadedAnnotationPath = it.absolutePath
         }
     }
@@ -171,7 +171,7 @@ data class Strokes(
     var redoMap: MutableMap<Int, Set<Stroke>> = mutableMapOf(),
     var onStrokesChange: (() -> Unit)? = null
 ) {
-    fun setStrokesPerPage(page: Int, newStrokes: Set<Stroke>, size: Size) {
+    fun setStrokesPerPage(page: Int, newStrokes: Set<Stroke>, size: Size, initial: Boolean = false) {
         if (size.width == 0f || size.height == 0f || newStrokes.isEmpty()) return
         strokes = strokes.toMutableMap().apply {
             this[page] = newStrokes.map { drawStroke ->
@@ -197,7 +197,9 @@ data class Strokes(
                 )
             }.toSet()
         }
-        onStrokesChange?.invoke()
+        if (!initial) {
+            onStrokesChange?.invoke()
+        }
     }
 
     fun getStrokes(page: Int, size: Size): Set<Stroke> {
@@ -225,9 +227,9 @@ data class Strokes(
         }.toSet()
     }
 
-    fun setStrokes(strokes: Map<Int, Set<Stroke>>, size: Size = Size(1f, 1f)) {
+    fun setStrokes(strokes: Map<Int, Set<Stroke>>, size: Size = Size(1f, 1f), initial: Boolean = false) {
         strokes.forEach { (page, newStrokes) ->
-            setStrokesPerPage(page, newStrokes, size)
+            setStrokesPerPage(page, newStrokes, size, initial)
         }
     }
 
