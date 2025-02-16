@@ -2,7 +2,6 @@ package com.pdfannotation
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.compose.ui.platform.ComposeView
@@ -11,7 +10,7 @@ import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.uimanager.UIManagerHelper
 import com.facebook.react.uimanager.events.Event
-import com.pdfannotation.viewer.PdfAnnotationViewModel
+import com.pdfannotation.model.PdfAnnotationViewModel
 import com.pdfannotation.viewer.PdfAnnotationViewer
 
 class PdfAnnotationView : LinearLayout {

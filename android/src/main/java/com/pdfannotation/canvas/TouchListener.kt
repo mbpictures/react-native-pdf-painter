@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.ink.brush.Brush
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.ImmutableVec
-import com.pdfannotation.viewer.BrushSettings
+import com.pdfannotation.model.BrushSettings
 
 class StrokeAuthoringTouchListener(
     private val strokeAuthoringState: StrokeAuthoringState,

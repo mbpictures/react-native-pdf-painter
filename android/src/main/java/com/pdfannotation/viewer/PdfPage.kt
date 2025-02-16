@@ -27,6 +27,8 @@ import com.pdfannotation.canvas.InkCanvas
 import com.pdfannotation.canvas.StrokeAuthoringState
 import com.pdfannotation.canvas.rememberInProgressStrokesView
 import com.pdfannotation.canvas.rememberStrokeAuthoringState
+import com.pdfannotation.model.BrushSettings
+import com.pdfannotation.model.Strokes
 import net.engawapg.lib.zoomable.ZoomState
 import net.engawapg.lib.zoomable.zoomable
 

@@ -11,6 +11,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
+import com.pdfannotation.model.PdfAnnotationViewModel
 
 @Composable
 fun PdfThumbnail(viewModel: PdfAnnotationViewModel) {

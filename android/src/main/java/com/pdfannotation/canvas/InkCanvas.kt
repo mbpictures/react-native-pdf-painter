@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.ink.authoring.InProgressStrokesView
 import androidx.ink.rendering.android.canvas.CanvasStrokeRenderer
-import com.pdfannotation.viewer.BrushSettings
+import com.pdfannotation.model.BrushSettings
 
 
 @OptIn(ExperimentalComposeUiApi::class)
