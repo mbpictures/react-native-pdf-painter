@@ -24,7 +24,8 @@ class PdfAnnotationViewModel(
     private val onPageCount: ((pageCount: Int) -> Unit)? = null,
     private val onPageChange: ((currentPage: Int) -> Unit)? = null,
     private val onDocumentFinished: ((next: Boolean) -> Unit)? = null,
-    private val onTap: ((x: Float, y: Float) -> Unit)? = null
+    private val onTap: ((x: Float, y: Float) -> Unit)? = null,
+    onLinkCompleted: ((from: Int, to: Int) -> Unit)? = null
 ) : ViewModel() {
     private val _backgroundColor = MutableStateFlow<Int?>(null)
     private val _pdfFile = MutableStateFlow<File?>(null)
@@ -46,6 +47,7 @@ class PdfAnnotationViewModel(
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
     val strokes: StateFlow<Strokes> get() = _strokes
     val currentPage: StateFlow<Int> get() = _currentPage
+    val links: Links = Links(onLinkCompleted)
 
     fun updateBackgroundColor(newColor: String?) {
         _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
@@ -70,6 +72,11 @@ class PdfAnnotationViewModel(
     }
 
     fun updateBrushSettings(newBrushSettings: ReadableMap?) {
+        if (newBrushSettings?.hasKey("type") == true && newBrushSettings.getString("type") == "link") {
+            links.canCreateLinks = true
+            return
+        }
+
         _brushSettings.value = newBrushSettings?.let { makeBrushSettings(it) }
     }
 
@@ -93,8 +100,9 @@ class PdfAnnotationViewModel(
     fun loadAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
             if (it.absolutePath == _loadedAnnotationPath) return
+            val result = _serializer.loadStrokes(it)
             _strokes.value = makeStrokes()
-            _strokes.value.setStrokes(_serializer.loadStrokes(it), initial = true)
+            _strokes.value.setStrokes(result, initial = true)
             _loadedAnnotationPath = it.absolutePath
         }
     }

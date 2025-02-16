@@ -40,7 +40,8 @@ class PdfAnnotationView : LinearLayout {
       onPageCount = { pageCount -> emitPageCount(pageCount) },
       onPageChange = { currentPage -> emitPageChange(currentPage) },
       onDocumentFinished = { next -> emitDocumentFinished(next) },
-      onTap = { x, y -> emitTap(x, y) }
+      onTap = { x, y -> emitTap(x, y) },
+      onLinkCompleted = { from, to -> emitLinkCompleted(from, to) }
     )
     ComposeView(context).also {
       it.layoutParams = LayoutParams(
@@ -105,6 +106,19 @@ class PdfAnnotationView : LinearLayout {
     eventDispatcher?.dispatchEvent(event)
   }
 
+  private fun emitLinkCompleted(fromPage: Int, toPage: Int) {
+    val reactContext = context as ReactContext
+    val surfaceId = UIManagerHelper.getSurfaceId(reactContext)
+    val eventDispatcher = UIManagerHelper.getEventDispatcherForReactTag(reactContext, id)
+    val payload = Arguments.createMap().apply {
+      putInt("fromPage", fromPage)
+      putInt("toPage", toPage)
+    }
+    val event = OnLinkCompleted(surfaceId, id, payload)
+
+    eventDispatcher?.dispatchEvent(event)
+  }
+
   inner class OnPageCountEvent(
     surfaceId: Int,
     viewId: Int,
@@ -143,5 +157,15 @@ class PdfAnnotationView : LinearLayout {
     override fun getEventName() = "onTap"
 
     override fun getEventData() = payload
+  }
+
+  inner class OnLinkCompleted(
+    surfaceId: Int,
+    viewId: Int,
+    private val payload: WritableMap
+  ) : Event<OnDocumentFinishedEvent>(surfaceId, viewId) {
+    override fun getEventName() = "onLinkCompleted"
+
+    override fun getEventData(): WritableMap = payload
   }
 }

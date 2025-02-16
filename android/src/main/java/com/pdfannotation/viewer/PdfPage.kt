@@ -1,6 +1,7 @@
 package com.pdfannotation.viewer
 
 import android.graphics.Matrix
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +29,7 @@ import com.pdfannotation.canvas.StrokeAuthoringState
 import com.pdfannotation.canvas.rememberInProgressStrokesView
 import com.pdfannotation.canvas.rememberStrokeAuthoringState
 import com.pdfannotation.model.BrushSettings
+import com.pdfannotation.model.Link
 import com.pdfannotation.model.Strokes
 import net.engawapg.lib.zoomable.ZoomState
 import net.engawapg.lib.zoomable.zoomable
@@ -37,8 +39,10 @@ fun PdfPage(
     page: PdfRender.Page?,
     brushSettings: BrushSettings?,
     viewModel: Strokes,
+    links: Set<Link>,
     onChangePage: (Int) -> Unit = {},
-    onTap: (Float, Float) -> Unit = { _, _ -> }
+    onLink: (Link) -> Unit = {},
+    onTap: (Float, Float, Float, Float) -> Unit = { _, _, _, _ -> }
 ) {
     DisposableEffect(key1 = page?.hash) {
         page?.load()
@@ -103,9 +107,8 @@ fun PdfPage(
                             onChangePage(1)
                         } else if (offset.x < size.width * 0.2) {
                             onChangePage(-1)
-                        } else {
-                            onTap(offset.x, offset.y)
                         }
+                        onTap(offset.x, offset.y, offset.x / size.width, offset.y / size.height)
                     },
                     onDoubleTap = { position ->
                         val isBitmapPortrait = bitmap.height >= bitmap.width
@@ -143,6 +146,10 @@ fun PdfPage(
                 inProgressStrokesView = inProgressStrokesView,
                 strokeAuthoringState = strokeAuthoringState,
                 transformMatrix = transformMatrix,
+            )
+            RenderLinks(
+                links = links,
+                onLinkClick = onLink
             )
         }
     }
