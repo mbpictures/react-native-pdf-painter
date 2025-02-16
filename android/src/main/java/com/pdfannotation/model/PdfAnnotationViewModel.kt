@@ -47,7 +47,12 @@ class PdfAnnotationViewModel(
     val brushSettings: StateFlow<BrushSettings?> get() = _brushSettings
     val strokes: StateFlow<Strokes> get() = _strokes
     val currentPage: StateFlow<Int> get() = _currentPage
-    val links: Links = Links(onLinkCompleted)
+    val links: Links = Links(
+        onLinkCompleted = {from, to ->
+            onLinkCompleted?.invoke(from, to)
+            if (_autoSave) saveAnnotations()
+        }
+    )
 
     fun updateBackgroundColor(newColor: String?) {
         _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
@@ -93,16 +98,21 @@ class PdfAnnotationViewModel(
 
     fun saveAnnotations(path: String? = null) {
         (constructFile(path, true) ?: annotationFile.value)?.let {
-            _serializer.storeStrokes(_strokes.value.strokes, it)
+            _serializer.storeAnnotations(
+                _strokes.value.strokes,
+                links.links.value,
+                it
+            )
         }
     }
 
     fun loadAnnotations(path: String? = null) {
         (constructFile(path) ?: annotationFile.value)?.let {
             if (it.absolutePath == _loadedAnnotationPath) return
-            val result = _serializer.loadStrokes(it)
+            val result = _serializer.loadAnnotations(it)
             _strokes.value = makeStrokes()
-            _strokes.value.setStrokes(result, initial = true)
+            _strokes.value.setStrokes(result.first, initial = true)
+            links.initialLinks(result.second ?: emptyMap())
             _loadedAnnotationPath = it.absolutePath
         }
     }

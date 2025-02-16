@@ -1,5 +1,6 @@
 package com.pdfannotation.serialization
 
+import androidx.compose.ui.graphics.Color
 import androidx.ink.brush.Brush
 import androidx.ink.brush.InputToolType
 import androidx.ink.brush.StockBrushes
@@ -9,6 +10,7 @@ import androidx.ink.strokes.StrokeInput
 import androidx.ink.strokes.StrokeInputBatch
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.pdfannotation.model.Link
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
@@ -162,6 +164,30 @@ class Serializer {
         return deserializeBrush(serializedBrush)
     }
 
+    private fun serializeLink(link: Link): LinkEntity {
+        return LinkEntity(
+            id = link.id,
+            targetId = link.targetId,
+            x = link.x,
+            y = link.y,
+            width = link.width,
+            height = link.height,
+            color = link.color.value
+        )
+    }
+
+    private fun deserializeLink(link: LinkEntity): Link {
+        return Link(
+            id = link.id,
+            targetId = link.targetId,
+            x = link.x,
+            y = link.y,
+            width = link.width,
+            height = link.height,
+            color = Color(link.color)
+        )
+    }
+
     private fun compress(content: String): ByteArray {
         val bos = ByteArrayOutputStream()
         GZIPOutputStream(bos).bufferedWriter(UTF_8).use { it.write(content) }
@@ -176,30 +202,43 @@ class Serializer {
         }
     }
 
-    fun serializeStrokes(strokes: Map<Int, Set<Stroke>>): ByteArray {
+    fun serializeAnnotations(strokes: Map<Int, Set<Stroke>>, links: Map<Int, Set<Link>>): ByteArray {
         return compress(gson.toJson(
-            strokes.mapValues { it.value.map {stroke -> serializeStrokeToEntity(stroke) } }
+            Annotations(
+                strokes = strokes.mapValues { it.value.map {stroke -> serializeStrokeToEntity(stroke) } },
+                links = links.mapValues { it.value.map { link -> serializeLink(link) } }
+            )
         ))
     }
 
-    fun deserializeStrokes(jsonString: String): Map<Int, Set<Stroke>> {
-        val type: Type = object : TypeToken<Map<Int, Set<StrokeEntity>>>() {}.type
-        val strokes = gson.fromJson<Map<Int, Set<StrokeEntity>>>(jsonString, type)
-        return strokes.mapValues { it.value.map { stroke -> deserializeEntityToStroke(stroke) }.toSet() }
+    fun deserializeAnnotations(jsonString: String): Pair<Map<Int, Set<Stroke>>, Map<Int, Set<Link>>?> {
+        var type: Type = object : TypeToken<Annotations>() {}.type
+        try {
+            val annotations = gson.fromJson<Annotations>(jsonString, type)
+            return Pair(
+                annotations.strokes.mapValues { it.value.map { stroke -> deserializeEntityToStroke(stroke) }.toSet() },
+                annotations.links.mapValues { it.value.map { stroke -> deserializeLink(stroke) }.toSet() }
+            )
+        } catch (e: Exception) {
+            // Fallback to old format if new format fails for backward compatibility
+            type = object : TypeToken<Map<Int, Set<StrokeEntity>>>() {}.type
+            val strokes = gson.fromJson<Map<Int, Set<StrokeEntity>>>(jsonString, type)
+            return Pair(strokes.mapValues { it.value.map { stroke -> deserializeEntityToStroke(stroke) }.toSet() }, emptyMap())
+        }
     }
 
-    fun storeStrokes(strokes: Map<Int, Set<Stroke>>, file: File) {
-        val serializedStrokes = serializeStrokes(strokes)
+    fun storeAnnotations(strokes: Map<Int, Set<Stroke>>, links: Map<Int, Set<Link>>, file: File) {
+        val serializedStrokes = serializeAnnotations(strokes, links)
         if (file.parentFile?.exists() == false) {
             file.parentFile?.mkdirs()
         }
         file.writeBytes(serializedStrokes)
     }
 
-    fun loadStrokes(file: File): Map<Int, Set<Stroke>> {
-        if (!file.exists()) return emptyMap()
+    fun loadAnnotations(file: File): Pair<Map<Int, Set<Stroke>>, Map<Int, Set<Link>>?> {
+        if (!file.exists()) return Pair(emptyMap(), emptyMap())
         val serializedStrokes = file.readBytes()
-        return deserializeStrokes(decompress(serializedStrokes))
+        return deserializeAnnotations(decompress(serializedStrokes))
     }
 }
 

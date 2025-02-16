@@ -101,4 +101,8 @@ class Links(
     fun getPageOfLink(id: String): Int? {
         return links.value.entries.find { it.value.any { link -> link.id == id } }?.key
     }
+
+    fun initialLinks(links: Map<Int, Set<Link>>) {
+        _links.value = links
+    }
 }

@@ -48,3 +48,18 @@ enum class SerializedToolType {
     MOUSE,
     UNKNOWN
 }
+
+data class LinkEntity(
+    val id: String,
+    val targetId: String?,
+    val x: Float,
+    val y: Float,
+    val width: Float,
+    val height: Float,
+    val color: ULong
+)
+
+data class Annotations(
+    val strokes: Map<Int, List<StrokeEntity>>,
+    val links: Map<Int, List<LinkEntity>>
+)
