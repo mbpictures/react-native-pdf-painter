@@ -15,6 +15,7 @@ export type BrushType =
     | 'pressure-pen'
     | 'highlighter'
     | 'eraser'
+    | 'link'
     | 'none';
 
 export interface BrushSettings {
@@ -38,6 +39,10 @@ export type TapEvent = {
     x: Double;
     y: Double;
 };
+export type LinkCompletedEvent = {
+    fromPage: Int32;
+    toPage: Int32;
+};
 
 export interface NativeProps extends ViewProps {
     backgroundColor?: string;
@@ -51,6 +56,7 @@ export interface NativeProps extends ViewProps {
     onPageChange?: BubblingEventHandler<PageChangeEvent> | null;
     onDocumentFinished?: BubblingEventHandler<DocumentFinishedEvent> | null;
     onTap?: BubblingEventHandler<TapEvent> | null;
+    onLinkCompleted?: BubblingEventHandler<LinkCompletedEvent> | null;
 }
 
 type ComponentType = HostComponent<NativeProps>;
