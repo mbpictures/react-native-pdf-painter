@@ -25,6 +25,7 @@ import {
     PaletteIcon,
     UndoIcon,
     RedoIcon,
+    LinkIcon,
 } from 'lucide-react-native';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
@@ -59,6 +60,14 @@ const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
             color: '#000000',
         },
         icon: <EraserIcon />,
+    },
+    {
+        settings: {
+            type: 'link',
+            size: 5,
+            color: '#000000',
+        },
+        icon: <LinkIcon />,
     },
 ];
 
@@ -155,6 +164,7 @@ export default function App() {
                             console.log(`OnDocumentFinished: ${direction}`)
                         }
                         onTap={(e) => console.log(e.nativeEvent)}
+                        onLinkCompleted={() => setBrush(undefined)}
                     />
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
