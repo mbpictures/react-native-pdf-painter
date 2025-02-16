@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -29,6 +30,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     val backgroundColor by viewModel.backgroundColor.collectAsState()
     val currentPage by viewModel.currentPage.collectAsState()
     val links by viewModel.links.links.collectAsState()
+    val beyondViewportPageCount by viewModel.beyondViewportPageCount.collectAsState()
 
     val scope = rememberCoroutineScope()
     val renderer = remember(file, backgroundColor) { file?.let {PdfRender(it, 3f, backgroundColor) }}
@@ -63,7 +65,8 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clipToBounds(),
-            userScrollEnabled = canScroll
+            userScrollEnabled = canScroll,
+            beyondViewportPageCount = beyondViewportPageCount ?: PagerDefaults.BeyondViewportPageCount
         ) { page ->
             PdfPage(
                 page = renderer?.let { it.pageLists[page] },

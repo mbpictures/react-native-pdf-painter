@@ -57,6 +57,7 @@ export interface NativeProps extends ViewProps {
     onDocumentFinished?: BubblingEventHandler<DocumentFinishedEvent> | null;
     onTap?: BubblingEventHandler<TapEvent> | null;
     onLinkCompleted?: BubblingEventHandler<LinkCompletedEvent> | null;
+    androidBeyondViewportPageCount?: Int32;
 }
 
 type ComponentType = HostComponent<NativeProps>;

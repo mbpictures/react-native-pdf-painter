@@ -57,6 +57,10 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
     view?.viewModel?.updateBrushSettings(value)
   }
 
+  override fun setAndroidBeyondViewportPageCount(view: PdfAnnotationView?, value: Int) {
+    view?.viewModel?.updateBeyondViewportPageCount(value)
+  }
+
   override fun saveAnnotations(view: PdfAnnotationView?, path: String?) {
     view?.viewModel?.saveAnnotations(path)
   }

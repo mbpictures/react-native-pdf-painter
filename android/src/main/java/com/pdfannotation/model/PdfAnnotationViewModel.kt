@@ -38,6 +38,7 @@ class PdfAnnotationViewModel(
     private var _pageCount = 0
     private val _serializer = Serializer()
     private var _loadedAnnotationPath = ""
+    private val _beyondViewportPageCount = MutableStateFlow<Int?>(null)
 
 
     val backgroundColor: StateFlow<Int?> get() = _backgroundColor
@@ -53,6 +54,7 @@ class PdfAnnotationViewModel(
             if (_autoSave) saveAnnotations()
         }
     )
+    val beyondViewportPageCount: StateFlow<Int?> get() = _beyondViewportPageCount
 
     fun updateBackgroundColor(newColor: String?) {
         _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
@@ -83,6 +85,10 @@ class PdfAnnotationViewModel(
         }
 
         _brushSettings.value = newBrushSettings?.let { makeBrushSettings(it) }
+    }
+
+    fun updateBeyondViewportPageCount(count: Int) {
+        _beyondViewportPageCount.value = count
     }
 
     private fun makeBrushSettings(settings: ReadableMap): BrushSettings {
