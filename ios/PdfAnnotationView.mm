@@ -86,13 +86,12 @@ using namespace facebook::react;
         NSUInteger currentPageIndex = [_view.document indexForPage:currentPage];
         Float size = props.brushSettings.size;
         PDFAnnotation *linkAnnotation = [[PDFAnnotation alloc] initWithBounds:CGRectMake(convertedPoint.x - size / 2, convertedPoint.y - size / 2, size, size) forType:PDFAnnotationSubtypeHighlight withProperties:nil];
-        linkAnnotation.backgroundColor = [self hexStringToColor:[NSString stringWithUTF8String:props.brushSettings.color.c_str()]]; // Halbtransparenter weißer Hintergrund
+        linkAnnotation.backgroundColor = [self hexStringToColor:[NSString stringWithUTF8String:props.brushSettings.color.c_str()]];
 
         [currentPage addAnnotation:linkAnnotation];
         
         
         if (!firstLinkAnnotation) {
-            NSLog(@"First link");
             firstLinkAnnotation = linkAnnotation;
             firstLinkPageIndex = currentPageIndex;
         } else {
@@ -101,9 +100,6 @@ using namespace facebook::react;
             
             firstLinkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest1];
             linkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest2];
-            NSLog(@"Link-Annotation gesetzt mit Action: %@", linkAnnotation.action);
-            
-            //[[_view.document pageAtIndex:firstLinkPageIndex] addAnnotation:firstLinkAnnotation];
             
             firstLinkAnnotation = nil;
             
@@ -112,7 +108,6 @@ using namespace facebook::react;
                std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
                 ->onLinkCompleted(event);
             }
-            NSLog(@"Second link");
         }
         [_view layoutDocumentView];
         return;
