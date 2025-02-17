@@ -51,6 +51,11 @@ class Links(
             } else {
                 LinkCreationState.DISABLED
             }
+
+            if (!value && lastCreatedLink != null) {
+                removeLink(lastCreatedLink!!.id)
+                lastCreatedLink = null
+            }
         }
 
     fun getLinksForPage(pageNumber: Int): Set<Link> {

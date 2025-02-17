@@ -86,6 +86,7 @@ class PdfAnnotationViewModel(
             return
         }
 
+        links.canCreateLinks = false
         _brushSettings.value = newBrushSettings?.let { makeBrushSettings(it) }
     }
 
