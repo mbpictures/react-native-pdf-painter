@@ -1,7 +1,6 @@
 package com.pdfannotation.viewer
 
 import android.graphics.Matrix
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize

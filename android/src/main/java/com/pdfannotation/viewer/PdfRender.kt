@@ -20,7 +20,7 @@ class PdfRender(
     private val scale: Float = 1f,
     private val backgroundColor: Int?,
 ) {
-    private val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+    private val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
     private val pdfRenderer = PdfRenderer(fileDescriptor)
     val pageCount get() = pdfRenderer.pageCount
     private val mutex: Mutex = Mutex()
