@@ -40,6 +40,8 @@ class Links(
 ) : ViewModel() {
     private val _links = MutableStateFlow<Map<Int, Set<Link>>>(mutableMapOf())
     val links: StateFlow<Map<Int, Set<Link>>> get() = _links
+    var size: Float = 100f
+    var color: Color = Color.Red
 
     var canCreateLinks: Boolean
         get() = linkCreationState != LinkCreationState.DISABLED

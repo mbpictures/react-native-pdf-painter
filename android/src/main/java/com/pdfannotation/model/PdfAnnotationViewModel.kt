@@ -81,6 +81,8 @@ class PdfAnnotationViewModel(
     fun updateBrushSettings(newBrushSettings: ReadableMap?) {
         if (newBrushSettings?.hasKey("type") == true && newBrushSettings.getString("type") == "link") {
             links.canCreateLinks = true
+            links.size = newBrushSettings.getDouble("size").toFloat()
+            links.color = Color(GraphicsColor.parseColor(newBrushSettings.getString("color")))
             return
         }
 
