@@ -45,8 +45,8 @@ fun RenderLinks(
                 modifier = Modifier
                     .size(widthDp, heightDp)
                     .graphicsLayer(
-                        translationX = link.x * size.width,
-                        translationY = link.y * size.height
+                        translationX = link.x * size.width - link.width / 2,
+                        translationY = link.y * size.height - link.height / 2
                     )
                     .background(link.color)
                     .combinedClickable(
