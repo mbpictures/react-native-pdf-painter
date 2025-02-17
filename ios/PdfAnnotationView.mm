@@ -16,6 +16,8 @@ using namespace facebook::react;
 @implementation PdfAnnotationView {
     PDFView * _view;
     PencilKitCoordinator * _pencilKitCoordinator;
+    PDFAnnotation *firstLinkAnnotation;
+    NSUInteger firstLinkPageIndex;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider
@@ -49,6 +51,8 @@ using namespace facebook::react;
       tapRecognizer.cancelsTouchesInView = NO;
       [_view addGestureRecognizer:tapRecognizer];
       [_view usePageViewController:true withViewOptions:NULL];
+      [_view setEnableDataDetectors:YES];
+      
 
       [self updateThumbnailMode:false];
   }
@@ -59,11 +63,13 @@ using namespace facebook::react;
 - (void)handleTap:(UITapGestureRecognizer *)sender {
     CGPoint touchLocation = [sender locationInView:_view];
     CGFloat screenWidth = _view.bounds.size.width;
+    const auto &props = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
+    bool addLink = props.brushSettings.type == PdfAnnotationViewType::Link;
 
     NSInteger delta = 0;
-    if (touchLocation.x < screenWidth * 0.25) {
+    if (touchLocation.x < screenWidth * 0.25 && !addLink) {
         delta = -1;
-    } else if (touchLocation.x > screenWidth * 0.75) {
+    } else if (touchLocation.x > screenWidth * 0.75 && !addLink) {
         delta = 1;
     } else {
         PdfAnnotationViewEventEmitter::OnTap event = PdfAnnotationViewEventEmitter::OnTap{touchLocation.x, touchLocation.y};
@@ -74,6 +80,57 @@ using namespace facebook::react;
     }
     
     PDFPage *currentPage = _view.currentPage;
+    CGPoint convertedPoint = [_view convertPoint:touchLocation toPage:currentPage];
+    
+    if (addLink) {
+        NSUInteger currentPageIndex = [_view.document indexForPage:currentPage];
+        Float size = props.brushSettings.size;
+        PDFAnnotation *linkAnnotation = [[PDFAnnotation alloc] initWithBounds:CGRectMake(convertedPoint.x - size / 2, convertedPoint.y - size / 2, size, size) forType:PDFAnnotationSubtypeHighlight withProperties:nil];
+        linkAnnotation.backgroundColor = [self hexStringToColor:[NSString stringWithUTF8String:props.brushSettings.color.c_str()]]; // Halbtransparenter weißer Hintergrund
+
+        [currentPage addAnnotation:linkAnnotation];
+        
+        
+        if (!firstLinkAnnotation) {
+            NSLog(@"First link");
+            firstLinkAnnotation = linkAnnotation;
+            firstLinkPageIndex = currentPageIndex;
+        } else {
+            PDFDestination *dest1 = [[PDFDestination alloc] initWithPage:[_view.document pageAtIndex:currentPageIndex] atPoint:CGPointZero];
+            PDFDestination *dest2 = [[PDFDestination alloc] initWithPage:[_view.document pageAtIndex:firstLinkPageIndex] atPoint:CGPointZero];
+            
+            firstLinkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest1];
+            linkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest2];
+            NSLog(@"Link-Annotation gesetzt mit Action: %@", linkAnnotation.action);
+            
+            //[[_view.document pageAtIndex:firstLinkPageIndex] addAnnotation:firstLinkAnnotation];
+            
+            firstLinkAnnotation = nil;
+            
+            PdfAnnotationViewEventEmitter::OnLinkCompleted event = PdfAnnotationViewEventEmitter::OnLinkCompleted{static_cast<int>(firstLinkPageIndex), static_cast<int>(currentPageIndex)};
+            if (_eventEmitter != nullptr) {
+               std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
+                ->onLinkCompleted(event);
+            }
+            NSLog(@"Second link");
+        }
+        [_view layoutDocumentView];
+        return;
+    }
+    
+    NSArray<PDFAnnotation *> *annotations = [currentPage annotations];
+    for (PDFAnnotation *annotation in annotations) {
+        if (CGRectContainsPoint(annotation.bounds, convertedPoint)) {
+            if ([annotation isKindOfClass:[PDFAnnotation class]] && annotation.action) {
+                if ([annotation.action isKindOfClass:[PDFActionGoTo class]]) {
+                    PDFActionGoTo *goToAction = (PDFActionGoTo *)annotation.action;
+                    [_view performSelector:@selector(goToDestination:) withObject:goToAction.destination afterDelay:0.1];
+                    return;
+                }
+            }
+        }
+    }
+    
     if (currentPage) {
         NSUInteger currentIndex = [currentPage.document indexForPage:currentPage];
         NSUInteger nextIndex = currentIndex + delta;
@@ -123,7 +180,7 @@ using namespace facebook::react;
         _view.maxScaleFactor = 4.0;
         _view.scaleFactor = _view.scaleFactorForSizeToFit;
     }
-    if (oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) {
+    if ((oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color) && newViewProps.brushSettings.type != PdfAnnotationViewType::Link) {
         if (@available(iOS 16.0, *)) {
             [_view setInMarkupMode:newViewProps.brushSettings.type != PdfAnnotationViewType::None];
         }
@@ -215,18 +272,31 @@ Class<RCTComponentViewProtocol> PdfAnnotationViewCls(void)
     return PdfAnnotationView.class;
 }
 
-- hexStringToColor:(NSString *)stringToConvert
-{
-    NSString *noHashString = [stringToConvert stringByReplacingOccurrencesOfString:@"#" withString:@""];
-    NSScanner *stringScanner = [NSScanner scannerWithString:noHashString];
-
-    unsigned hex;
-    if (![stringScanner scanHexInt:&hex]) return nil;
-    int r = (hex >> 16) & 0xFF;
-    int g = (hex >> 8) & 0xFF;
-    int b = (hex) & 0xFF;
-
-    return [UIColor colorWithRed:r / 255.0f green:g / 255.0f blue:b / 255.0f alpha:1.0f];
+- (UIColor *)hexStringToColor:(NSString *)colorString {
+    // Ensure the string starts with "#" and has the correct length (8 characters for AARRGGBB format)
+    if ([colorString hasPrefix:@"#"] && (colorString.length == 9 || colorString.length == 7)) {
+        // Remove the "#" and process the hex string
+        NSString *hexString = [colorString substringFromIndex:1];
+        unsigned int hexValue;
+        NSScanner *scanner = [NSScanner scannerWithString:hexString];
+        [scanner scanHexInt:&hexValue];
+        
+        // Extract alpha, red, green, and blue components
+        CGFloat alpha = ((hexValue >> 24) & 0xFF) / 255.0;
+        CGFloat red = ((hexValue >> 16) & 0xFF) / 255.0;
+        CGFloat green = ((hexValue >> 8) & 0xFF) / 255.0;
+        CGFloat blue = (hexValue & 0xFF) / 255.0;
+        
+        if (hexString.length == 8) {
+            return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
+        }
+        if (hexString.length == 6) {
+            return [UIColor colorWithRed:red green:green blue:blue alpha:1];
+        }
+    }
+    
+    // If the string is not a valid hex color with alpha or RGB, return default color (black)
+    return [UIColor blackColor];
 }
 
 @end
