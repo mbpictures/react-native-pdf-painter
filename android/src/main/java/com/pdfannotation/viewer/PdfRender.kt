@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -41,6 +42,7 @@ class PdfRender(
         pageLists.forEach {
             it.recycle()
         }
+        coroutineScope.coroutineContext.cancelChildren()
         pdfRenderer.close()
         fileDescriptor.close()
     }
@@ -72,7 +74,8 @@ class PdfRender(
                 job = coroutineScope.launch {
                     mutex.withLock {
                         val newBitmap: Bitmap
-                        pdfRenderer.openPage(index).use { currentPage ->
+                        val currentPage = pdfRenderer.openPage(index)
+                        try {
                             newBitmap = createBlankBitmap(
                                 width = currentPage.width * scale,
                                 height = currentPage.height * scale
@@ -83,6 +86,8 @@ class PdfRender(
                                 null,
                                 PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
                             )
+                        } finally {
+                            currentPage.close()
                         }
                         isLoaded = true
                         pageContent.emit(newBitmap)
