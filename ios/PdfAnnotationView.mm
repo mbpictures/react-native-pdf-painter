@@ -50,6 +50,11 @@ using namespace facebook::react;
       tapRecognizer.numberOfTapsRequired = 1;
       tapRecognizer.cancelsTouchesInView = NO;
       [_view addGestureRecognizer:tapRecognizer];
+      
+      UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+      longPressRecognizer.minimumPressDuration = 0.5; // Mindestens 0,5 Sek. gedrückt halten
+      [_view addGestureRecognizer:longPressRecognizer];
+      
       [_view usePageViewController:true withViewOptions:NULL];
       [_view setEnableDataDetectors:YES];
       
@@ -58,6 +63,31 @@ using namespace facebook::react;
   }
 
   return self;
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state != UIGestureRecognizerStateBegan) return;
+
+    CGPoint locationInView = [gestureRecognizer locationInView:_view];
+    PDFPage *currentPage = _view.currentPage;
+
+    if (!currentPage) return;
+
+    CGPoint locationOnPage = [_view convertPoint:locationInView toPage:currentPage];
+    const auto &props = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
+
+    for (PDFAnnotation *annotation in currentPage.annotations) {
+        if (CGRectContainsPoint(annotation.bounds, locationOnPage)) {
+            [currentPage removeAnnotation:annotation];
+            
+            if (props.autoSave) {
+                NSString * filePath = [[NSString alloc] initWithUTF8String: props.annotationFile.c_str()];
+                [_pencilKitCoordinator prepareForPersistance:(MyPDFDocument *)_view.document];
+                [(MyPDFDocument* )_view.document saveDrawingsToDisk:filePath];
+            }
+            break;
+        }
+    }
 }
 
 - (void)handleTap:(UITapGestureRecognizer *)sender {
