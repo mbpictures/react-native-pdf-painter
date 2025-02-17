@@ -42,6 +42,7 @@ fun PdfPage(
     links: Set<Link>,
     onChangePage: (Int) -> Unit = {},
     onLink: (Link) -> Unit = {},
+    onLinkRemove: (Link) -> Unit = {},
     onTap: (Float, Float, Float, Float) -> Unit = { _, _, _, _ -> }
 ) {
     DisposableEffect(key1 = page?.hash) {
@@ -149,7 +150,8 @@ fun PdfPage(
             )
             RenderLinks(
                 links = links,
-                onLinkClick = onLink
+                onLinkClick = onLink,
+                onLinkRemove = onLinkRemove
             )
         }
     }

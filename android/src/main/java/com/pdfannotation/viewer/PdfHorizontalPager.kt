@@ -100,6 +100,9 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                             }
                         }
                     }
+                },
+                onLinkRemove = { link ->
+                    viewModel.links.removeLink(link.id)
                 }
             )
         }
