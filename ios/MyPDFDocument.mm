@@ -29,7 +29,6 @@
         NSMutableArray *linkAnnotations = [NSMutableArray array];
         for (PDFAnnotation *annotation in page.annotations) {
             PDFActionGoTo *goToAction = (PDFActionGoTo *)annotation.action;
-            NSLog(@"Annotation action: %@", goToAction);
             if ([goToAction isKindOfClass:[PDFActionGoTo class]]) {
                 NSUInteger targetPageIndex = [self indexForPage:goToAction.destination.page];
                 const CGFloat *components = CGColorGetComponents(annotation.color.CGColor);
@@ -43,7 +42,6 @@
         }
 
         if (linkAnnotations.count > 0) {
-            NSLog(@"Adding Link Annotations");
             pageData[@"links"] = linkAnnotations;
         }
         
