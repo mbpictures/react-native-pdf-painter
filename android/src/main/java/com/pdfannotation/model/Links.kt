@@ -99,7 +99,7 @@ class Links(
         _links.value = links.value.toMutableMap().apply {
             forEach { (page, linkSet) ->
                 this[page] = linkSet.toMutableSet().apply {
-                    removeIf { it.id == id }
+                    removeIf { it.id == id || it.targetId == id }
                 }
             }
         }
