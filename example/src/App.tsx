@@ -64,8 +64,8 @@ const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
     {
         settings: {
             type: 'link',
-            size: 5,
-            color: '#000000',
+            size: 75,
+            color: '#7700FF00',
         },
         icon: <LinkIcon />,
     },
