@@ -108,6 +108,12 @@ using namespace facebook::react;
                std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
                 ->onLinkCompleted(event);
             }
+            
+            if (props.autoSave) {
+                NSString * filePath = [[NSString alloc] initWithUTF8String: props.annotationFile.c_str()];
+                [_pencilKitCoordinator prepareForPersistance:(MyPDFDocument *)_view.document];
+                [(MyPDFDocument* )_view.document saveDrawingsToDisk:filePath];
+            }
         }
         [_view layoutDocumentView];
         return;
