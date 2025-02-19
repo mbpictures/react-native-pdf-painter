@@ -87,20 +87,24 @@ Refer to [example](example/src/App.tsx) for detailed usage example.
 
 ## Props, Methods & types
 
-| Name                         | Platform     | Type                              | Description                                                                                                                              |
-|------------------------------|--------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| pdfUrl                       | ios, android | String?                           | Local URL of the PDF file                                                                                                                |
-| annotationsFile              | ios, android | String?                           | Local URL of the files used for annotations (file extension doesn't matter)                                                              |
-| thumbnailMode                | ios, android | Boolean?                          | Displays only the first page without interaction                                                                                         |
-| autoSave                     | ios, android | Boolean?                          | Automatically save file after changing pdf url or unmounting the component                                                               |
-| brushSettings                | ios, android | [`BrushSettings`](#brushsettings) | Pass undefined to disable drawing and pass an [`BrushSettings`](#brushsettings) object to enable drawing with the provided configuration |
-| hidePagination               | ios, android | Boolean?                          | Disable the pagination buttons at the bottom                                                                                             |
-| iosToolPickerVisible         | ios          | Boolean?                          | Show/Hide the PencilKit ToolPicker                                                                                                       |
-| currentPage                  | ios, android | number?                           | (Optional) Controlled page selection                                                                                                     |
-| containerStyles              | ios, android | StyleProp<ViewStyle>?             | Override container styles                                                                                                                |
-| pageIndicatorContainerStyles | ios, android | StyleProp<ViewStyle>?             | Override container styles of page indicator bar                                                                                          |
-| onPageCount                  | ios, android | ((pageCount: number) => unknown)? | Event fired when the number of pages changes                                                                                             |
-| onPageChange                 | ios, android | ((page: number) => unknown)?      | Event fired when the current page changes                                                                                                |
+| Name                            | Platform     | Type                                                               | Description                                                                                                                              |
+|---------------------------------|--------------|--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| pdfUrl                          | ios, android | String?                                                            | Local URL of the PDF file                                                                                                                |
+| annotationsFile                 | ios, android | String?                                                            | Local URL of the files used for annotations (file extension doesn't matter)                                                              |
+| thumbnailMode                   | ios, android | Boolean?                                                           | Displays only the first page without interaction                                                                                         |
+| autoSave                        | ios, android | Boolean?                                                           | Automatically save file after changing pdf url or unmounting the component                                                               |
+| brushSettings                   | ios, android | [`BrushSettings`](#brushsettings)                                  | Pass undefined to disable drawing and pass an [`BrushSettings`](#brushsettings) object to enable drawing with the provided configuration |
+| hidePagination                  | ios, android | Boolean?                                                           | Disable the pagination buttons at the bottom                                                                                             |
+| iosToolPickerVisible            | ios          | Boolean?                                                           | Show/Hide the PencilKit ToolPicker                                                                                                       |
+| currentPage                     | ios, android | number?                                                            | (Optional) Controlled page selection                                                                                                     |
+| containerStyles                 | ios, android | StyleProp<ViewStyle>?                                              | Override container styles                                                                                                                |
+| pageIndicatorContainerStyles    | ios, android | StyleProp<ViewStyle>?                                              | Override container styles of page indicator bar                                                                                          |
+| androidBeyondViewportPageCount  | android      | Number of pages which are rendered before/after the current page   |                                                                                                                                          |
+| onPageCount                     | ios, android | ((pageCount: number) => unknown)?                                  | Event fired when the number of pages changes                                                                                             |
+| onPageChange                    | ios, android | ((page: number) => unknown)?                                       | Event fired when the current page changes                                                                                                |
+| onDocumentFinished              | ios, android | ((event: BubblingEventHandler<DocumentFinishedEvent>) => unknown)? | Event fired when the user wants to navigate to the next/previous page but is already at the end/beginning                                |
+| onTap                           | ios, android | ((event: BubblingEventHandler<TapEvent>) => unknown)?              | Event fired when the user taps on the PDF page                                                                                           |
+| onLinkCompleted                 | ios, android | ((event: BubblingEventHandler<LinkCompletedEvent>) => unknown)?    | Event fired when the brush settings is link and the user has finished creating the link                                                  |
 
 **Info**: The ToolPicker is fixed and always at the bottom of the iPhone screen! Keep this in mind when designing your PDF Viewer screen!
 
@@ -138,6 +142,7 @@ type BrushType =
     | 'pressure-pen'
     | 'highlighter'
     | 'eraser'
+    | 'link'
     | 'none';
 ```
 
