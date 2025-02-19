@@ -83,6 +83,7 @@ class PdfAnnotationViewModel(
             links.canCreateLinks = true
             links.size = newBrushSettings.getDouble("size").toFloat()
             links.color = Color(GraphicsColor.parseColor(newBrushSettings.getString("color")))
+            _brushSettings.value = null
             return
         }
 
