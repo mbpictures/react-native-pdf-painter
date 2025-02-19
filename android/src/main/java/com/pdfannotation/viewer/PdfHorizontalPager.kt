@@ -57,6 +57,16 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
         }
     }
 
+    LaunchedEffect(pagerState.currentPage) {
+        renderer?.pageLists?.forEach { page ->
+            if (kotlin.math.abs(page.index - pagerState.currentPage) > (beyondViewportPageCount?: PagerDefaults.BeyondViewportPageCount) + 1) {
+                page.recycle()
+            } else {
+                page.load()
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
             state = pagerState,

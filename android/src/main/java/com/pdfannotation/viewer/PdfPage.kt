@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -44,13 +43,6 @@ fun PdfPage(
     onLinkRemove: (Link) -> Unit = {},
     onTap: (Float, Float, Float, Float) -> Unit = { _, _, _, _ -> }
 ) {
-    DisposableEffect(key1 = page?.hash) {
-        page?.load()
-        onDispose {
-            page?.recycle()
-        }
-    }
-
     page?.pageContent?.collectAsState()?.value?.let { bitmap ->
         var size by remember { mutableStateOf(IntSize.Zero) }
         val baseScale = remember (size) {
@@ -61,10 +53,13 @@ fun PdfPage(
         var zoomState by remember { mutableStateOf(ZoomState(contentSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat()), maxScale = baseScale * 5.0f)) }
         val context = LocalContext.current
         val imageModel = remember(context, bitmap) {
-            if (bitmap.isRecycled) return@remember null
-            ImageRequest.Builder(context)
-                .data(bitmap)
-                .build()
+            if (bitmap.isRecycled) {
+                null
+            } else {
+                ImageRequest.Builder(context)
+                    .data(bitmap)
+                    .build()
+            }
         }
         val transformMatrix = remember(zoomState.scale, zoomState.offsetY, zoomState.offsetX) {
             Matrix().apply {
