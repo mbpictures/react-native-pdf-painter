@@ -20,6 +20,7 @@ import {
     TouchableOpacity,
     View,
     type ViewStyle,
+    ScrollView,
 } from 'react-native';
 import type { BubblingEventHandler } from 'react-native/Libraries/Types/CodegenTypes';
 export * from './PdfAnnotationViewNativeComponent';
@@ -185,20 +186,27 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                             pageIndicatorContainerStyles,
                         ]}
                     >
-                        {Array.from(Array(pageCount).keys()).map((i) => (
-                            <RenderItem
-                                key={i}
-                                active={(currentPage ?? stateCurrentPage) === i}
-                                onClick={() => {
-                                    if (currentPage && onPageChange) {
-                                        onPageChange(i);
-                                        return;
+                        <ScrollView
+                            horizontal
+                            contentContainerStyle={styles.scrollContainer}
+                        >
+                            {Array.from(Array(pageCount).keys()).map((i) => (
+                                <RenderItem
+                                    key={i}
+                                    active={
+                                        (currentPage ?? stateCurrentPage) === i
                                     }
-                                    setStateCurrentPage(i);
-                                }}
-                                index={i}
-                            />
-                        ))}
+                                    onClick={() => {
+                                        if (currentPage && onPageChange) {
+                                            onPageChange(i);
+                                            return;
+                                        }
+                                        setStateCurrentPage(i);
+                                    }}
+                                    index={i}
+                                />
+                            ))}
+                        </ScrollView>
                     </View>
                 )}
             </View>
@@ -216,6 +224,10 @@ const styles = StyleSheet.create({
         width: '100%',
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    scrollContainer: {
+        flexGrow: 1,
         justifyContent: 'center',
     },
     pageIndicator: {
