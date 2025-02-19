@@ -94,7 +94,10 @@ class PdfAnnotationViewModel(
         _beyondViewportPageCount.value = count
     }
 
-    private fun makeBrushSettings(settings: ReadableMap): BrushSettings {
+    private fun makeBrushSettings(settings: ReadableMap): BrushSettings? {
+        if (settings.getString("type") === "none") {
+            return null
+        }
         val color = GraphicsColor.parseColor(settings.getString("color"))
         val family = when (settings.getString("type")) {
             "marker" -> StockBrushes.markerLatest
