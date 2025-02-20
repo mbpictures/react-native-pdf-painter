@@ -96,19 +96,6 @@ using namespace facebook::react;
     const auto &props = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
     bool addLink = props.brushSettings.type == PdfAnnotationViewType::Link;
 
-    NSInteger delta = 0;
-    if (touchLocation.x < screenWidth * 0.25 && !addLink) {
-        delta = -1;
-    } else if (touchLocation.x > screenWidth * 0.75 && !addLink) {
-        delta = 1;
-    } else {
-        PdfAnnotationViewEventEmitter::OnTap event = PdfAnnotationViewEventEmitter::OnTap{touchLocation.x, touchLocation.y};
-        if (_eventEmitter != nullptr) {
-           std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
-            ->onTap(event);
-        }
-    }
-    
     PDFPage *currentPage = _view.currentPage;
     CGPoint convertedPoint = [_view convertPoint:touchLocation toPage:currentPage];
     
@@ -161,7 +148,20 @@ using namespace facebook::react;
             }
         }
     }
-    
+
+    NSInteger delta = 0;
+    if (touchLocation.x < screenWidth * 0.25 && !addLink) {
+        delta = -1;
+    } else if (touchLocation.x > screenWidth * 0.75 && !addLink) {
+        delta = 1;
+    } else {
+        PdfAnnotationViewEventEmitter::OnTap event = PdfAnnotationViewEventEmitter::OnTap{touchLocation.x, touchLocation.y};
+        if (_eventEmitter != nullptr) {
+           std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
+            ->onTap(event);
+        }
+    }
+
     if (currentPage) {
         NSUInteger currentIndex = [currentPage.document indexForPage:currentPage];
         NSUInteger nextIndex = currentIndex + delta;
