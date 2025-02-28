@@ -1,6 +1,5 @@
 package com.pdfannotation.viewer
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
@@ -36,7 +35,6 @@ fun RenderLinks(
     val haptics = LocalHapticFeedback.current
     val density = LocalDensity.current
     var size by remember { mutableStateOf(IntSize.Zero) }
-    Log.d("RenderLinks", "RenderLinks: ${links.size}")
 
     Box(
         modifier = Modifier
