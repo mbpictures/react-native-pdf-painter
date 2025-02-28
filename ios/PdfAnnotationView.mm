@@ -91,6 +91,8 @@ using namespace facebook::react;
 }
 
 - (void)handleTap:(UITapGestureRecognizer *)sender {
+    if (sender.state != UIGestureRecognizerStateBegan) return;
+    
     CGPoint touchLocation = [sender locationInView:_view];
     CGFloat screenWidth = _view.bounds.size.width;
     const auto &props = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
