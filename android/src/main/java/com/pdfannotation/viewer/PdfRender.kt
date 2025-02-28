@@ -60,6 +60,7 @@ class PdfRender(
         private var isLoaded = false
         private var job: Job? = null
         val pageContent = MutableStateFlow<Bitmap?>(null)
+        var currentPage: PdfRenderer.Page? = null
 
         private fun createBitmap(width: Int, height: Int): Bitmap {
             return Bitmap.createBitmap(
@@ -74,20 +75,20 @@ class PdfRender(
                 job = coroutineScope.launch {
                     mutex.withLock {
                         val newBitmap: Bitmap
-                        val currentPage = pdfRenderer.openPage(index)
+                        currentPage = pdfRenderer.openPage(index)
                         try {
                             newBitmap = createBlankBitmap(
-                                width = currentPage.width * scale,
-                                height = currentPage.height * scale
+                                width = currentPage!!.width * scale,
+                                height = currentPage!!.height * scale
                             )
-                            currentPage.render(
+                            currentPage!!.render(
                                 newBitmap,
                                 null,
                                 null,
                                 PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
                             )
                         } finally {
-                            currentPage.close()
+                            currentPage!!.close()
                         }
                         isLoaded = true
                         pageContent.emit(newBitmap)
@@ -98,6 +99,7 @@ class PdfRender(
 
         fun recycle() {
             job?.cancel()
+            currentPage?.close()
             isLoaded = false
             val oldBitmap = pageContent.value
             pageContent.tryEmit(null)
