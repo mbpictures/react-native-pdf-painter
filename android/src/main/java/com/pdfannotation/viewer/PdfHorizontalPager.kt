@@ -95,7 +95,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                 },
                 onTap = { x, y, normalizedX, normalizedY ->
                     if (viewModel.links.canCreateLinks) {
-                        viewModel.links.addLink(page, Link(normalizedX, normalizedY, viewModel.links.size, viewModel.links.size, viewModel.links.color))
+                        viewModel.links.addLink(page, Link(normalizedX, normalizedY, viewModel.links.size, viewModel.links.size, viewModel.links.color, null))
                     } else {
                         viewModel.handleTap(x, y)
                     }
@@ -112,6 +112,9 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                 },
                 onLinkRemove = { link ->
                     viewModel.links.removeLink(link.id)
+                },
+                findPage = { id ->
+                    viewModel.links.getPageOfLink(id) ?: 0
                 }
             )
         }

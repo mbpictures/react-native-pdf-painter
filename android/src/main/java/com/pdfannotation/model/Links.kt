@@ -20,16 +20,18 @@ data class Link(
     val y: Float,
     val width: Float,
     val height: Float,
-    val color: Color
+    val color: Color,
+    val isFirst: Boolean?,
 ) {
-    constructor(x: Float, y: Float, width: Float, height: Float, color: Color) : this(
+    constructor(x: Float, y: Float, width: Float, height: Float, color: Color, isFirst: Boolean?) : this(
         UUID.randomUUID().toString(),
         null,
         x,
         y,
         width,
         height,
-        color
+        color,
+        isFirst
     )
 }
 
@@ -87,8 +89,8 @@ class Links(
         _links.update { current ->
             current.mapValues { (_, links) ->
                 links.map { link ->
-                    if (link.id == mId) link.copy(targetId = mTargetId)
-                    else if (link.id == mTargetId) link.copy(targetId = mId)
+                    if (link.id == mId) link.copy(targetId = mTargetId, isFirst = true)
+                    else if (link.id == mTargetId) link.copy(targetId = mId, isFirst = false)
                     else link
                 }.toSet()
             }.toMutableMap()

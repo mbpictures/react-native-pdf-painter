@@ -41,7 +41,8 @@ fun PdfPage(
     onChangePage: (Int) -> Unit = {},
     onLink: (Link) -> Unit = {},
     onLinkRemove: (Link) -> Unit = {},
-    onTap: (Float, Float, Float, Float) -> Unit = { _, _, _, _ -> }
+    onTap: (Float, Float, Float, Float) -> Unit = { _, _, _, _ -> },
+    findPage: (String) -> Int
 ) {
     page?.pageContent?.collectAsState()?.value?.let { bitmap ->
         var size by remember { mutableStateOf(IntSize.Zero) }
@@ -145,7 +146,8 @@ fun PdfPage(
             RenderLinks(
                 links = links,
                 onLinkClick = onLink,
-                onLinkRemove = onLinkRemove
+                onLinkRemove = onLinkRemove,
+                findPage = findPage
             )
         }
     }

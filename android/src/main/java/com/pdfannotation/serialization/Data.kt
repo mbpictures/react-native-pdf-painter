@@ -56,7 +56,8 @@ data class LinkEntity(
     val y: Float,
     val width: Float,
     val height: Float,
-    val color: ULong
+    val color: ULong,
+    val isFirst: Boolean?
 )
 
 data class Annotations(

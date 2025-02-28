@@ -172,7 +172,8 @@ class Serializer {
             y = link.y,
             width = link.width,
             height = link.height,
-            color = link.color.value
+            color = link.color.value,
+            isFirst = link.isFirst
         )
     }
 
@@ -184,7 +185,8 @@ class Serializer {
             y = link.y,
             width = link.width,
             height = link.height,
-            color = Color(link.color)
+            color = Color(link.color),
+            isFirst = link.isFirst
         )
     }
 
