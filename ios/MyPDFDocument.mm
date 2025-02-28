@@ -27,15 +27,15 @@
         
         // Speichern der Link-Annotationen
         NSMutableArray *linkAnnotations = [NSMutableArray array];
-        for (PDFAnnotation *annotation in page.annotations) {
+        for (RoundedTriangleAnnotation *annotation in page.annotations) {
             PDFActionGoTo *goToAction = (PDFActionGoTo *)annotation.action;
             if ([goToAction isKindOfClass:[PDFActionGoTo class]]) {
                 NSUInteger targetPageIndex = [self indexForPage:goToAction.destination.page];
-                const CGFloat *components = CGColorGetComponents(annotation.color.CGColor);
+                const CGFloat *components = CGColorGetComponents(annotation.backgroundColor.CGColor);
                 NSDictionary *linkData = @{
                     @"bounds": NSStringFromCGRect(annotation.bounds),
                     @"targetPage": @(targetPageIndex),
-                    @"color": @[@(components[0]), @(components[1]), @(components[2]), @(CGColorGetAlpha(annotation.color.CGColor))]
+                    @"color": @[@(components[0]), @(components[1]), @(components[2]), @(CGColorGetAlpha(annotation.backgroundColor.CGColor))]
                 };
                 [linkAnnotations addObject:linkData];
             }
@@ -111,8 +111,9 @@
                         
                         NSLog(@"Addining Annotation with color: %@", color);
 
-                        PDFAnnotation *linkAnnotation = [[PDFAnnotation alloc] initWithBounds:bounds forType:PDFAnnotationSubtypeHighlight withProperties:nil];
+                        RoundedTriangleAnnotation *linkAnnotation = [[RoundedTriangleAnnotation alloc] initWithBounds:bounds forType:PDFAnnotationSubtypeWidget withProperties:nil];
                         linkAnnotation.backgroundColor = color;
+                        linkAnnotation.rotation = pageIndexKey.integerValue > targetPageIndex ? 0 : 180;
                         PDFActionGoTo *goToAction = [[PDFActionGoTo alloc] initWithDestination:[[PDFDestination alloc] initWithPage:[self pageAtIndex:targetPageIndex] atPoint:CGPointZero]];
                         linkAnnotation.action = goToAction;
 

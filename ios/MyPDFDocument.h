@@ -1,5 +1,6 @@
 #import <PDFKit/PDFKit.h>
 #import "MyPDFPage.h"
+#import "RoundedTriangleAnnotation.h"
 
 @interface MyPDFDocument : PDFDocument
 

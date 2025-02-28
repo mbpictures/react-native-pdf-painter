@@ -16,7 +16,7 @@ using namespace facebook::react;
 @implementation PdfAnnotationView {
     PDFView * _view;
     PencilKitCoordinator * _pencilKitCoordinator;
-    PDFAnnotation *firstLinkAnnotation;
+    RoundedTriangleAnnotation *firstLinkAnnotation;
     NSUInteger firstLinkPageIndex;
 }
 
@@ -102,8 +102,9 @@ using namespace facebook::react;
     if (addLink) {
         NSUInteger currentPageIndex = [_view.document indexForPage:currentPage];
         Float size = props.brushSettings.size;
-        PDFAnnotation *linkAnnotation = [[PDFAnnotation alloc] initWithBounds:CGRectMake(convertedPoint.x - size / 2, convertedPoint.y - size / 2, size, size) forType:PDFAnnotationSubtypeHighlight withProperties:nil];
+        RoundedTriangleAnnotation *linkAnnotation = [[RoundedTriangleAnnotation alloc] initWithBounds:CGRectMake(convertedPoint.x - size / 2, convertedPoint.y - size / 2, size, size) forType:PDFAnnotationSubtypeWidget withProperties:nil];
         linkAnnotation.backgroundColor = [self hexStringToColor:[NSString stringWithUTF8String:props.brushSettings.color.c_str()]];
+        
 
         [currentPage addAnnotation:linkAnnotation];
         
@@ -115,8 +116,12 @@ using namespace facebook::react;
             PDFDestination *dest1 = [[PDFDestination alloc] initWithPage:[_view.document pageAtIndex:currentPageIndex] atPoint:CGPointZero];
             PDFDestination *dest2 = [[PDFDestination alloc] initWithPage:[_view.document pageAtIndex:firstLinkPageIndex] atPoint:CGPointZero];
             
+            firstLinkAnnotation.rotation = firstLinkPageIndex > currentPageIndex ? 0 : 180;
+            linkAnnotation.rotation = firstLinkPageIndex > currentPageIndex ? 180 : 0;
+            
             firstLinkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest1];
             linkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest2];
+            linkAnnotation.backgroundColor = [linkAnnotation.backgroundColor colorWithAlphaComponent:CGColorGetAlpha(linkAnnotation.backgroundColor.CGColor) * 0.5];
             
             firstLinkAnnotation = nil;
             
