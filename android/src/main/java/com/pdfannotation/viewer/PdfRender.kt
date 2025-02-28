@@ -93,6 +93,7 @@ class PdfRender(
                             )
                         } finally {
                             currentPage!!.close()
+                            currentPage = null
                         }
                         isLoaded = true
                         pageContent.emit(newBitmap)
