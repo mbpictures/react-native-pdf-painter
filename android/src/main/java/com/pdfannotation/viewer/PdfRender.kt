@@ -21,12 +21,16 @@ class PdfRender(
     private val backgroundColor: Int?,
 ) {
     private val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
-    private val pdfRenderer = PdfRenderer(fileDescriptor)
-    val pageCount get() = pdfRenderer.pageCount
+    private val pdfRenderer = try {
+        PdfRenderer(fileDescriptor)
+    } catch (e: Exception) {
+        null
+    }
+    val pageCount get() = pdfRenderer?.pageCount ?: 0
     private val mutex: Mutex = Mutex()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
-    val pageLists: List<Page> = List(pdfRenderer.pageCount) {
+    val pageLists: List<Page> = List(pageCount) {
         Page(
             index = it,
             pdfRenderer = pdfRenderer,
@@ -43,14 +47,14 @@ class PdfRender(
             it.recycle()
         }
         coroutineScope.coroutineContext.cancelChildren()
-        pdfRenderer.close()
+        pdfRenderer?.close()
         fileDescriptor.close()
     }
 
     class Page(
         val mutex: Mutex,
         val index: Int,
-        val pdfRenderer: PdfRenderer,
+        val pdfRenderer: PdfRenderer?,
         val coroutineScope: CoroutineScope,
         val scale: Float,
         val fileDescriptor: ParcelFileDescriptor,
@@ -75,7 +79,7 @@ class PdfRender(
                 job = coroutineScope.launch {
                     mutex.withLock {
                         val newBitmap: Bitmap
-                        currentPage = pdfRenderer.openPage(index)
+                        currentPage = pdfRenderer?.openPage(index)
                         try {
                             newBitmap = createBlankBitmap(
                                 width = currentPage!!.width * scale,
