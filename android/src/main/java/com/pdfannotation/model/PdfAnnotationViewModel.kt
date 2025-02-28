@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.facebook.react.bridge.ReadableMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import android.graphics.Color as GraphicsColor
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.ink.brush.StockBrushes
 import com.pdfannotation.serialization.Serializer
 import kotlinx.coroutines.flow.update
@@ -57,7 +57,7 @@ class PdfAnnotationViewModel(
     val beyondViewportPageCount: StateFlow<Int?> get() = _beyondViewportPageCount
 
     fun updateBackgroundColor(newColor: String?) {
-        _backgroundColor.value = newColor?.let { GraphicsColor.parseColor(it) }
+        _backgroundColor.value = newColor?.let { this.parseColor(newColor).toArgb() }
     }
 
     fun updatePdfFile(newPdf: String?) {
@@ -82,7 +82,7 @@ class PdfAnnotationViewModel(
         if (newBrushSettings?.hasKey("type") == true && newBrushSettings.getString("type") == "link") {
             links.canCreateLinks = true
             links.size = newBrushSettings.getDouble("size").toFloat()
-            links.color = Color(GraphicsColor.parseColor(newBrushSettings.getString("color")))
+            links.color = this.parseColor(newBrushSettings.getString("color"))
             _brushSettings.value = null
             return
         }
@@ -99,14 +99,13 @@ class PdfAnnotationViewModel(
         if (settings.getString("type") === "none") {
             return null
         }
-        val color = GraphicsColor.parseColor(settings.getString("color"))
         val family = when (settings.getString("type")) {
             "marker" -> StockBrushes.markerLatest
             "pressure-pen" -> StockBrushes.pressurePenLatest
             "highlighter" -> StockBrushes.highlighterLatest
             else -> StockBrushes.markerLatest
         }
-        return BrushSettings(settings.getDouble("size").toFloat(), Color(color), family, isEraser = settings.getString("type") == "eraser")
+        return BrushSettings(settings.getDouble("size").toFloat(), this.parseColor(settings.getString("color")), family, isEraser = settings.getString("type") == "eraser")
     }
 
     fun saveAnnotations(path: String? = null) {
@@ -190,6 +189,24 @@ class PdfAnnotationViewModel(
                 saveAnnotations()
             }
         )
+    }
+
+    private fun parseColor(hex: String?): Color {
+        val color = (hex ?: "#FF0000").removePrefix("#")
+        return when (color.length) {
+            6 -> Color(
+                red = Integer.parseInt(color.substring(0, 2), 16) / 255f,
+                green = Integer.parseInt(color.substring(2, 4), 16) / 255f,
+                blue = Integer.parseInt(color.substring(4, 6), 16) / 255f
+            )
+            8 -> Color(
+                alpha = Integer.parseInt(color.substring(0, 2), 16) / 255f,
+                red = Integer.parseInt(color.substring(2, 4), 16) / 255f,
+                green = Integer.parseInt(color.substring(4, 6), 16) / 255f,
+                blue = Integer.parseInt(color.substring(6, 8), 16) / 255f
+            )
+            else -> throw IllegalArgumentException("Invalid color format")
+        }
     }
 }
 
