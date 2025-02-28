@@ -96,6 +96,7 @@ fun PdfPage(
             modifier = Modifier
                 .fillMaxSize()
                 .onSizeChanged { size = it }
+                .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height)
                 .zoomable(
                     zoomState,
                     onTap = { offset ->
@@ -137,8 +138,7 @@ fun PdfPage(
                 brushSettings = brushSettings,
                 modifier = Modifier
                     .fillMaxSize()
-                    .clipToBounds()
-                    .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height),
+                    .clipToBounds(),
                 inProgressStrokesView = inProgressStrokesView,
                 strokeAuthoringState = strokeAuthoringState,
                 transformMatrix = transformMatrix,
@@ -146,8 +146,7 @@ fun PdfPage(
             RenderLinks(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clipToBounds()
-                    .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height),
+                    .clipToBounds(),
                 links = links,
                 onLinkClick = onLink,
                 onLinkRemove = onLinkRemove,
