@@ -65,11 +65,15 @@ fun InkCanvas(
             val canvas = drawContext.canvas.nativeCanvas
 
             strokeAuthoringState.finishedStrokes.value.forEach { stroke ->
-                canvasStrokeRenderer.draw(
-                    stroke = stroke,
-                    canvas = canvas,
-                    strokeToScreenTransform = canvasTransform,
-                )
+                try {
+                    canvasStrokeRenderer.draw(
+                        stroke = stroke,
+                        canvas = canvas,
+                        strokeToScreenTransform = canvasTransform,
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
