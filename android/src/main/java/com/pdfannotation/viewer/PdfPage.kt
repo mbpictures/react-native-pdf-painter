@@ -144,6 +144,10 @@ fun PdfPage(
                 transformMatrix = transformMatrix,
             )
             RenderLinks(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clipToBounds()
+                    .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height),
                 links = links,
                 onLinkClick = onLink,
                 onLinkRemove = onLinkRemove,
