@@ -3,6 +3,7 @@ package com.pdfannotation.viewer
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.IntSize
 import com.pdfannotation.model.Link
 import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.platform.LocalDensity
 import androidx.graphics.shapes.CornerRounding
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
@@ -32,13 +34,17 @@ fun RenderLinks(
 ) {
     val haptics = LocalHapticFeedback.current
     var size by remember { mutableStateOf(IntSize.Zero) }
+    val density = LocalDensity.current
 
     Box(
         modifier = modifier.onSizeChanged { size = it }
     ) {
         links.forEach { link ->
+            val widthDp = with(density) { link.width.toDp() }
+            val heightDp = with(density) { link.height.toDp() }
             Box(
                 modifier = Modifier
+                    .size(widthDp, heightDp)
                     .graphicsLayer(
                         translationX = link.x * size.width - link.width / 2,
                         translationY = link.y * size.height - link.height / 2,
