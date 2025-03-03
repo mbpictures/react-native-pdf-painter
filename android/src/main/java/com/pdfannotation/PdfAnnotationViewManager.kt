@@ -11,13 +11,9 @@ import com.facebook.react.viewmanagers.PdfAnnotationViewManagerDelegate
 @ReactModule(name = PdfAnnotationViewManager.NAME)
 class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
   PdfAnnotationViewManagerInterface<PdfAnnotationView> {
-  private val mDelegate: ViewManagerDelegate<PdfAnnotationView>
+  private val mDelegate: PdfAnnotationViewManagerDelegate<PdfAnnotationView, PdfAnnotationViewManager> = PdfAnnotationViewManagerDelegate(this)
 
-  init {
-    mDelegate = PdfAnnotationViewManagerDelegate(this)
-  }
-
-  override fun getDelegate(): ViewManagerDelegate<PdfAnnotationView>? {
+  override fun getDelegate(): ViewManagerDelegate<PdfAnnotationView> {
     return mDelegate
   }
 

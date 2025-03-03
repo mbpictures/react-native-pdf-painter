@@ -14,6 +14,10 @@ buildscript {
   }
 }
 
+plugins {
+  id("org.jetbrains.kotlin.plugin.compose") version "2.0.0" // this version matches your Kotlin version
+}
+
 def reactNativeArchitectures() {
   def value = rootProject.getProperties().get("reactNativeArchitectures")
   return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
