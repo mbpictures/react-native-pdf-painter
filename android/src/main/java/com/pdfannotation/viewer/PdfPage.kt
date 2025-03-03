@@ -41,7 +41,7 @@ fun PdfPage(
     onChangePage: (Int) -> Unit = {},
     onLink: (Link) -> Unit = {},
     onLinkRemove: (Link) -> Unit = {},
-    onTap: (Float, Float, Float, Float) -> Unit = { _, _, _, _ -> },
+    onTap: (Float, Float, Float, Float, Boolean) -> Unit = { _, _, _, _, _ -> },
     findPage: (String) -> Int
 ) {
     page?.pageContent?.collectAsState()?.value?.let { bitmap ->
@@ -100,12 +100,15 @@ fun PdfPage(
                 .zoomable(
                     zoomState,
                     onTap = { offset ->
+                        var changePage = false
                         if (offset.x > size.width * 0.8) {
                             onChangePage(1)
+                            changePage = true
                         } else if (offset.x < size.width * 0.2) {
                             onChangePage(-1)
+                            changePage = true
                         }
-                        onTap(offset.x, offset.y, offset.x / size.width, offset.y / size.height)
+                        onTap(offset.x, offset.y, offset.x / size.width, offset.y / size.height, changePage)
                     },
                     onDoubleTap = { position ->
                         val isBitmapPortrait = bitmap.height >= bitmap.width

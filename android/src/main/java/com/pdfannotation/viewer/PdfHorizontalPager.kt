@@ -93,10 +93,10 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                         pagerState.animateScrollToPage(nextPage)
                     }
                 },
-                onTap = { x, y, normalizedX, normalizedY ->
+                onTap = { x, y, normalizedX, normalizedY, changePage ->
                     if (viewModel.links.canCreateLinks) {
                         viewModel.links.addLink(page, Link(normalizedX, normalizedY, viewModel.links.size, viewModel.links.size, viewModel.links.color, null))
-                    } else {
+                    } else if (!changePage) {
                         viewModel.handleTap(x, y)
                     }
                 },
