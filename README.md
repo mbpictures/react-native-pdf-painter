@@ -33,6 +33,8 @@ or
 yarn add react-native-pdf-painter
 ```
 
+Starting from version 0.8.0 of this library, it's only compatible with React Native >= 0.77! If you are using an older version of React Native, please use the version 0.7.2 of this library.
+
 ### iOS
 ```sh
 cd ios && pod install
