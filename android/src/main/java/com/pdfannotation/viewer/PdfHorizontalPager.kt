@@ -12,10 +12,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.unit.IntSize
 import com.pdfannotation.model.Link
 import com.pdfannotation.model.PdfAnnotationViewModel
 import kotlinx.coroutines.launch
@@ -30,6 +34,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     val links by viewModel.links.links.collectAsState()
     val beyondViewportPageCount by viewModel.beyondViewportPageCount.collectAsState()
 
+    var size by remember { mutableStateOf(IntSize.Zero) }
     val scope = rememberCoroutineScope()
     val renderer = remember(file, backgroundColor) { file?.let {PdfRender(it, 3f, backgroundColor) }}
     val pagerState = rememberPagerState(pageCount = {renderer?.pageCount ?: 1})
@@ -72,6 +77,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
+                .onSizeChanged { size = it }
                 .clipToBounds(),
             userScrollEnabled = canScroll,
             beyondViewportPageCount = beyondViewportPageCount ?: PagerDefaults.BeyondViewportPageCount
@@ -115,7 +121,8 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                 },
                 findPage = { id ->
                     viewModel.links.getPageOfLink(id) ?: 0
-                }
+                },
+                containerSize = size,
             )
         }
     }

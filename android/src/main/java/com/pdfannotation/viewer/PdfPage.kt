@@ -42,7 +42,8 @@ fun PdfPage(
     onLink: (Link) -> Unit = {},
     onLinkRemove: (Link) -> Unit = {},
     onTap: (Float, Float, Float, Float, Boolean) -> Unit = { _, _, _, _, _ -> },
-    findPage: (String) -> Int
+    findPage: (String) -> Int,
+    containerSize: IntSize
 ) {
     page?.pageContent?.collectAsState()?.value?.let { bitmap ->
         var size by remember { mutableStateOf(IntSize.Zero) }
@@ -80,7 +81,7 @@ fun PdfPage(
         }
 
         // Restore strokes from ViewModel
-        LaunchedEffect(viewModel, page, size) {
+        LaunchedEffect(viewModel, page, size, bitmap.height, bitmap.width) {
             strokeAuthoringState.finishedStrokes.value = viewModel.getStrokes(
                 page.index,
                 calculateChildSize(size.toSize(), Size(bitmap.width.toFloat(), bitmap.height.toFloat()))
@@ -96,7 +97,7 @@ fun PdfPage(
             modifier = Modifier
                 .fillMaxSize()
                 .onSizeChanged { size = it }
-                .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = bitmap.width < bitmap.height)
+                .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = containerSize.width > containerSize.height)
                 .zoomable(
                     zoomState,
                     onTap = { offset ->
