@@ -96,7 +96,7 @@ fun PdfPage(
             modifier = Modifier
                 .fillMaxSize()
                 .onSizeChanged { size = it }
-                .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = size.width > size.height)
+                .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = bitmap.width < bitmap.height)
                 .zoomable(
                     zoomState,
                     onTap = { offset ->
