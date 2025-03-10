@@ -104,7 +104,9 @@ class PdfRender(
 
         fun recycle() {
             job?.cancel()
-            currentPage?.close()
+            try {
+                currentPage?.close()
+            } catch (_: Exception) {}
             isLoaded = false
             val oldBitmap = pageContent.value
             pageContent.tryEmit(null)
