@@ -26,6 +26,7 @@ import com.pdfannotation.canvas.InkCanvas
 import com.pdfannotation.canvas.StrokeAuthoringState
 import com.pdfannotation.canvas.rememberInProgressStrokesView
 import com.pdfannotation.canvas.rememberStrokeAuthoringState
+import com.pdfannotation.canvas.rememberStrokeAuthoringTouchListener
 import com.pdfannotation.model.BrushSettings
 import com.pdfannotation.model.Link
 import com.pdfannotation.model.Strokes
@@ -69,16 +70,24 @@ fun PdfPage(
             }
         }
         val inProgressStrokesView: InProgressStrokesView = rememberInProgressStrokesView()
-        val strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(inProgressStrokesView, transformMatrix)
-
-        // Save finished strokes to ViewModel
-        LaunchedEffect(strokeAuthoringState.finishedStrokes.value) {
-            viewModel.setStrokesPerPage(
-                page.index,
-                strokeAuthoringState.finishedStrokes.value,
-                calculateChildSize(size.toSize(), Size(bitmap.width.toFloat(), bitmap.height.toFloat()))
-            )
-        }
+        val strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(
+            inProgressStrokesView,
+            transformMatrix,
+            strokesFinishedListener = { strokes ->
+                viewModel.setStrokesPerPage(
+                    page.index,
+                    strokes,
+                    calculateChildSize(
+                        size.toSize(),
+                        Size(bitmap.width.toFloat(), bitmap.height.toFloat())
+                    )
+                )
+            }
+        )
+        val strokeAuthoringTouchListener = rememberStrokeAuthoringTouchListener(
+            strokeAuthoringState = strokeAuthoringState,
+            brushSettings = brushSettings,
+        )
 
         // Restore strokes from ViewModel
         LaunchedEffect(viewModel, page, size, bitmap.height, bitmap.width) {
@@ -146,6 +155,7 @@ fun PdfPage(
                 inProgressStrokesView = inProgressStrokesView,
                 strokeAuthoringState = strokeAuthoringState,
                 transformMatrix = transformMatrix,
+                strokeAuthoringTouchListener = strokeAuthoringTouchListener,
             )
             RenderLinks(
                 modifier = Modifier
