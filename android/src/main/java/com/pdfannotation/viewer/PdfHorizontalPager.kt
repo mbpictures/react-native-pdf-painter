@@ -84,6 +84,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
         ) { page ->
             PdfPage(
                 page = renderer?.let { it.pageLists[page] },
+                backgroundColor = backgroundColor,
                 brushSettings = brushSettings,
                 viewModel = strokes,
                 onChangePage = { pageDelta ->

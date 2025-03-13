@@ -1,6 +1,8 @@
 package com.pdfannotation.viewer
 
 import android.graphics.Matrix
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,14 +16,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import androidx.ink.authoring.InProgressStrokesView
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
 import com.pdfannotation.canvas.InkCanvas
 import com.pdfannotation.canvas.StrokeAuthoringState
 import com.pdfannotation.canvas.rememberInProgressStrokesView
@@ -36,6 +37,7 @@ import net.engawapg.lib.zoomable.zoomable
 @Composable
 fun PdfPage(
     page: PdfRender.Page?,
+    backgroundColor: Int?,
     brushSettings: BrushSettings?,
     viewModel: Strokes,
     links: Set<Link>,
@@ -54,14 +56,11 @@ fun PdfPage(
             maxOf(size.width.toFloat() / imageSize.width, 1.0f)
         }
         var zoomState by remember { mutableStateOf(ZoomState(contentSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat()), maxScale = baseScale * 5.0f)) }
-        val context = LocalContext.current
-        val imageModel = remember(context, bitmap) {
+        val imageModel = remember(bitmap) {
             if (bitmap.isRecycled) {
                 null
             } else {
-                ImageRequest.Builder(context)
-                    .data(bitmap)
-                    .build()
+                bitmap.asImageBitmap()
             }
         }
         val transformMatrix = remember(zoomState.scale, zoomState.offsetY, zoomState.offsetX) {
@@ -144,31 +143,42 @@ fun PdfPage(
                         zoomEnabled = brushSettings == null
                     )
             ) {
-                AsyncImage(
-                    model = imageModel,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-                InkCanvas(
-                    brushSettings = brushSettings,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clipToBounds(),
-                    inProgressStrokesView = inProgressStrokesView,
-                    strokeAuthoringState = strokeAuthoringState,
-                    transformMatrix = transformMatrix,
-                    strokeAuthoringTouchListener = strokeAuthoringTouchListener,
-                )
-                RenderLinks(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clipToBounds(),
-                    links = links,
-                    onLinkClick = onLink,
-                    onLinkRemove = onLinkRemove,
-                    findPage = findPage
-                )
+                when (imageModel) {
+                    null ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color(backgroundColor ?: 0xFFFFFFFF.toInt()))
+                        )
+                    else -> {
+                        Image(
+                            bitmap = imageModel,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit
+                        )
+                        InkCanvas(
+                            brushSettings = brushSettings,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clipToBounds(),
+                            inProgressStrokesView = inProgressStrokesView,
+                            strokeAuthoringState = strokeAuthoringState,
+                            transformMatrix = transformMatrix,
+                            strokeAuthoringTouchListener = strokeAuthoringTouchListener,
+                        )
+                        RenderLinks(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clipToBounds(),
+                            links = links,
+                            onLinkClick = onLink,
+                            onLinkRemove = onLinkRemove,
+                            findPage = findPage
+                        )
+                    }
+                }
+
             }
         }
     }
