@@ -102,70 +102,74 @@ fun PdfPage(
         }
 
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .onSizeChanged { size = it }
-                .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = containerSize.width > containerSize.height)
-                .zoomable(
-                    zoomState,
-                    onTap = { offset ->
-                        var changePage = false
-                        if (offset.x > size.width * 0.8) {
-                            onChangePage(1)
-                            changePage = true
-                        } else if (offset.x < size.width * 0.2) {
-                            onChangePage(-1)
-                            changePage = true
-                        }
-                        onTap(offset.x, offset.y, offset.x / size.width, offset.y / size.height, changePage)
-                    },
-                    onDoubleTap = { position ->
-                        val isBitmapPortrait = bitmap.height >= bitmap.width
-                        val isPortrait = size.height >= size.width
-                        val targetScale = when {
-                            isPortrait && isBitmapPortrait -> {
-                                if (zoomState.scale == 1f) 2.5f else 1f
+        CustomViewConfiguration(
+            doubleTapTimeoutMillis = 100L
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .onSizeChanged { size = it }
+                    .aspectRatio(Size(bitmap.width.toFloat(), bitmap.height.toFloat()).aspectRatio(), matchHeightConstraintsFirst = containerSize.width > containerSize.height)
+                    .zoomable(
+                        zoomState,
+                        onTap = { offset ->
+                            var changePage = false
+                            if (offset.x > size.width * 0.8) {
+                                onChangePage(1)
+                                changePage = true
+                            } else if (offset.x < size.width * 0.2) {
+                                onChangePage(-1)
+                                changePage = true
                             }
-                            else -> {
-                                when (zoomState.scale) {
-                                    1f -> baseScale
-                                    baseScale -> baseScale * 2.5f
-                                    else -> 1f
+                            onTap(offset.x, offset.y, offset.x / size.width, offset.y / size.height, changePage)
+                        },
+                        onDoubleTap = { position ->
+                            val isBitmapPortrait = bitmap.height >= bitmap.width
+                            val isPortrait = size.height >= size.width
+                            val targetScale = when {
+                                isPortrait && isBitmapPortrait -> {
+                                    if (zoomState.scale == 1f) 2.5f else 1f
+                                }
+                                else -> {
+                                    when (zoomState.scale) {
+                                        1f -> baseScale
+                                        baseScale -> baseScale * 2.5f
+                                        else -> 1f
+                                    }
                                 }
                             }
-                        }
 
-                        zoomState.changeScale(targetScale, position)
-                    },
-                    zoomEnabled = brushSettings == null
+                            zoomState.changeScale(targetScale, position)
+                        },
+                        zoomEnabled = brushSettings == null
+                    )
+            ) {
+                AsyncImage(
+                    model = imageModel,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit
                 )
-        ) {
-            AsyncImage(
-                model = imageModel,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
-            )
-            InkCanvas(
-                brushSettings = brushSettings,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clipToBounds(),
-                inProgressStrokesView = inProgressStrokesView,
-                strokeAuthoringState = strokeAuthoringState,
-                transformMatrix = transformMatrix,
-                strokeAuthoringTouchListener = strokeAuthoringTouchListener,
-            )
-            RenderLinks(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clipToBounds(),
-                links = links,
-                onLinkClick = onLink,
-                onLinkRemove = onLinkRemove,
-                findPage = findPage
-            )
+                InkCanvas(
+                    brushSettings = brushSettings,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clipToBounds(),
+                    inProgressStrokesView = inProgressStrokesView,
+                    strokeAuthoringState = strokeAuthoringState,
+                    transformMatrix = transformMatrix,
+                    strokeAuthoringTouchListener = strokeAuthoringTouchListener,
+                )
+                RenderLinks(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clipToBounds(),
+                    links = links,
+                    onLinkClick = onLink,
+                    onLinkRemove = onLinkRemove,
+                    findPage = findPage
+                )
+            }
         }
     }
 }
