@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -52,7 +53,7 @@ fun PdfPage(
     containerSize: IntSize,
     setTransformMatrix: (Float, Float, Float) -> Unit,
     setChildSize: (Size) -> Unit,
-    currentPage: Int,
+    state: PagerState,
 ) {
     page?.pageContent?.collectAsState()?.value?.let { bitmap ->
         var size by remember { mutableStateOf(IntSize.Zero) }
@@ -78,7 +79,7 @@ fun PdfPage(
             inProgressStrokesView,
             transformMatrix,
             strokesFinishedListener = { strokes ->
-                if (currentPage == page.index) {
+                if (state.currentPage == page.index) {
                     viewModel.setStrokesPerPage(
                         page.index,
                         strokes,

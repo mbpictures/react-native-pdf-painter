@@ -154,7 +154,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                 setChildSize = { size ->
                     childSize = size
                 },
-                currentPage = pagerState.currentPage
+                state = pagerState
             )
         }
         AndroidView(
