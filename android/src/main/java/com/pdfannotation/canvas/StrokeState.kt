@@ -18,7 +18,8 @@ import androidx.input.motionprediction.MotionEventPredictor
 
 @Stable
 class StrokeAuthoringState(
-    internal val inProgressStrokesView: InProgressStrokesView
+    internal val inProgressStrokesView: InProgressStrokesView,
+    private var strokesFinishedListener: ((Set<Stroke>) -> Unit)? = null
 ) : InProgressStrokesFinishedListener {
     var moveEventCount: Int = 0
     var currentStrokeId: InProgressStrokeId? = null
@@ -57,6 +58,7 @@ class StrokeAuthoringState(
         }
         finishedStrokes.value += transformedStrokes
         inProgressStrokesView.removeFinishedStrokes(strokes.keys)
+        strokesFinishedListener?.invoke(finishedStrokes.value)
     }
 
     private fun calcThreshold(eraserBox: ImmutableBox, partialMesh: PartitionedMesh, threshold: Float): Float {
@@ -85,9 +87,10 @@ class StrokeAuthoringState(
 fun rememberStrokeAuthoringState(
     inProgressStrokesView: InProgressStrokesView,
     transformMatrix: Matrix,
+    strokesFinishedListener: ((Set<Stroke>) -> Unit)? = null
 ): StrokeAuthoringState {
     val state = remember(inProgressStrokesView) {
-        StrokeAuthoringState(inProgressStrokesView).also { listener: InProgressStrokesFinishedListener ->
+        StrokeAuthoringState(inProgressStrokesView, strokesFinishedListener).also { listener: InProgressStrokesFinishedListener ->
             inProgressStrokesView.addFinishedStrokesListener(listener)
         }
     }

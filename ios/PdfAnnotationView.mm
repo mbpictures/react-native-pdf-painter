@@ -27,42 +27,49 @@ using namespace facebook::react;
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
-  if (self = [super initWithFrame:frame]) {
-    static const auto defaultProps = std::make_shared<const PdfAnnotationViewProps>();
-    _props = defaultProps;
-
-      _view = [[PDFView alloc] initWithFrame:frame];
-      _view.displayMode = kPDFDisplaySinglePage;
-      _view.displayDirection = kPDFDisplayDirectionHorizontal;
-      _view.autoScales = true;
-      _pencilKitCoordinator = [[PencilKitCoordinator alloc] init];
-      _pencilKitCoordinator.delegate = self;
-      if (@available(iOS 16.0, *)) {
-          _view.pageOverlayViewProvider = _pencilKitCoordinator;
-      }
-      
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(handlePageChange:)
-                                               name:PDFViewPageChangedNotification
-                                               object:_view];
-
-      UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
-      tapRecognizer.numberOfTapsRequired = 1;
-      tapRecognizer.cancelsTouchesInView = NO;
-      [_view addGestureRecognizer:tapRecognizer];
-      
-      UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-      longPressRecognizer.minimumPressDuration = 0.5; // Mindestens 0,5 Sek. gedrückt halten
-      [_view addGestureRecognizer:longPressRecognizer];
-      
-      [_view usePageViewController:true withViewOptions:NULL];
-      [_view setEnableDataDetectors:YES];
-      
-
-      [self updateThumbnailMode:false];
-  }
-
-  return self;
+    if (self = [super initWithFrame:frame]) {
+        static const auto defaultProps = std::make_shared<const PdfAnnotationViewProps>();
+        _props = defaultProps;
+        
+        _view = [[PDFView alloc] initWithFrame:frame];
+        _view.displayMode = kPDFDisplaySinglePage;
+        _view.displayDirection = kPDFDisplayDirectionHorizontal;
+        _view.autoScales = true;
+        _pencilKitCoordinator = [[PencilKitCoordinator alloc] init];
+        _pencilKitCoordinator.delegate = self;
+        if (@available(iOS 16.0, *)) {
+            _view.pageOverlayViewProvider = _pencilKitCoordinator;
+        }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handlePageChange:)
+                                                     name:PDFViewPageChangedNotification
+                                                   object:_view];
+        
+        UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+        tapRecognizer.numberOfTapsRequired = 1;
+        tapRecognizer.cancelsTouchesInView = NO;
+        [_view addGestureRecognizer:tapRecognizer];
+        
+        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
+        doubleTapRecognizer.numberOfTapsRequired = 2;
+        doubleTapRecognizer.cancelsTouchesInView = NO;
+        [_view addGestureRecognizer:doubleTapRecognizer];
+        
+        [tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
+        
+        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+        longPressRecognizer.minimumPressDuration = 0.5; // Mindestens 0,5 Sek. gedrückt halten
+        [_view addGestureRecognizer:longPressRecognizer];
+        
+        [_view usePageViewController:true withViewOptions:NULL];
+        [_view setEnableDataDetectors:YES];
+        
+        
+        [self updateThumbnailMode:false];
+    }
+    
+    return self;
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
@@ -90,8 +97,11 @@ using namespace facebook::react;
     }
 }
 
+- (void)handleDoubleTap:(UITapGestureRecognizer *)sender {
+}
+
 - (void)handleTap:(UITapGestureRecognizer *)sender {
-    if (sender.state != UIGestureRecognizerStateBegan) return;
+    if (sender.state != UIGestureRecognizerStateEnded) return;
     
     CGPoint touchLocation = [sender locationInView:_view];
     CGFloat screenWidth = _view.bounds.size.width;
