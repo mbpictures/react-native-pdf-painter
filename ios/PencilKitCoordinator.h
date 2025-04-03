@@ -18,6 +18,8 @@ using namespace facebook::react;
 @interface PencilKitCoordinator : NSObject <PDFPageOverlayViewProvider, PKCanvasViewDelegate>
 @property (nonatomic, strong) NSMutableDictionary<NSString *, PKCanvasView *> *pageToViewMapping;
 @property (nonatomic, weak) id<PencilKitCoordinatorDelegate> delegate;
+@property PdfAnnotationViewBrushSettingsStruct currentBrushSettings;
+
 
 - (UIView *)pdfView:(PDFView *)view overlayViewForPage:(PDFPage *)page;
 - (void)pdfView:(PDFView *)pdfView willEndDisplayingOverlayView:(UIView *)overlayView forPage:(PDFPage *)page;
