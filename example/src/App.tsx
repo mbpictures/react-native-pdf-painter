@@ -26,6 +26,8 @@ import {
     UndoIcon,
     RedoIcon,
     LinkIcon,
+    ChevronRight,
+    ChevronLeft,
 } from 'lucide-react-native';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
@@ -94,6 +96,7 @@ export default function App() {
     const [iosToolbar, setIosToolbar] = useState(false);
     const pdfViewer = useRef<Handle>(null);
     const annotationFile = getAnnotationsPath(pdfFile);
+    const currentPage = useRef(0);
 
     const handleSelectFile = async () => {
         try {
@@ -165,7 +168,34 @@ export default function App() {
                         }
                         onTap={(e) => console.log(e.nativeEvent)}
                         onLinkCompleted={() => setBrush(undefined)}
+                        onPageChange={(page) => (currentPage.current = page)}
                     />
+                    {brush && brush.type !== 'none' && (
+                        <View style={styles.pageNavigation}>
+                            <TouchableHighlight
+                                underlayColor={'#ffe9d2'}
+                                style={styles.toolbarItem}
+                                onPress={() =>
+                                    pdfViewer.current?.setPage(
+                                        currentPage.current - 1
+                                    )
+                                }
+                            >
+                                <ChevronLeft />
+                            </TouchableHighlight>
+                            <TouchableHighlight
+                                underlayColor={'#ffe9d2'}
+                                style={styles.toolbarItem}
+                                onPress={() =>
+                                    pdfViewer.current?.setPage(
+                                        currentPage.current + 1
+                                    )
+                                }
+                            >
+                                <ChevronRight />
+                            </TouchableHighlight>
+                        </View>
+                    )}
                     <View style={styles.toolbar}>
                         {BRUSH_SETTINGS.map((config, i) => (
                             <TouchableHighlight
@@ -262,5 +292,18 @@ const styles = StyleSheet.create({
     },
     toolbarItemActive: {
         backgroundColor: '#ffcc9c',
+    },
+    pageNavigation: {
+        position: 'absolute',
+        top: '50%',
+        left: 0,
+        width: '100%',
+        transform: [
+            {
+                translateY: '-50%',
+            },
+        ],
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
 });
