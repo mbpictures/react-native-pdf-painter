@@ -14,7 +14,7 @@ using namespace facebook::react;
 @end
 
 @implementation PdfAnnotationView {
-    PDFView * _view;
+    CustomPdfView * _view;
     PencilKitCoordinator * _pencilKitCoordinator;
     RoundedTriangleAnnotation *firstLinkAnnotation;
     NSUInteger firstLinkPageIndex;
@@ -31,7 +31,7 @@ using namespace facebook::react;
         static const auto defaultProps = std::make_shared<const PdfAnnotationViewProps>();
         _props = defaultProps;
         
-        _view = [[PDFView alloc] initWithFrame:frame];
+        _view = [[CustomPdfView alloc] initWithFrame:frame];
         _view.displayMode = kPDFDisplaySinglePage;
         _view.displayDirection = kPDFDisplayDirectionHorizontal;
         _view.autoScales = true;
@@ -51,20 +51,11 @@ using namespace facebook::react;
         tapRecognizer.cancelsTouchesInView = NO;
         [_view addGestureRecognizer:tapRecognizer];
         
-        UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-        doubleTapRecognizer.numberOfTapsRequired = 2;
-        doubleTapRecognizer.cancelsTouchesInView = NO;
-        [_view addGestureRecognizer:doubleTapRecognizer];
-        
-        [tapRecognizer requireGestureRecognizerToFail:doubleTapRecognizer];
-        
         UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        longPressRecognizer.minimumPressDuration = 0.5; // Mindestens 0,5 Sek. gedrückt halten
+        longPressRecognizer.minimumPressDuration = 0.5;
         [_view addGestureRecognizer:longPressRecognizer];
         
         [_view usePageViewController:true withViewOptions:NULL];
-        [_view setEnableDataDetectors:YES];
-        
         
         [self updateThumbnailMode:false];
     }

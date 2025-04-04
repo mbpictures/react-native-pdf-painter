@@ -3,6 +3,7 @@
 #import <PDFKit/PDFKit.h>
 #import "PencilKitCoordinator.h"
 #import "MyPDFDocument.h"
+#import "CustomPdfView.h"
 
 #ifndef PdfAnnotationViewNativeComponent_h
 #define PdfAnnotationViewNativeComponent_h

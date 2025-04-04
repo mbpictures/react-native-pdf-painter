@@ -108,8 +108,6 @@
                                                                                              green:[colorComponents[1] floatValue]
                                                                                               blue:[colorComponents[2] floatValue]
                                                                                              alpha:[colorComponents[3] floatValue]];
-                        
-                        NSLog(@"Addining Annotation with color: %@", color);
 
                         RoundedTriangleAnnotation *linkAnnotation = [[RoundedTriangleAnnotation alloc] initWithBounds:bounds forType:PDFAnnotationSubtypeWidget withProperties:nil];
                         linkAnnotation.backgroundColor = color;

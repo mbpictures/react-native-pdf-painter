@@ -138,6 +138,7 @@ dependencies {
   implementation("androidx.input:input-motionprediction:1.0.0-beta05")
   implementation("com.google.code.gson:gson:2.10.1")
   implementation("androidx.graphics:graphics-shapes:1.0.1")
+  implementation("androidx.graphics:graphics-core:1.0.3")
 }
 
 if (isNewArchitectureEnabled()) {

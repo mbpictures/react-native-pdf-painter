@@ -43,6 +43,8 @@
         resultView.drawing = myPDFPage.drawing;
     }
     
+    [self setDrawingTool:myPDFPage brushSettings:self.currentBrushSettings];
+    
     return resultView;
 }
 
@@ -117,6 +119,7 @@
     // Set the tool to the canvas
     PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
     canvasView.tool = inkingTool;
+    self.currentBrushSettings = config;
 }
 
 - (void)setToolPickerVisible:(PDFPage *)pdfPage isVisible:(bool)visible {
