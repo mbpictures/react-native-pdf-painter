@@ -10,17 +10,17 @@
   "files": [
     "src",
     "lib",
-    "android",
-    "ios",
+    "android/src",
+    "android/build.gradle",
+    "android/gradle.properties",
+    "android/proguard-rules.pro",
+    "ios/**/*.h",
+    "ios/**/*.m",
+    "ios/**/*.mm",
+    "ios/**/*.cpp",
     "cpp",
     "*.podspec",
     "react-native.config.js",
-    "!ios/build",
-    "!android/build",
-    "!android/gradle",
-    "!android/gradlew",
-    "!android/gradlew.bat",
-    "!android/local.properties",
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
@@ -193,8 +193,7 @@
     },
     "android": {
       "javaPackageName": "com.pdfannotation"
-    },
-    "includesGeneratedCode": true
+    }
   },
   "create-react-native-library": {
     "languages": "kotlin-objc",
