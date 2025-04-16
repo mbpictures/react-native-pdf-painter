@@ -24,7 +24,8 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "!**/.*"
+    "!**/.*",
+    "!ios/generated"
   ],
   "scripts": {
     "example": "yarn workspace react-native-pdf-painter-example",
