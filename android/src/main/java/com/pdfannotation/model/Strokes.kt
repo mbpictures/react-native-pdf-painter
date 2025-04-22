@@ -10,7 +10,7 @@ data class Strokes(
     var onStrokesChange: (() -> Unit)? = null
 ) {
     fun setStrokesPerPage(page: Int, newStrokes: Set<Stroke>, size: Size, initial: Boolean = false) {
-        if (size.width == 0f || size.height == 0f || newStrokes.isEmpty()) return
+        if (size.width == 0f || size.height == 0f) return
         strokes = strokes.toMutableMap().apply {
             this[page] = newStrokes.map { drawStroke ->
                 val batch = MutableStrokeInputBatch()
