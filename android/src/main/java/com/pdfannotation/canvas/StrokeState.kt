@@ -71,6 +71,7 @@ class StrokeAuthoringState(
         if (strokesToErase.isNotEmpty()) {
             Snapshot.withMutableSnapshot {
                 finishedStrokes.value -= strokesToErase
+                strokesFinishedListener?.invoke(finishedStrokes.value)
             }
         }
     }
