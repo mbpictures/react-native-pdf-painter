@@ -61,23 +61,17 @@ class StrokeAuthoringState(
         strokesFinishedListener?.invoke(finishedStrokes.value)
     }
 
-    private fun calcThreshold(eraserBox: ImmutableBox, partialMesh: PartitionedMesh, threshold: Float): Float {
-        val boxSize = eraserBox.width * eraserBox.height
-        val bbox = partialMesh.computeBoundingBox()
-        val bboxSize = (bbox?.width?: 1f) * (bbox?.height?: 1f)
-        return boxSize / bboxSize * threshold
-    }
-
-    fun eraseWholeStrokes(eraserBox: ImmutableBox, threshold: Float = 0.1f) {
+    fun eraseWholeStrokes(shape: PartitionedMesh) {
         val strokesToErase = finishedStrokes.value.filter { stroke ->
             stroke.shape.computeCoverageIsGreaterThan(
-                box = eraserBox,
-                coverageThreshold = calcThreshold(eraserBox, stroke.shape, threshold)
+                other = shape,
+                coverageThreshold = 0f
             )
         }
         if (strokesToErase.isNotEmpty()) {
             Snapshot.withMutableSnapshot {
                 finishedStrokes.value -= strokesToErase
+                strokesFinishedListener?.invoke(finishedStrokes.value)
             }
         }
     }

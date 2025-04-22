@@ -9,6 +9,11 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.ink.brush.Brush
 import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.ImmutableVec
+import androidx.ink.strokes.InProgressStroke
+import androidx.ink.strokes.MutableStrokeInputBatch
+import androidx.ink.strokes.Stroke
+import androidx.ink.strokes.StrokeInput
+import androidx.ink.strokes.StrokeInputBatch
 import com.pdfannotation.model.BrushSettings
 
 class StrokeAuthoringTouchListener(
@@ -17,24 +22,38 @@ class StrokeAuthoringTouchListener(
     private val isEraser: Boolean,
 ) : View.OnTouchListener {
 
+    private var eraserStroke: MutableStrokeInputBatch = MutableStrokeInputBatch()
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(view: View?, event: MotionEvent): Boolean {
         if (view == null) return false
-        if (isEraser) {
-            strokeAuthoringState.eraseWholeStrokes(
-                eraserBox = ImmutableBox.fromCenterAndDimensions(
-                    ImmutableVec(event.x, event.y),
-                    brush.size,
-                    brush.size
-                ),
-                threshold = 0.1f
-            )
-            return true
-        }
 
         val predictedEvent = strokeAuthoringState.motionEventPredictor.run {
             record(event)
             predict()
+        }
+        if (isEraser) {
+            if (event.actionMasked == MotionEvent.ACTION_UP || event.actionMasked == MotionEvent.ACTION_CANCEL) {
+                eraserStroke = MutableStrokeInputBatch()
+                return true
+            }
+
+            for (i in 0 until event.pointerCount) {
+                val pointerIndex = event.findPointerIndex(event.getPointerId(i))
+                eraserStroke.addOrIgnore(
+                    StrokeInput().apply {
+                        update(
+                            x = event.getX(pointerIndex),
+                            y = event.getY(pointerIndex),
+                            pressure = event.getPressure(pointerIndex),
+                            elapsedTimeMillis = event.eventTime,
+                        )
+                    }
+                )
+            }
+
+            strokeAuthoringState.eraseWholeStrokes(Stroke(brush, eraserStroke).shape)
+            return true
         }
 
         doPreHandlerAction(event)
