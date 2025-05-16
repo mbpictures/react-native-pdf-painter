@@ -2,7 +2,7 @@
 #import <PDFKit/PDFKit.h>
 #import <PencilKit/PencilKit.h>
 #import "MyPDFPage.h"
-#import "generated/RNPdfAnnotationViewSpec/Props.h"
+#import <react/renderer/components/RNPdfAnnotationViewSpec/Props.h>
 #import "MyPDFKitToolPickerModel.h"
 #import "MyPDFDocument.h"
 

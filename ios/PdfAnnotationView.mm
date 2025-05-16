@@ -1,9 +1,9 @@
 #import "PdfAnnotationView.h"
 
-#import "generated/RNPdfAnnotationViewSpec/ComponentDescriptors.h"
-#import "generated/RNPdfAnnotationViewSpec/EventEmitters.h"
-#import "generated/RNPdfAnnotationViewSpec/Props.h"
-#import "generated/RNPdfAnnotationViewSpec/RCTComponentViewHelpers.h"
+#import <react/renderer/components/RNPdfAnnotationViewSpec/ComponentDescriptors.h>
+#import <react/renderer/components/RNPdfAnnotationViewSpec/EventEmitters.h>
+#import <react/renderer/components/RNPdfAnnotationViewSpec/Props.h>
+#import <react/renderer/components/RNPdfAnnotationViewSpec/RCTComponentViewHelpers.h>
 
 #import "RCTFabricComponentsPlugins.h"
 
@@ -30,7 +30,7 @@ using namespace facebook::react;
     if (self = [super initWithFrame:frame]) {
         static const auto defaultProps = std::make_shared<const PdfAnnotationViewProps>();
         _props = defaultProps;
-        
+
         _view = [[CustomPdfView alloc] initWithFrame:frame];
         _view.displayMode = kPDFDisplaySinglePage;
         _view.displayDirection = kPDFDisplayDirectionHorizontal;
@@ -40,26 +40,26 @@ using namespace facebook::react;
         if (@available(iOS 16.0, *)) {
             _view.pageOverlayViewProvider = _pencilKitCoordinator;
         }
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(handlePageChange:)
                                                      name:PDFViewPageChangedNotification
                                                    object:_view];
-        
+
         UITapGestureRecognizer *tapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
         tapRecognizer.numberOfTapsRequired = 1;
         tapRecognizer.cancelsTouchesInView = NO;
         [_view addGestureRecognizer:tapRecognizer];
-        
+
         UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
         longPressRecognizer.minimumPressDuration = 0.5;
         [_view addGestureRecognizer:longPressRecognizer];
-        
+
         [_view usePageViewController:true withViewOptions:NULL];
-        
+
         [self updateThumbnailMode:false];
     }
-    
+
     return self;
 }
 
@@ -77,7 +77,7 @@ using namespace facebook::react;
     for (PDFAnnotation *annotation in currentPage.annotations) {
         if (CGRectContainsPoint(annotation.bounds, locationOnPage)) {
             [currentPage removeAnnotation:annotation];
-            
+
             if (props.autoSave) {
                 NSString * filePath = [[NSString alloc] initWithUTF8String: props.annotationFile.c_str()];
                 [_pencilKitCoordinator prepareForPersistance:(MyPDFDocument *)_view.document];
@@ -93,7 +93,7 @@ using namespace facebook::react;
 
 - (void)handleTap:(UITapGestureRecognizer *)sender {
     if (sender.state != UIGestureRecognizerStateEnded) return;
-    
+
     CGPoint touchLocation = [sender locationInView:_view];
     CGFloat screenWidth = _view.bounds.size.width;
     const auto &props = *std::static_pointer_cast<PdfAnnotationViewProps const>(_props);
@@ -101,39 +101,39 @@ using namespace facebook::react;
 
     PDFPage *currentPage = _view.currentPage;
     CGPoint convertedPoint = [_view convertPoint:touchLocation toPage:currentPage];
-    
+
     if (addLink) {
         NSUInteger currentPageIndex = [_view.document indexForPage:currentPage];
         Float size = props.brushSettings.size;
         RoundedTriangleAnnotation *linkAnnotation = [[RoundedTriangleAnnotation alloc] initWithBounds:CGRectMake(convertedPoint.x - size / 2, convertedPoint.y - size / 2, size, size) forType:PDFAnnotationSubtypeWidget withProperties:nil];
         linkAnnotation.backgroundColor = [self hexStringToColor:[NSString stringWithUTF8String:props.brushSettings.color.c_str()]];
-        
+
 
         [currentPage addAnnotation:linkAnnotation];
-        
-        
+
+
         if (!firstLinkAnnotation) {
             firstLinkAnnotation = linkAnnotation;
             firstLinkPageIndex = currentPageIndex;
         } else {
             PDFDestination *dest1 = [[PDFDestination alloc] initWithPage:[_view.document pageAtIndex:currentPageIndex] atPoint:CGPointZero];
             PDFDestination *dest2 = [[PDFDestination alloc] initWithPage:[_view.document pageAtIndex:firstLinkPageIndex] atPoint:CGPointZero];
-            
+
             firstLinkAnnotation.rotation = firstLinkPageIndex > currentPageIndex ? 0 : 180;
             linkAnnotation.rotation = firstLinkPageIndex > currentPageIndex ? 180 : 0;
-            
+
             firstLinkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest1];
             linkAnnotation.action = [[PDFActionGoTo alloc] initWithDestination:dest2];
             linkAnnotation.backgroundColor = [linkAnnotation.backgroundColor colorWithAlphaComponent:CGColorGetAlpha(linkAnnotation.backgroundColor.CGColor) * 0.5];
-            
+
             firstLinkAnnotation = nil;
-            
+
             PdfAnnotationViewEventEmitter::OnLinkCompleted event = PdfAnnotationViewEventEmitter::OnLinkCompleted{static_cast<int>(firstLinkPageIndex), static_cast<int>(currentPageIndex)};
             if (_eventEmitter != nullptr) {
                std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
                 ->onLinkCompleted(event);
             }
-            
+
             if (props.autoSave) {
                 NSString * filePath = [[NSString alloc] initWithUTF8String: props.annotationFile.c_str()];
                 [_pencilKitCoordinator prepareForPersistance:(MyPDFDocument *)_view.document];
@@ -143,7 +143,7 @@ using namespace facebook::react;
         [_view layoutDocumentView];
         return;
     }
-    
+
     NSArray<PDFAnnotation *> *annotations = [currentPage annotations];
     for (PDFAnnotation *annotation in annotations) {
         if (CGRectContainsPoint(annotation.bounds, convertedPoint)) {
@@ -214,7 +214,7 @@ using namespace facebook::react;
                 ->onPageCount(result);
              }
         });
-        
+
         _view.minScaleFactor = _view.scaleFactorForSizeToFit;
         _view.maxScaleFactor = 4.0;
         _view.scaleFactor = _view.scaleFactorForSizeToFit;
@@ -319,13 +319,13 @@ Class<RCTComponentViewProtocol> PdfAnnotationViewCls(void)
         unsigned int hexValue;
         NSScanner *scanner = [NSScanner scannerWithString:hexString];
         [scanner scanHexInt:&hexValue];
-        
+
         // Extract alpha, red, green, and blue components
         CGFloat alpha = ((hexValue >> 24) & 0xFF) / 255.0;
         CGFloat red = ((hexValue >> 16) & 0xFF) / 255.0;
         CGFloat green = ((hexValue >> 8) & 0xFF) / 255.0;
         CGFloat blue = (hexValue & 0xFF) / 255.0;
-        
+
         if (hexString.length == 8) {
             return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
         }
@@ -333,7 +333,7 @@ Class<RCTComponentViewProtocol> PdfAnnotationViewCls(void)
             return [UIColor colorWithRed:red green:green blue:blue alpha:1];
         }
     }
-    
+
     // If the string is not a valid hex color with alpha or RGB, return default color (black)
     return [UIColor blackColor];
 }
