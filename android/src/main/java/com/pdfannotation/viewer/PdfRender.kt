@@ -92,7 +92,9 @@ class PdfRender(
                                 PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
                             )
                         } finally {
-                            currentPage!!.close()
+                            try {
+                                currentPage!!.close()
+                            } catch (_: Exception) {}
                             currentPage = null
                         }
                         isLoaded = true
