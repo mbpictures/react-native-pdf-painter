@@ -152,6 +152,7 @@ class PdfAnnotationViewModel(
                 }
             )
         }
+        links.clearLinksOfPage(currentPage.value)
         if (!_autoSave) return
         saveAnnotations()
     }

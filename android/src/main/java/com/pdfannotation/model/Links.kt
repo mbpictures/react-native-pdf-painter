@@ -114,4 +114,10 @@ class Links(
     fun initialLinks(links: Map<Int, Set<Link>>) {
         _links.value = links
     }
+
+    fun clearLinksOfPage(page: Int) {
+        links.value[page]?.forEach { link ->
+            removeLink(link.id)
+        }
+    }
 }
