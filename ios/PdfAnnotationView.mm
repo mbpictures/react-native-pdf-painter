@@ -292,6 +292,15 @@ using namespace facebook::react;
         [_pencilKitCoordinator redo:_view.currentPage];
     }
     if ([commandName isEqual:@"clear"]) {
+        PDFPage *currentPage = _view.currentPage;
+        if (currentPage) {
+            NSArray<PDFAnnotation *> *annotations = [currentPage annotations];
+            for (PDFAnnotation *annotation in annotations) {
+                if ([annotation isKindOfClass:[RoundedTriangleAnnotation class]]) {
+                    [currentPage removeAnnotation:annotation];
+                }
+            }
+        }
         [_pencilKitCoordinator clear:_view.currentPage];
     }
     if ([commandName isEqual:@"setPage"]) {
