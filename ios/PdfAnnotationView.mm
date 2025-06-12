@@ -52,7 +52,7 @@ using namespace facebook::react;
         [_view addGestureRecognizer:tapRecognizer];
 
         UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        longPressRecognizer.minimumPressDuration = 0.5;
+        longPressRecognizer.minimumPressDuration = 0.25;
         [_view addGestureRecognizer:longPressRecognizer];
 
         [_view usePageViewController:true withViewOptions:NULL];
