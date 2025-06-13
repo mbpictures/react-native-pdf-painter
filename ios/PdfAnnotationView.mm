@@ -239,6 +239,11 @@ using namespace facebook::react;
     if (oldViewProps.thumbnailMode != newViewProps.thumbnailMode) {
         [self updateThumbnailMode:newViewProps.thumbnailMode];
     }
+    if (oldViewProps.backgroundColor != newViewProps.backgroundColor) {
+        NSString * hexColor = [[NSString alloc] initWithUTF8String: newViewProps.backgroundColor.c_str()];
+        _view.backgroundColor = [self hexStringToColor:hexColor];
+        _view.pageShadowsEnabled = false;
+    }
 
     [super updateProps:props oldProps:oldProps];
 }
