@@ -169,6 +169,7 @@ export default function App() {
                         onTap={(e) => console.log(e.nativeEvent)}
                         onLinkCompleted={() => setBrush(undefined)}
                         onPageChange={(page) => (currentPage.current = page)}
+                        backgroundColor="#FFFFFF"
                     />
                     {brush && brush.type !== 'none' && (
                         <View style={styles.pageNavigation}>
