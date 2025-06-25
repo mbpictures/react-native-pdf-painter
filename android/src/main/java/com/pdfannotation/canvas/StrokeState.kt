@@ -40,7 +40,7 @@ class StrokeAuthoringState(
                 val transformedPoint = floatArrayOf(drawStroke.x, drawStroke.y).apply {
                     transformMatrix.mapPoints(this)
                 }
-                batch.addOrThrow(
+                batch.add(
                     x = transformedPoint[0],
                     y = transformedPoint[1],
                     pressure = drawStroke.pressure,

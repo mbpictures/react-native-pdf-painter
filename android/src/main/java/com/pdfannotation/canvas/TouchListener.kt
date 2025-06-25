@@ -40,7 +40,7 @@ class StrokeAuthoringTouchListener(
 
             for (i in 0 until event.pointerCount) {
                 val pointerIndex = event.findPointerIndex(event.getPointerId(i))
-                eraserStroke.addOrIgnore(
+                eraserStroke.add(
                     StrokeInput().apply {
                         update(
                             x = event.getX(pointerIndex),

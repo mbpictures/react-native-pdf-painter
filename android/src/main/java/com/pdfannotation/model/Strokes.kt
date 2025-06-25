@@ -18,7 +18,7 @@ data class Strokes(
                 for (i in 0..<drawStroke.inputs.size) {
                     val strokeInput = drawStroke.inputs[i]
                     // normalize x and y to [0, 1], so we are independent of the size of the image
-                    batch.addOrThrow(
+                    batch.add(
                         x = strokeInput.x / size.width,
                         y = strokeInput.y / size.height,
                         pressure = strokeInput.pressure,
@@ -50,7 +50,7 @@ data class Strokes(
             for (i in 0..<stroke.inputs.size) {
                 val drawStroke = stroke.inputs[i]
                 // denormalize x and y to the size of the image
-                batch.addOrThrow(
+                batch.add(
                     x = drawStroke.x * maxOf(size.width, 1.0f),
                     y = drawStroke.y * maxOf(size.height, 1.0f),
                     pressure = drawStroke.pressure,
