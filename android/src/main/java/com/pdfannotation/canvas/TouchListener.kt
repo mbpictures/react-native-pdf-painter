@@ -40,12 +40,13 @@ class StrokeAuthoringTouchListener(
 
             for (i in 0 until event.pointerCount) {
                 val pointerIndex = event.findPointerIndex(event.getPointerId(i))
+                val pressure = event.getPressure(pointerIndex)
                 eraserStroke.add(
                     StrokeInput().apply {
                         update(
                             x = event.getX(pointerIndex),
                             y = event.getY(pointerIndex),
-                            pressure = event.getPressure(pointerIndex),
+                            pressure = if (pressure == -1.0f) -1.0f else pressure.coerceIn(0.0f, 1.0f),
                             elapsedTimeMillis = event.eventTime,
                         )
                     }
