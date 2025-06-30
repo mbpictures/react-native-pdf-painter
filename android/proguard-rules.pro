@@ -21,6 +21,7 @@
 -keepclassmembers class * {
     @androidx.ink.nativeloader.UsedByNative *;
 }
+-keep class androidx.ink.** { *; }
 
 -keep class com.pdfannotation.** { *; }
 
