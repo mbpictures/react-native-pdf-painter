@@ -75,30 +75,62 @@ class PdfRender(
         }
 
         fun load() {
-            if (!isLoaded) {
+            if (!isLoaded && job?.isActive != true) {
                 job = coroutineScope.launch {
                     mutex.withLock {
-                        val newBitmap: Bitmap
-                        currentPage = pdfRenderer?.openPage(index)
+                        if (isLoaded) return@withLock // Double-check nach dem Lock
+
+                        var newBitmap: Bitmap? = null
+                        var page: PdfRenderer.Page? = null
+
                         try {
+                            // Validiere pdfRenderer
+                            val renderer = pdfRenderer ?: return@withLock
+
+                            page = renderer.openPage(index)
+                            currentPage = page
+
+                            if (page.width <= 0 || page.height <= 0) {
+                                return@withLock
+                            }
+
+                            val bitmapWidth = (page.width * scale).toInt()
+                            val bitmapHeight = (page.height * scale).toInt()
+
+                            // check for max size (Android Limit)
+                            if (bitmapWidth <= 0 || bitmapHeight <= 0 ||
+                                bitmapWidth > 8192 || bitmapHeight > 8192) {
+                                return@withLock
+                            }
+
                             newBitmap = createBlankBitmap(
-                                width = currentPage!!.width * scale,
-                                height = currentPage!!.height * scale
+                                width = bitmapWidth.toFloat(),
+                                height = bitmapHeight.toFloat()
                             )
-                            currentPage!!.render(
-                                newBitmap,
-                                null,
-                                null,
-                                PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
-                            )
+
+                            if (newBitmap != null && !newBitmap.isRecycled) {
+                                page.render(
+                                    newBitmap,
+                                    null,
+                                    null,
+                                    PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
+                                )
+                            }
+                        } catch (e: Exception) {
+                            android.util.Log.e("PdfRender", "Error rendering page $index", e)
+                            newBitmap?.recycle()
+                            newBitmap = null
                         } finally {
                             try {
-                                currentPage!!.close()
+                                page?.close()
                             } catch (_: Exception) {}
                             currentPage = null
                         }
-                        isLoaded = true
-                        pageContent.emit(newBitmap)
+
+                        if (newBitmap != null && !newBitmap.isRecycled) {
+                            pageContent.emit(newBitmap)
+                            isLoaded = true
+                        }
                     }
                 }
             }
@@ -118,16 +150,25 @@ class PdfRender(
         private fun createBlankBitmap(
             width: Float,
             height: Float
-        ): Bitmap {
-            return createBitmap(
-                width.toInt(),
-                height.toInt()
-            ).apply {
-                val canvas = Canvas(this)
-                if (backgroundColor != null) {
-                    canvas.drawColor(backgroundColor)
+        ): Bitmap? {
+            return try {
+                val w = width.toInt().coerceAtLeast(1)
+                val h = height.toInt().coerceAtLeast(1)
+
+                createBitmap(w, h).apply {
+                    val canvas = Canvas(this)
+                    if (backgroundColor != null) {
+                        canvas.drawColor(backgroundColor)
+                    }
+                    // Entferne die problematische Zeile - sie zeichnet das Bitmap auf sich selbst
+                    // canvas.drawBitmap(this, 0f, 0f, null)
                 }
-                canvas.drawBitmap(this, 0f, 0f, null)
+            } catch (e: OutOfMemoryError) {
+                android.util.Log.e("PdfRender", "Out of memory creating bitmap ${width}x${height}", e)
+                null
+            } catch (e: Exception) {
+                android.util.Log.e("PdfRender", "Error creating bitmap ${width}x${height}", e)
+                null
             }
         }
     }
