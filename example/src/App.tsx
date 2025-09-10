@@ -28,6 +28,8 @@ import {
     LinkIcon,
     ChevronRight,
     ChevronLeft,
+    GalleryHorizontal,
+    GalleryVertical,
 } from 'lucide-react-native';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
@@ -97,6 +99,7 @@ export default function App() {
     const pdfViewer = useRef<Handle>(null);
     const annotationFile = getAnnotationsPath(pdfFile);
     const currentPage = useRef(0);
+    const [direction, setDirection] = useState('horizontal');
 
     const handleSelectFile = async () => {
         try {
@@ -142,6 +145,23 @@ export default function App() {
                             onPress={handleSaveAnnotations}
                         />
                         <TouchableHighlight
+                            onPress={() =>
+                                setDirection((o) =>
+                                    o === 'horizontal'
+                                        ? 'vertical'
+                                        : 'horizontal'
+                                )
+                            }
+                        >
+                            <View style={styles.thumbnailButton}>
+                                {direction === 'horizontal' ? (
+                                    <GalleryHorizontal />
+                                ) : (
+                                    <GalleryVertical />
+                                )}
+                            </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight
                             onPress={() => setThumbnail((o) => !o)}
                         >
                             <View style={styles.thumbnailButton}>
@@ -170,6 +190,7 @@ export default function App() {
                         onLinkCompleted={() => setBrush(undefined)}
                         onPageChange={(page) => (currentPage.current = page)}
                         backgroundColor="#FFFFFF"
+                        scrollDirection={direction as 'horizontal' | 'vertical'}
                     />
                     {brush && brush.type !== 'none' && (
                         <View style={styles.pageNavigation}>
