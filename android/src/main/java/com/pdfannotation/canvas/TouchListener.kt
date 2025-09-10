@@ -41,16 +41,18 @@ class StrokeAuthoringTouchListener(
             for (i in 0 until event.pointerCount) {
                 val pointerIndex = event.findPointerIndex(event.getPointerId(i))
                 val pressure = event.getPressure(pointerIndex)
-                eraserStroke.add(
-                    StrokeInput().apply {
-                        update(
-                            x = event.getX(pointerIndex),
-                            y = event.getY(pointerIndex),
-                            pressure = if (pressure == -1.0f) -1.0f else pressure.coerceIn(0.0f, 1.0f),
-                            elapsedTimeMillis = event.eventTime,
-                        )
-                    }
-                )
+                try {
+                    eraserStroke.add(
+                        StrokeInput().apply {
+                            update(
+                                x = event.getX(pointerIndex),
+                                y = event.getY(pointerIndex),
+                                pressure = if (pressure == -1.0f) -1.0f else pressure.coerceIn(0.0f, 1.0f),
+                                elapsedTimeMillis = event.eventTime,
+                            )
+                        }
+                    )
+                } catch (_: Exception) {} // possible "INVALID_ARGUMENT: Inputs must not have duplicate `position` and `elapsed_time`" exception
             }
 
             strokeAuthoringState.eraseWholeStrokes(Stroke(brush, eraserStroke).shape)
