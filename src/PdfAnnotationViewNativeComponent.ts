@@ -58,6 +58,7 @@ export interface NativeProps extends ViewProps {
     onTap?: BubblingEventHandler<TapEvent> | null;
     onLinkCompleted?: BubblingEventHandler<LinkCompletedEvent> | null;
     androidBeyondViewportPageCount?: Int32;
+    scrollDirection?: WithDefault<'vertical' | 'horizontal', 'horizontal'>;
 }
 
 type ComponentType = HostComponent<NativeProps>;
