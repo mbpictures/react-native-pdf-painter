@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -47,6 +46,7 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     val currentPage by viewModel.currentPage.collectAsState()
     val links by viewModel.links.links.collectAsState()
     val beyondViewportPageCount by viewModel.beyondViewportPageCount.collectAsState()
+    val direction by viewModel.scrollDirection.collectAsState()
 
     var size by remember { mutableStateOf(IntSize.Zero) }
     val scope = rememberCoroutineScope()
@@ -96,7 +96,8 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        HorizontalPager(
+        DirectionalPager(
+            direction = direction,
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()

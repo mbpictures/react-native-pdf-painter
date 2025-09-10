@@ -57,6 +57,13 @@ class PdfAnnotationViewManager : SimpleViewManager<PdfAnnotationView>(),
     view?.viewModel?.updateBeyondViewportPageCount(value)
   }
 
+  override fun setScrollDirection(
+    view: PdfAnnotationView?,
+    value: String?
+  ) {
+    view?.viewModel?.updateScrollDirection(value)
+  }
+
   override fun saveAnnotations(view: PdfAnnotationView?, path: String?) {
     view?.viewModel?.saveAnnotations(path)
   }

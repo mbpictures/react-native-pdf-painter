@@ -39,6 +39,7 @@ class PdfAnnotationViewModel(
     private val _serializer = Serializer()
     private var _loadedAnnotationPath = ""
     private val _beyondViewportPageCount = MutableStateFlow<Int?>(null)
+    private val _scrollDirection = MutableStateFlow("horizontal")
 
 
     val backgroundColor: StateFlow<Int?> get() = _backgroundColor
@@ -55,6 +56,7 @@ class PdfAnnotationViewModel(
         }
     )
     val beyondViewportPageCount: StateFlow<Int?> get() = _beyondViewportPageCount
+    val scrollDirection: StateFlow<String> get() = _scrollDirection
 
     fun updateBackgroundColor(newColor: String?) {
         _backgroundColor.value = newColor?.let { this.parseColor(newColor).toArgb() }
@@ -93,6 +95,10 @@ class PdfAnnotationViewModel(
 
     fun updateBeyondViewportPageCount(count: Int) {
         _beyondViewportPageCount.value = count
+    }
+
+    fun updateScrollDirection(direction: String?) {
+        _scrollDirection.value = if (direction == "vertical") "vertical" else "horizontal"
     }
 
     private fun makeBrushSettings(settings: ReadableMap): BrushSettings? {
