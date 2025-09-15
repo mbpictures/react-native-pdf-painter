@@ -1,6 +1,6 @@
 {
     "name": "react-native-pdf-painter",
-    "version": "0.8.7",
+    "version": "0.8.8-beta.0",
     "description": "Display PDFs with handdrawn annotation support",
     "main": "./lib/module/index.js",
     "types": "./lib/typescript/src/index.d.ts",
