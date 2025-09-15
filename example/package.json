@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "lucide-react-native": "^0.469.0",
-    "react": "18.3.1",
-    "react-native": "0.77.1",
+    "react": "19.1.0",
+    "react-native": "0.81.4",
     "react-native-document-picker": "^9.3.1",
     "react-native-svg": "15.10.1"
   },
@@ -20,12 +20,12 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
-    "@react-native-community/cli": "15.0.1",
-    "@react-native-community/cli-platform-android": "15.0.1",
-    "@react-native-community/cli-platform-ios": "15.0.1",
-    "@react-native/babel-preset": "0.77.1",
-    "@react-native/metro-config": "0.77.1",
-    "@react-native/typescript-config": "0.77.1",
+    "@react-native-community/cli": "20.0.0",
+    "@react-native-community/cli-platform-android": "20.0.0",
+    "@react-native-community/cli-platform-ios": "20.0.0",
+    "@react-native/babel-preset": "0.81.4",
+    "@react-native/metro-config": "0.81.4",
+    "@react-native/typescript-config": "0.81.4",
     "react-native-builder-bob": "^0.35.2"
   },
   "engines": {
