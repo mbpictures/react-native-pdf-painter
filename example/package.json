@@ -10,10 +10,10 @@
     "build:ios": "react-native build-ios --scheme PdfAnnotationExample --mode Debug --extra-params \"-sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO\""
   },
   "dependencies": {
+    "@react-native-documents/picker": "10.1.5",
     "lucide-react-native": "^0.469.0",
     "react": "19.1.0",
     "react-native": "0.81.4",
-    "react-native-document-picker": "^9.3.1",
     "react-native-svg": "15.10.1"
   },
   "devDependencies": {

@@ -14,7 +14,7 @@ import {
     PdfAnnotationView,
 } from 'react-native-pdf-painter';
 import { type ReactNode, useRef, useState } from 'react';
-import DocumentPicker, { types } from 'react-native-document-picker';
+import DocumentPicker, { types } from '@react-native-documents/picker';
 import {
     CheckIcon,
     HighlighterIcon,
@@ -100,11 +100,11 @@ export default function App() {
 
     const handleSelectFile = async () => {
         try {
-            const response = await DocumentPicker.pickSingle({
+            const response = await DocumentPicker.pick({
                 type: types.pdf,
                 copyTo: 'documentDirectory',
             });
-            setPdfFile(response.fileCopyUri);
+            setPdfFile(response[0].uri);
         } catch (e) {
             Alert.alert('File Selection Error');
         }
