@@ -14,7 +14,7 @@
     "react": "18.3.1",
     "react-native": "0.77.1",
     "react-native-document-picker": "^9.3.1",
-    "react-native-svg": "^15.10.1"
+    "react-native-svg": "15.10.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
