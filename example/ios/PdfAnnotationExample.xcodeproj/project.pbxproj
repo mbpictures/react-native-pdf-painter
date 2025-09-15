@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		4B14BBCC6CCFDA562207F753 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		5B7BA22827E675E3C973F527 /* libPods-PdfAnnotationExample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA372A0549344986566C2AB1 /* libPods-PdfAnnotationExample.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C03947672D76256A00F5AFF9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03947662D76256A00F5AFF9 /* AppDelegate.swift */; };
-		D473E7905801289DAC6A9FA0 /* Pods_PdfAnnotationExample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C4AFC634D7D800C7CF4D81C3 /* Pods_PdfAnnotationExample.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,8 +24,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PdfAnnotationExample/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C03947652D76256A00F5AFF9 /* PdfAnnotationExample-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PdfAnnotationExample-Bridging-Header.h"; sourceTree = "<group>"; };
 		C03947662D76256A00F5AFF9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C4AFC634D7D800C7CF4D81C3 /* Pods_PdfAnnotationExample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PdfAnnotationExample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FA372A0549344986566C2AB1 /* libPods-PdfAnnotationExample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PdfAnnotationExample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,7 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D473E7905801289DAC6A9FA0 /* Pods_PdfAnnotationExample.framework in Frameworks */,
+				5B7BA22827E675E3C973F527 /* libPods-PdfAnnotationExample.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +57,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				C4AFC634D7D800C7CF4D81C3 /* Pods_PdfAnnotationExample.framework */,
+				FA372A0549344986566C2AB1 /* libPods-PdfAnnotationExample.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -262,6 +262,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YGNJ797644;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PdfAnnotationExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
@@ -291,6 +292,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YGNJ797644;
 				INFOPLIST_FILE = PdfAnnotationExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
