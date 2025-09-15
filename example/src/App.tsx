@@ -5,7 +5,6 @@ import {
     Button,
     TouchableHighlight,
     Text,
-    SafeAreaView,
     Platform,
 } from 'react-native';
 import {
@@ -29,6 +28,7 @@ import {
     ChevronRight,
     ChevronLeft,
 } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
     {
