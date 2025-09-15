@@ -1,14 +1,7 @@
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type { HostComponent, ViewProps } from 'react-native';
-import type {
-    BubblingEventHandler,
-    Double,
-    Float,
-    Int32,
-    WithDefault,
-} from 'react-native/Libraries/Types/CodegenTypes';
+import { codegenNativeComponent } from 'react-native';
+import type { CodegenTypes, HostComponent, ViewProps } from 'react-native';
 import React from 'react';
-import codegenNativeCommands from 'react-native/Libraries/Utilities/codegenNativeCommands';
+import { codegenNativeCommands } from 'react-native';
 
 export type BrushType =
     | 'marker'
@@ -19,29 +12,29 @@ export type BrushType =
     | 'none';
 
 export interface BrushSettings {
-    type?: WithDefault<BrushType, 'marker'>;
+    type?: CodegenTypes.WithDefault<BrushType, 'marker'>;
     color: string;
-    size: Float;
+    size: CodegenTypes.Float;
 }
 
 export type PageCountEvent = {
-    pageCount: Int32;
+    pageCount: CodegenTypes.Int32;
 };
 
 export type PageChangeEvent = {
-    currentPage: Int32;
+    currentPage: CodegenTypes.Int32;
 };
 
 export type DocumentFinishedEvent = {
     next: boolean;
 };
 export type TapEvent = {
-    x: Double;
-    y: Double;
+    x: CodegenTypes.Double;
+    y: CodegenTypes.Double;
 };
 export type LinkCompletedEvent = {
-    fromPage: Int32;
-    toPage: Int32;
+    fromPage: CodegenTypes.Int32;
+    toPage: CodegenTypes.Int32;
 };
 
 export interface NativeProps extends ViewProps {
@@ -52,12 +45,12 @@ export interface NativeProps extends ViewProps {
     autoSave?: boolean;
     brushSettings?: BrushSettings;
     iosToolPickerVisible?: boolean;
-    onPageCount?: BubblingEventHandler<PageCountEvent> | null;
-    onPageChange?: BubblingEventHandler<PageChangeEvent> | null;
-    onDocumentFinished?: BubblingEventHandler<DocumentFinishedEvent> | null;
-    onTap?: BubblingEventHandler<TapEvent> | null;
-    onLinkCompleted?: BubblingEventHandler<LinkCompletedEvent> | null;
-    androidBeyondViewportPageCount?: Int32;
+    onPageCount?: CodegenTypes.BubblingEventHandler<PageCountEvent> | null;
+    onPageChange?: CodegenTypes.BubblingEventHandler<PageChangeEvent> | null;
+    onDocumentFinished?: CodegenTypes.BubblingEventHandler<DocumentFinishedEvent> | null;
+    onTap?: CodegenTypes.BubblingEventHandler<TapEvent> | null;
+    onLinkCompleted?: CodegenTypes.BubblingEventHandler<LinkCompletedEvent> | null;
+    androidBeyondViewportPageCount?: CodegenTypes.Int32;
 }
 
 type ComponentType = HostComponent<NativeProps>;
@@ -78,7 +71,10 @@ interface NativeCommands {
     undo: (viewRef: React.ElementRef<ComponentType>) => void;
     redo: (viewRef: React.ElementRef<ComponentType>) => void;
     clear: (viewRef: React.ElementRef<ComponentType>) => void;
-    setPage: (viewRef: React.ElementRef<ComponentType>, page: Int32) => void;
+    setPage: (
+        viewRef: React.ElementRef<ComponentType>,
+        page: CodegenTypes.Int32
+    ) => void;
 }
 
 export const Commands: NativeCommands = codegenNativeCommands<NativeCommands>({
