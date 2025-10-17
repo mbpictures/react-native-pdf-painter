@@ -100,10 +100,10 @@ class PdfAnnotationViewModel(
             return null
         }
         val family = when (settings.getString("type")) {
-            "marker" -> StockBrushes.markerLatest
-            "pressure-pen" -> StockBrushes.pressurePenLatest
-            "highlighter" -> StockBrushes.highlighterLatest
-            else -> StockBrushes.markerLatest
+            "marker" -> StockBrushes.marker()
+            "pressure-pen" -> StockBrushes.pressurePen()
+            "highlighter" -> StockBrushes.highlighter()
+            else -> StockBrushes.marker()
         }
         return BrushSettings(settings.getDouble("size").toFloat(), this.parseColor(settings.getString("color")), family, isEraser = settings.getString("type") == "eraser")
     }
