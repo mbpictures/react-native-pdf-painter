@@ -5,7 +5,7 @@ import NativePdfAnnotationView, {
     type PageChangeEvent,
     type PageCountEvent,
 } from './PdfAnnotationViewNativeComponent';
-import {
+import React, {
     forwardRef,
     type ReactElement,
     useEffect,
@@ -21,11 +21,11 @@ import {
     View,
     type ViewStyle,
     ScrollView,
+    type CodegenTypes,
 } from 'react-native';
-import type { BubblingEventHandler } from 'react-native/Libraries/Types/CodegenTypes';
 export * from './PdfAnnotationViewNativeComponent';
 
-type ComponentRef = InstanceType<typeof NativePdfAnnotationView>;
+type ComponentRef = React.ComponentRef<typeof NativePdfAnnotationView>;
 
 export interface Handle {
     saveAnnotations: (file: string) => void;
@@ -100,21 +100,21 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
             );
         }, [stateCurrentPage, currentPage]);
 
-        const handlePageCount: BubblingEventHandler<PageCountEvent> = (
-            event
-        ) => {
+        const handlePageCount: CodegenTypes.BubblingEventHandler<
+            PageCountEvent
+        > = (event) => {
             setPageCount(event.nativeEvent.pageCount);
             onPageCount?.(event.nativeEvent.pageCount);
         };
 
-        const handlePageChange: BubblingEventHandler<PageChangeEvent> = (
-            event
-        ) => {
+        const handlePageChange: CodegenTypes.BubblingEventHandler<
+            PageChangeEvent
+        > = (event) => {
             setStateCurrentPage(event.nativeEvent.currentPage);
             onPageChange?.(event.nativeEvent.currentPage);
         };
 
-        const handleDocumentFinished: BubblingEventHandler<
+        const handleDocumentFinished: CodegenTypes.BubblingEventHandler<
             DocumentFinishedEvent
         > = (event) => {
             onDocumentFinished?.(event.nativeEvent.next ? 'next' : 'previous');

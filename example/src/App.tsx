@@ -5,7 +5,6 @@ import {
     Button,
     TouchableHighlight,
     Text,
-    SafeAreaView,
     Platform,
 } from 'react-native';
 import {
@@ -14,7 +13,7 @@ import {
     PdfAnnotationView,
 } from 'react-native-pdf-painter';
 import { type ReactNode, useRef, useState } from 'react';
-import DocumentPicker, { types } from 'react-native-document-picker';
+import { types, pick } from '@react-native-documents/picker';
 import {
     CheckIcon,
     HighlighterIcon,
@@ -29,6 +28,7 @@ import {
     ChevronRight,
     ChevronLeft,
 } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
     {
@@ -100,11 +100,11 @@ export default function App() {
 
     const handleSelectFile = async () => {
         try {
-            const response = await DocumentPicker.pickSingle({
+            const response = await pick({
                 type: types.pdf,
                 copyTo: 'documentDirectory',
             });
-            setPdfFile(response.fileCopyUri);
+            setPdfFile(response[0].uri);
         } catch (e) {
             Alert.alert('File Selection Error');
         }

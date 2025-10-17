@@ -1,204 +1,169 @@
 {
-  "name": "react-native-pdf-painter",
-  "version": "0.8.7",
-  "description": "Display PDFs with handdrawn annotation support",
-  "source": "src/index",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "react-native": "src/index",
-  "types": "lib/typescript/module/src/index.d.ts",
-  "files": [
-    "src",
-    "lib",
-    "android/src",
-    "android/build.gradle",
-    "android/gradle.properties",
-    "android/proguard-rules.pro",
-    "ios/*.h",
-    "ios/*.m",
-    "ios/*.mm",
-    "ios/*.cpp",
-    "cpp",
-    "*.podspec",
-    "react-native.config.js",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__",
-    "!**/.*",
-    "!ios/generated"
-  ],
-  "scripts": {
-    "example": "yarn workspace react-native-pdf-painter-example",
-    "test": "jest",
-    "typecheck": "tsc",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "prepare": "bob build",
-    "release": "release-it"
-  },
-  "keywords": [
-    "react-native",
-    "ios",
-    "android"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mbpictures/react-native-pdf-painter.git"
-  },
-  "author": "Marius Butz <mbpictures13@gmail.com> (https://github.com/mbpictures)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mbpictures/react-native-pdf-painter/issues"
-  },
-  "homepage": "https://github.com/mbpictures/react-native-pdf-painter#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
-  "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@evilmartians/lefthook": "^1.5.0",
-    "@react-native-community/cli": "15.0.1",
-    "@react-native/eslint-config": "^0.73.1",
-    "@release-it/conventional-changelog": "^9.0.2",
-    "@types/jest": "^29.5.5",
-    "@types/react": "^18.2.44",
-    "commitlint": "^17.0.2",
-    "del-cli": "^5.1.0",
-    "eslint": "^8.51.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "jest": "^29.7.0",
-    "prettier": "^3.0.3",
-    "react": "18.3.1",
-    "react-native": "0.77.1",
-    "react-native-builder-bob": "^0.35.2",
-    "release-it": "^18.1.1",
-    "turbo": "^1.10.7",
-    "typescript": "^5.2.2"
-  },
-  "resolutions": {
-    "@types/react": "^18.2.44"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
-  },
-  "workspaces": [
-    "example"
-  ],
-  "packageManager": "yarn@3.6.1",
-  "jest": {
-    "preset": "react-native",
-    "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
+    "name": "react-native-pdf-painter",
+    "version": "0.8.8-beta.0",
+    "description": "Display PDFs with handdrawn annotation support",
+    "main": "./lib/module/index.js",
+    "types": "./lib/typescript/src/index.d.ts",
+    "exports": {
+        ".": {
+            "source": "./src/index.tsx",
+            "types": "./lib/typescript/src/index.d.ts",
+            "default": "./lib/module/index.js"
+        },
+        "./package.json": "./package.json"
     },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "conventionalcommits",
-        "types": [
-          {
-            "type": "feat",
-            "section": "Features"
-          },
-          {
-            "type": "fix",
-            "section": "Bug Fixes"
-          },
-          {}
-        ]
-      }
-    }
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native",
-      "prettier"
+    "files": [
+        "src",
+        "lib",
+        "android",
+        "ios",
+        "cpp",
+        "*.podspec",
+        "react-native.config.js",
+        "!ios/build",
+        "!android/build",
+        "!android/gradle",
+        "!android/gradlew",
+        "!android/gradlew.bat",
+        "!android/local.properties",
+        "!**/__tests__",
+        "!**/__fixtures__",
+        "!**/__mocks__",
+        "!**/.*"
     ],
-    "rules": {
-      "react/react-in-jsx-scope": "off",
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 4,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 4,
-    "trailingComma": "es5",
-    "useTabs": false
-  },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "codegen",
-      [
-        "commonjs",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "module",
-        {
-          "esm": true
-        }
-      ],
-      [
-        "typescript",
-        {
-          "project": "tsconfig.build.json",
-          "esm": true
-        }
-      ]
-    ]
-  },
-  "codegenConfig": {
-    "name": "RNPdfAnnotationViewSpec",
-    "type": "all",
-    "jsSrcsDir": "src",
-    "outputDir": {
-      "ios": "ios/generated",
-      "android": "android/generated"
+    "scripts": {
+        "example": "yarn workspace react-native-pdf-painter-example",
+        "test": "jest",
+        "typecheck": "tsc",
+        "lint": "eslint \"**/*.{js,ts,tsx}\"",
+        "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+        "prepare": "bob build",
+        "release": "release-it --only-version"
     },
-    "android": {
-      "javaPackageName": "com.pdfannotation"
+    "keywords": [
+        "react-native",
+        "ios",
+        "android"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mbpictures/react-native-pdf-painter-new.git"
+    },
+    "author": "Marius Butz <mbpictures13@gmail.com> (https://github.com/mbpictures)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/mbpictures/react-native-pdf-painter-new/issues"
+    },
+    "homepage": "https://github.com/mbpictures/react-native-pdf-painter-new#readme",
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org/"
+    },
+    "devDependencies": {
+        "@commitlint/config-conventional": "^19.8.1",
+        "@eslint/compat": "^1.3.2",
+        "@eslint/eslintrc": "^3.3.1",
+        "@eslint/js": "^9.35.0",
+        "@evilmartians/lefthook": "^1.12.3",
+        "@react-native-community/cli": "20.0.1",
+        "@react-native/babel-preset": "0.81.1",
+        "@react-native/eslint-config": "^0.81.1",
+        "@release-it/conventional-changelog": "^10.0.1",
+        "@types/jest": "^29.5.14",
+        "@types/react": "^19.1.0",
+        "commitlint": "^19.8.1",
+        "del-cli": "^6.0.0",
+        "eslint": "^9.35.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.4",
+        "jest": "^29.7.0",
+        "prettier": "^3.6.2",
+        "react": "19.1.0",
+        "react-native": "0.81.1",
+        "react-native-builder-bob": "^0.40.13",
+        "release-it": "^19.0.4",
+        "turbo": "^2.5.6",
+        "typescript": "^5.9.2"
+    },
+    "peerDependencies": {
+        "react": "*",
+        "react-native": "*"
+    },
+    "workspaces": [
+        "example"
+    ],
+    "packageManager": "yarn@3.6.1",
+    "jest": {
+        "preset": "react-native",
+        "modulePathIgnorePatterns": [
+            "<rootDir>/example/node_modules",
+            "<rootDir>/lib/"
+        ]
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ]
+    },
+    "release-it": {
+        "git": {
+            "commitMessage": "chore: release ${version}",
+            "tagName": "v${version}"
+        },
+        "npm": {
+            "publish": true
+        },
+        "github": {
+            "release": true
+        },
+        "plugins": {
+            "@release-it/conventional-changelog": {
+                "preset": {
+                    "name": "angular"
+                }
+            }
+        }
+    },
+    "prettier": {
+        "quoteProps": "consistent",
+        "singleQuote": true,
+        "tabWidth": 4,
+        "trailingComma": "es5",
+        "useTabs": false
+    },
+    "react-native-builder-bob": {
+        "source": "src",
+        "output": "lib",
+        "targets": [
+            [
+                "module",
+                {
+                    "esm": true
+                }
+            ],
+            [
+                "typescript",
+                {
+                    "project": "tsconfig.build.json"
+                }
+            ]
+        ]
+    },
+    "codegenConfig": {
+        "name": "RNPdfAnnotationViewSpec",
+        "type": "all",
+        "jsSrcsDir": "src",
+        "android": {
+            "javaPackageName": "com.pdfannotation"
+        },
+        "ios": {
+            "componentProvider": {
+                "PdfAnnotationView": "PdfAnnotationView"
+            }
+        }
+    },
+    "create-react-native-library": {
+        "languages": "kotlin-objc",
+        "type": "fabric-view",
+        "version": "0.54.3"
     }
-  },
-  "create-react-native-library": {
-    "languages": "kotlin-objc",
-    "type": "fabric-view",
-    "version": "0.45.5"
-  }
 }
