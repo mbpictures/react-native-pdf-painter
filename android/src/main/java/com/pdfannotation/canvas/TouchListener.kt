@@ -155,7 +155,7 @@ class StrokeAuthoringTouchListener(
     ) {
         val pointerIndex = event.actionIndex
         val pointerId = event.getPointerId(pointerIndex)
-        check(pointerId == strokeAuthoringState.currentPointerId)
+        if (pointerId != strokeAuthoringState.currentPointerId) return
 
         strokeAuthoringState.inProgressStrokesView.cancelStroke(
             strokeId = strokeAuthoringState.currentStrokeId!!,
