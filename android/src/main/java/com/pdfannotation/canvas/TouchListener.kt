@@ -117,8 +117,10 @@ class StrokeAuthoringTouchListener(
         event: MotionEvent,
         predictedEvent: MotionEvent?,
     ) {
-        val pointerId = checkNotNull(strokeAuthoringState.currentPointerId)
-        val strokeId = checkNotNull(strokeAuthoringState.currentStrokeId)
+        val pointerId = strokeAuthoringState.currentPointerId
+        val strokeId = strokeAuthoringState.currentStrokeId
+
+        if (pointerId == null || strokeId == null) return
 
         // TODO: Check if there is a chance to have more than one pointer ID within event pointers
         for (pointerIndex in 0 until event.pointerCount) {
