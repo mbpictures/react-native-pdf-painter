@@ -27,6 +27,7 @@ import {
     LinkIcon,
     ChevronRight,
     ChevronLeft,
+    Ruler,
 } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -36,6 +37,7 @@ const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
             type: 'marker',
             size: 3,
             color: '#000000',
+            lineal: false,
         },
         icon: <PenIcon />,
     },
@@ -44,6 +46,7 @@ const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
             type: 'pressure-pen',
             size: 3,
             color: '#000000',
+            lineal: false,
         },
         icon: <PencilIcon />,
     },
@@ -52,6 +55,7 @@ const BRUSH_SETTINGS: { settings: BrushSettings; icon: ReactNode }[] = [
             type: 'highlighter',
             size: 15,
             color: '#88FFFF00',
+            lineal: false,
         },
         icon: <HighlighterIcon />,
     },
@@ -160,6 +164,25 @@ export default function App() {
                                 <Text>Thumbnail: </Text>
                                 {thumbnail ? <CheckIcon /> : <XIcon />}
                             </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight
+                            underlayColor={'#ffe9d2'}
+                            style={[
+                                styles.toolbarItem,
+                                brush?.lineal && styles.toolbarItemActive,
+                            ]}
+                            onPress={() =>
+                                setBrush((o) =>
+                                    o
+                                        ? {
+                                              ...o,
+                                              lineal: !(o?.lineal ?? false),
+                                          }
+                                        : undefined
+                                )
+                            }
+                        >
+                            <Ruler />
                         </TouchableHighlight>
                     </>
                 )}
