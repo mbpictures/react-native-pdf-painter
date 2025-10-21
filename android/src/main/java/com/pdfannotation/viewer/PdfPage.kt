@@ -78,6 +78,7 @@ fun PdfPage(
         val strokeAuthoringState: StrokeAuthoringState = rememberStrokeAuthoringState(
             inProgressStrokesView,
             transformMatrix,
+            brushSettings,
             strokesFinishedListener = { strokes ->
                 if (state.currentPage == page.index) {
                     viewModel.setStrokesPerPage(

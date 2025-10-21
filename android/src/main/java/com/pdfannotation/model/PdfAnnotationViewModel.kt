@@ -17,7 +17,8 @@ data class BrushSettings(
     val size: Float,
     val color: Color,
     val family: BrushFamily,
-    val isEraser: Boolean = false
+    val isEraser: Boolean = false,
+    val lineal: Boolean = false
 )
 
 class PdfAnnotationViewModel(
@@ -105,7 +106,13 @@ class PdfAnnotationViewModel(
             "highlighter" -> StockBrushes.highlighter()
             else -> StockBrushes.marker()
         }
-        return BrushSettings(settings.getDouble("size").toFloat(), this.parseColor(settings.getString("color")), family, isEraser = settings.getString("type") == "eraser")
+        return BrushSettings(
+            settings.getDouble("size").toFloat(),
+            this.parseColor(settings.getString("color")),
+            family,
+            isEraser = settings.getString("type") == "eraser",
+            lineal =  if (settings.hasKey("lineal")) settings.getBoolean("lineal") else false
+        )
     }
 
     fun saveAnnotations(path: String? = null) {

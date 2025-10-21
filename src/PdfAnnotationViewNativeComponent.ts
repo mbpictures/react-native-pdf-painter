@@ -15,6 +15,7 @@ export interface BrushSettings {
     type?: CodegenTypes.WithDefault<BrushType, 'marker'>;
     color: string;
     size: CodegenTypes.Float;
+    lineal?: boolean;
 }
 
 export type PageCountEvent = {

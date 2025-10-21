@@ -219,7 +219,7 @@ using namespace facebook::react;
         _view.maxScaleFactor = 4.0;
         _view.scaleFactor = _view.scaleFactorForSizeToFit;
     }
-    if ((oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color)) {
+    if ((oldViewProps.brushSettings.size != newViewProps.brushSettings.size || oldViewProps.brushSettings.type != newViewProps.brushSettings.type || oldViewProps.brushSettings.color != newViewProps.brushSettings.color || oldViewProps.brushSettings.lineal != newViewProps.brushSettings.lineal)) {
         if (@available(iOS 16.0, *)) {
             [_view setInMarkupMode:newViewProps.brushSettings.type != PdfAnnotationViewType::None && newViewProps.brushSettings.type != PdfAnnotationViewType::Link];
         }

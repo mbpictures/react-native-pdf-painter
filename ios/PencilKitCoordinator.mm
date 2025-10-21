@@ -119,6 +119,7 @@
     // Set the tool to the canvas
     PKCanvasView *canvasView = self.pageToViewMapping[pdfPage.label];
     canvasView.tool = inkingTool;
+    [canvasView setRulerActive:config.lineal];
     self.currentBrushSettings = config;
 }
 
