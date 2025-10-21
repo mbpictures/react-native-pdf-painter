@@ -13,7 +13,7 @@ import {
     PdfAnnotationView,
 } from 'react-native-pdf-painter';
 import { type ReactNode, useRef, useState } from 'react';
-import { types, pick } from '@react-native-documents/picker';
+import { types, pick, keepLocalCopy } from '@react-native-documents/picker';
 import {
     CheckIcon,
     HighlighterIcon,
@@ -100,11 +100,23 @@ export default function App() {
 
     const handleSelectFile = async () => {
         try {
-            const response = await pick({
+            const [{ name, uri }] = await pick({
+                mode: 'import',
                 type: types.pdf,
-                copyTo: 'documentDirectory',
             });
-            setPdfFile(response[0].uri);
+            const [copyResult] = await keepLocalCopy({
+                files: [
+                    {
+                        uri,
+                        fileName: name ?? 'fallback-name',
+                    },
+                ],
+                destination: 'documentDirectory',
+            });
+            if (copyResult.status === 'success') {
+                console.log(copyResult.localUri);
+                setPdfFile(copyResult.localUri);
+            }
         } catch (e) {
             Alert.alert('File Selection Error');
         }
