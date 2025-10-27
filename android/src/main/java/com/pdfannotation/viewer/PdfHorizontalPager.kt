@@ -63,6 +63,19 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
         }
     }
 
+    LaunchedEffect(transformMatrix) {
+        inProgressStrokesView.motionEventToViewTransform = transformMatrix
+    }
+
+    LaunchedEffect(brushSettings) {
+        // Ensure the view is ready when brush settings are enabled
+        if (brushSettings != null) {
+            inProgressStrokesView.motionEventToViewTransform = transformMatrix
+            inProgressStrokesView.requestLayout()
+            inProgressStrokesView.invalidate()
+        }
+    }
+
     DisposableEffect(key1 = Unit) {
         onDispose {
             renderer?.close()
@@ -175,10 +188,24 @@ fun PdfHorizontalPager(viewModel: PdfAnnotationViewModel) {
                             FrameLayout.LayoutParams.MATCH_PARENT,
                             FrameLayout.LayoutParams.MATCH_PARENT,
                         )
+                    motionEventToViewTransform = transformMatrix
+
+                    // Ensure the view is initialized when attached
+                    addOnAttachStateChangeListener(object : android.view.View.OnAttachStateChangeListener {
+                        override fun onViewAttachedToWindow(v: android.view.View) {
+                            motionEventToViewTransform = transformMatrix
+                            invalidate()
+                        }
+
+                        override fun onViewDetachedFromWindow(v: android.view.View) {
+                            // Nothing to do
+                        }
+                    })
                 }
             },
             update = { inProgressStrokesView ->
                 inProgressStrokesView.motionEventToViewTransform = transformMatrix
+                inProgressStrokesView.invalidate()
             }
         )
     }
