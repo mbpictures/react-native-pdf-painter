@@ -106,11 +106,15 @@ class StrokeAuthoringTouchListener(
         val pointerIndex = event.actionIndex
         val pointerId = event.getPointerId(pointerIndex)
         strokeAuthoringState.currentPointerId = pointerId
-        strokeAuthoringState.currentStrokeId = strokeAuthoringState.inProgressStrokesView.startStroke(
-            event = event,
-            pointerId = pointerId,
-            brush = brush,
-        )
+        try {
+            strokeAuthoringState.currentStrokeId = strokeAuthoringState.inProgressStrokesView.startStroke(
+                event = event,
+                pointerId = pointerId,
+                brush = brush,
+            )
+        } catch (e: Exception) {
+            strokeAuthoringState.currentStrokeId = null
+        }
     }
 
     private fun handleUpdateStroke(
