@@ -1,6 +1,7 @@
 package com.pdfannotation.canvas
 
 import android.annotation.SuppressLint
+import android.graphics.Matrix
 import android.view.MotionEvent
 import android.view.View
 import androidx.compose.runtime.Composable
@@ -186,16 +187,20 @@ class StrokeAuthoringTouchListener(
 fun rememberStrokeAuthoringTouchListener(
     strokeAuthoringState: StrokeAuthoringState,
     brushSettings: BrushSettings?,
+    transformMatrix: Matrix = Matrix.IDENTITY_MATRIX,
 ): StrokeAuthoringTouchListener? =
     remember(brushSettings) {
         brushSettings?.let {
+            val matrixValues = FloatArray(9)
+            transformMatrix.getValues(matrixValues)
+            val scaleX = matrixValues[Matrix.MSCALE_X]
             StrokeAuthoringTouchListener(
                 strokeAuthoringState = strokeAuthoringState,
                 isEraser = brushSettings.isEraser,
                 brush = Brush.createWithColorIntArgb(
                     family = it.family,
                     colorIntArgb = it.color.toArgb(),
-                    size = it.size,
+                    size = it.size / scaleX,
                     epsilon = 0.1F
                 ),
             )

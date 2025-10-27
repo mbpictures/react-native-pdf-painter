@@ -10,7 +10,6 @@ import androidx.compose.runtime.snapshots.Snapshot
 import androidx.ink.authoring.InProgressStrokeId
 import androidx.ink.authoring.InProgressStrokesFinishedListener
 import androidx.ink.authoring.InProgressStrokesView
-import androidx.ink.geometry.ImmutableBox
 import androidx.ink.geometry.PartitionedMesh
 import androidx.ink.strokes.MutableStrokeInputBatch
 import androidx.ink.strokes.Stroke
@@ -59,7 +58,7 @@ class StrokeAuthoringState(
             }
 
             Stroke(
-                brush = stroke.brush.copy(size = stroke.brush.size * scaleX, epsilon = stroke.brush.epsilon),
+                brush = stroke.brush.copy(size = stroke.brush.size * scaleX),
                 inputs = batch
             )
         }

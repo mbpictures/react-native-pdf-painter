@@ -95,6 +95,7 @@ fun PdfPage(
         val strokeAuthoringTouchListener = rememberStrokeAuthoringTouchListener(
             strokeAuthoringState = strokeAuthoringState,
             brushSettings = brushSettings,
+            transformMatrix = transformMatrix,
         )
 
         // Restore strokes from ViewModel
