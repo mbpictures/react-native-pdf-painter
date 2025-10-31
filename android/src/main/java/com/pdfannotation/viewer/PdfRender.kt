@@ -60,6 +60,10 @@ class PdfRender(
         val fileDescriptor: ParcelFileDescriptor,
         val backgroundColor: Int?
     ) {
+        companion object {
+            const val MAX_IMAGE_SIZE = 4096
+        }
+
         val hash get() = fileDescriptor.hashCode() + index
         private var isLoaded = false
         private var job: Job? = null
@@ -94,13 +98,25 @@ class PdfRender(
                                 return@withLock
                             }
 
-                            val bitmapWidth = (page.width * scale).toInt()
-                            val bitmapHeight = (page.height * scale).toInt()
+                            var bitmapWidth = (page.width * scale).toInt()
+                            var bitmapHeight = (page.height * scale).toInt()
+
+                            if (bitmapWidth <= 0 || bitmapHeight <= 0) {
+                                return@withLock
+                            }
 
                             // check for max size (Android Limit)
-                            if (bitmapWidth <= 0 || bitmapHeight <= 0 ||
-                                bitmapWidth > 8192 || bitmapHeight > 8192) {
-                                return@withLock
+                            if (bitmapWidth > MAX_IMAGE_SIZE || bitmapHeight > MAX_IMAGE_SIZE) {
+                                if (bitmapWidth > bitmapHeight) {
+                                    val adjustedScale = MAX_IMAGE_SIZE.toFloat() / bitmapWidth.toFloat()
+                                    bitmapHeight = (bitmapHeight * adjustedScale).toInt()
+                                    bitmapWidth = MAX_IMAGE_SIZE
+                                } else {
+                                    val adjustedScale = MAX_IMAGE_SIZE.toFloat() / bitmapHeight.toFloat()
+
+                                    bitmapHeight = MAX_IMAGE_SIZE
+                                    bitmapWidth = (bitmapWidth * adjustedScale).toInt()
+                                }
                             }
 
                             newBitmap = createBlankBitmap(
