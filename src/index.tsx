@@ -22,6 +22,7 @@ import {
     type ViewStyle,
     ScrollView,
     type CodegenTypes,
+    type ScrollViewProps,
 } from 'react-native';
 export * from './PdfAnnotationViewNativeComponent';
 
@@ -49,6 +50,7 @@ export interface Props
     hidePagination?: boolean;
     pageIndicatorContainerStyles?: StyleProp<ViewStyle>;
     onDocumentFinished?: (direction: 'next' | 'previous') => unknown;
+    scrollViewComponent?: (props: ScrollViewProps) => ReactElement;
 }
 
 export interface PageIndicatorProps {
@@ -82,6 +84,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
             containerStyles,
             pageIndicatorContainerStyles,
             onDocumentFinished,
+            scrollViewComponent,
             ...props
         },
         ref
@@ -160,6 +163,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
         }));
 
         const RenderItem = renderPageIndicatorItem ?? PageIndicator;
+        const ScrollViewComponent = scrollViewComponent ?? ScrollView;
 
         return (
             <View style={[styles.container, containerStyles]}>
@@ -186,7 +190,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                             pageIndicatorContainerStyles,
                         ]}
                     >
-                        <ScrollView
+                        <ScrollViewComponent
                             horizontal
                             contentContainerStyle={styles.scrollContainer}
                         >
@@ -206,7 +210,7 @@ export const PdfAnnotationView = forwardRef<Handle, Props>(
                                     index={i}
                                 />
                             ))}
-                        </ScrollView>
+                        </ScrollViewComponent>
                     </View>
                 )}
             </View>
