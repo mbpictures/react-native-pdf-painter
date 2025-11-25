@@ -300,6 +300,7 @@ using namespace facebook::react;
         PDFPage *currentPage = _view.currentPage;
         if (currentPage) {
             NSArray<PDFAnnotation *> *annotations = [currentPage annotations];
+            if (!annotations) return;
             for (PDFAnnotation *annotation in annotations) {
                 if ([annotation isKindOfClass:[RoundedTriangleAnnotation class]]) {
                     [currentPage removeAnnotation:annotation];
