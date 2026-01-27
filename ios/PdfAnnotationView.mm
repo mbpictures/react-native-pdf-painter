@@ -163,6 +163,11 @@ using namespace facebook::react;
     } else if (touchLocation.x > screenWidth * 0.75 && !addLink) {
         delta = 1;
     } else {
+        if (_view.currentSelection) {
+            [_view clearSelection];
+            return;
+        }
+        
         PdfAnnotationViewEventEmitter::OnTap event = PdfAnnotationViewEventEmitter::OnTap{touchLocation.x, touchLocation.y};
         if (_eventEmitter != nullptr) {
            std::dynamic_pointer_cast<const PdfAnnotationViewEventEmitter>(_eventEmitter)
