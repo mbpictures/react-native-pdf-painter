@@ -153,14 +153,22 @@ class PdfRender(
         }
 
         fun recycle() {
-            job?.cancel()
-            try {
-                currentPage?.close()
-            } catch (_: Exception) {}
+            val activeJob = job
+            job = null
+            activeJob?.cancel()
             isLoaded = false
             val oldBitmap = pageContent.value
             pageContent.tryEmit(null)
-            oldBitmap?.recycle()
+            // Delay bitmap recycling to avoid SIGSEGV if render is still in progress
+            coroutineScope.launch {
+                mutex.withLock {
+                    try {
+                        currentPage?.close()
+                    } catch (_: Exception) {}
+                    currentPage = null
+                    oldBitmap?.recycle()
+                }
+            }
         }
 
         private fun createBlankBitmap(
