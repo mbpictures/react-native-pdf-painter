@@ -43,7 +43,7 @@ cd ios && pod install
 ### WARNING
 This library is completely written as Fabric components and is therefore **only** compatible with the new architecture!
 
-For Android users: This library uses androidx.ink in version 1.0.0alpha3, which means that this library is not recommended for production use yet! Some issues have already been discovered (e.g. flickering when drawing)
+For Android users: This library uses (androidx.ink)[https://developer.android.com/jetpack/androidx/releases/ink], which has been battle-tested by several Google apps.
 
 For iOS users: Annotations only work for iOS versions >= 16, everything below can view PDFs but not draw.
 
